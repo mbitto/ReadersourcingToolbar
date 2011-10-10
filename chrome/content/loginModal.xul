@@ -1,0 +1,40 @@
+<?xml version="1.0"?>
+<?xml-stylesheet href="chrome://readersourcingToolbar/skin/style.css" type="text/css"?>
+
+<dialog
+    id = "rsour_loginModal"
+    title = "Login to readersourcing.org"
+    orient = "vertical"
+    onload = "loginModal = window.arguments[0]; loginModal.initialize(document);"
+    ondialogaccept = "return loginModal.doOk();"
+    ondialogcancel = "return loginModal.doCancel();"
+    xmlns = "http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
+
+    <script>
+        var loginModal;
+    </script>
+
+    <vbox>
+        <spacer flex="1"/>
+
+        <description id="rsour_loginModalDescription">
+            Waiting for login.
+        </description>
+
+        <label value="User Name:" control="rsour_loginModalUsername"/>
+        <textbox id="rsour_loginModalUsername"/>
+
+        <label value="Password:" control="rsour_loginModalPassword"/>
+        <textbox id="rsour_loginModalPassword"  type="password" />
+
+        <box>
+            <label id="rsour_modalForgotPassword"  value="I forgot my password."
+                class="rsour_loginModalTextLink" onclick="forgotPassword()"/>
+        </box>
+        <box>
+            <label id="rsour_modalRegisterNewUser"  value="I want to register in readersourcing."
+                class="rsour_loginModalTextLink" onclick="registerToRS()" />
+        </box>
+
+    </vbox>
+</dialog> 

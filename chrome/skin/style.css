@@ -1,0 +1,132 @@
+/*widgets generic properties*/
+.rsour_image{
+    padding-left:3px;
+    -moz-box-pack: center;
+    -moz-box-align: center;
+}
+.rsour_text{
+    margin-top:6px;
+}
+.rsour_link{
+    margin-top:5px;
+}
+.rsour_star{
+    list-style-image : url("chrome://readersourcingToolbar/skin/star0.png");
+}
+
+/*widgets' specific properties*/
+#rsour_mainMenu {
+    list-style-image : url("chrome://readersourcingToolbar/skin/menu-button.gif");
+}
+#rsour_login{
+    list-style-image : url("chrome://readersourcingToolbar/skin/login.png");
+}
+#rsour_logout{
+    list-style-image : url("chrome://readersourcingToolbar/skin/logout.png");
+}
+
+#rsour_notConnectedImage{
+    list-style-image : url("chrome://readersourcingToolbar/skin/notConnected.png");
+}
+
+#rsour_steadinessImage{
+    list-style-image : url("chrome://readersourcingToolbar/skin/ste0.png");
+}
+
+#rsour_commentsDescImage{
+    list-style-image : url("chrome://readersourcingToolbar/skin/comments.png");
+}
+
+#rsour_suggestItImage{
+    list-style-image : url("chrome://readersourcingToolbar/skin/addPaper.png");
+}
+
+#rsour_submitOutputRating{
+    padding-left:7px;
+    padding-right:3px;
+    list-style-image : url("chrome://readersourcingToolbar/skin/confirmOff.png");
+    font-weight:700;
+}
+
+#rsour_ratingProgressImage{
+    list-style-image : url("chrome://readersourcingToolbar/skin/wait.gif");
+}
+
+#rsour_thanksMessageImage{
+    list-style-image : url("chrome://readersourcingToolbar/skin/smile.png");
+}
+
+#rsour_ratedMessageImage{
+    list-style-image : url("chrome://readersourcingToolbar/skin/voted.png");
+}
+
+#rsour_loginStateImage{
+    list-style-image : url("chrome://readersourcingToolbar/skin/notLogged.png");
+}
+
+#rsour_loginProgressImage{
+    list-style-image : url("chrome://readersourcingToolbar/skin/wait.gif");
+}
+
+
+/*XUL login modal window properties*/
+#rsour_loginModal{
+    font-family:Arial, Helvetica, sans-serif;
+    font-size:small;
+    background-color: menu !important;
+    opacity: 1.0;
+}
+
+#rsour_loginModalDescription{
+    margin-bottom:5px;
+}
+
+.rsour_loginModalTextLink{
+    color:blue;
+    text-decoration:underline;
+    cursor:pointer;
+    margin-top:5px;
+}
+
+
+/*XUL comment modal window properties*/
+#rsour_commentModal{
+    font-family:Arial, Helvetica, sans-serif;
+    font-size:small;
+    background-color: menu !important;
+    opacity: 1.0;
+    width: 350px;
+    height: 200px;
+}
+
+#rsour_commentModalDescription{
+    margin-bottom:5px;
+}
+
+
+/*XUL options window properties*/
+#rsour_options{
+    font-family:Arial, Helvetica, sans-serif;
+    font-size:small;
+    background-color: menu !important;
+    opacity: 1.0;
+    width:400px;
+    height:300px;
+}
+
+#rsour_paneOptions caption{
+    padding-top:10px;
+    padding-bottom : 10px;
+}
+
+.rsour_optionsBox{
+    padding-bottom:15px;
+}
+
+.rsour_optionsBox label{
+    margin-top:5px;
+}
+
+#rsour_paneOptions groupbox>label{
+    font-weight:bold;
+ }

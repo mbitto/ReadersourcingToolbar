@@ -1,0 +1,4 @@
+content     readersourcingToolbar                           chrome/content/
+skin        readersourcingToolbar classic/1.0               chrome/skin/
+overlay     chrome://browser/content/browser.xul            chrome://readersourcingToolbar/content/toolbar.xul
+stylere	    chrome://global/content/customizeToolbar.xul	chrome://readersourcingToolbar/skin/style.css
