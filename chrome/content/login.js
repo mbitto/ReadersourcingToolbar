@@ -9,9 +9,10 @@
 // Define ReaderSourcing Extension ToolBar (RSETB) namespace
 var RSETB = RSETB || {};
 
-RSETB.login = function(){
+RSETB.login = function(requestManager){
 
     var userId = null;
+    var loginModal = null;
 
     /**
      * Callback function passed to the modal window
@@ -21,22 +22,20 @@ RSETB.login = function(){
      * @param callback received from modal window, used for confirm the acceptation of credentials
      */
     var checkUserParams = function(username, password){
-        
-        var requestManager = new RSETB.RequestManager(RSETB.URL_TOOLBAR_REQUESTS + 'login', 'POST', false);
 
         requestManager.request({
             username : username,
             password: password
         },
-            // Success case to callback to modalWindow
+            // Successful request callback
             function(){
-                return 'received';
-            },
-            // Fail case to callback to modal window
+                loginModal.successfulLogin();
+        },
+            // Failed request callback
             function(){
-                return 'failed';
-            }
-        );
+                loginModal.failedLogin();
+        });
+
     };
 
     // Modal window options
@@ -65,7 +64,7 @@ RSETB.login = function(){
          */
         openLoginModal : function(){
 
-            var loginModal = RSETB.loginModal(this.modalOk, this.modalCancel);
+            loginModal = RSETB.loginModal(this.modalOk, this.modalCancel);
 
             /* Open the modal window (from here function wait until modal window will be closed)
              * checkUserParam is the callback passed to modal window to call when user fill the form

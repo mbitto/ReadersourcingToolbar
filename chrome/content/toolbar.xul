@@ -6,9 +6,10 @@
     <script type="application/x-javascript" src="chrome://readersourcingToolbar/content/firebugConsole.js" />
     <script type="application/x-javascript" src="chrome://readersourcingToolbar/content/ini.js" />
     <script type="application/x-javascript" src="chrome://readersourcingToolbar/content/readersourcingExtension.js" />
-    <script type="application/x-javascript" src="chrome://readersourcingToolbar/content/login.js" />
+    <script type="application/x-javascript" src="chrome://readersourcingToolbar/content/requestManager.js" />
     <script type="application/x-javascript" src="chrome://readersourcingToolbar/content/toolbar.js" />
     <script type="application/x-javascript" src="chrome://readersourcingToolbar/content/tool.js" />
+    <script type="application/x-javascript" src="chrome://readersourcingToolbar/content/login.js" />
     <script type="application/x-javascript" src="chrome://readersourcingToolbar/content/loginModal.js" />
 
 

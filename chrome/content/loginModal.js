@@ -86,6 +86,10 @@ RSETB.loginModal = function(okCallback, cancelCallback){
 
         failedLogin : function (){
             askForRepeatLogin();
+        },
+
+        successfulLogin : function(){
+            // Close window
         }
     };
 };

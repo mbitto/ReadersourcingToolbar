@@ -13,7 +13,6 @@ module('RequestManager', {
             projects : 3
         };
 
-
         /* XML Server response */
         this.XMLDocument = "<?xml version='1.0' encoding='UTF-8' standalone='yes'?>";
         this.XMLDocument += "<response outcome = 'ok'>";
@@ -22,6 +21,9 @@ module('RequestManager', {
         this.XMLDocument += "    <message test = 'bye bye' />";
         this.XMLDocument += "  </messages>";
         this.XMLDocument += "</response>";
+
+        var parser = new DOMParser();
+        this.ParsedXMLDocument = parser.parseFromString(this.XMLDocument, "text/xml");
 
         /* Fake the XMLHttpRequest */
         this.xhr = sinon.useFakeXMLHttpRequest();
@@ -70,10 +72,12 @@ test('Testing successful asynchronous POST request', function(){
     asyncRequests[0].respond(200, "Content-type: text/xml", this.XMLDocument);
 
     notEqual(asyncRequests[0].responseXML, null, "XML document returned must not be null");
+
     ok(callback.calledWith(asyncRequests[0].responseXML), "Callback function arguments should be a DOM representation of test XML document");
 
-});
+    deepEqual(asyncRequests[0].responseXML, this.ParsedXMLDocument, "Callback function arguments should be a DOM representation of test XML document");
 
+});
 
 test('Testing failed asynchronous POST request', function(){
 
@@ -96,32 +100,28 @@ test('Testing failed asynchronous POST request', function(){
 
 });
 
-
-
 test('Testing successful synchronous POST request', function(){
 
-    var synchRequest;
-
     var doc = this.XMLDocument;
+    var synchXhr = null;
 
     this.xhr.onCreate = function (xhr) {
         xhr.async = false;
         xhr.respond(200, "Content-type: text/xml", doc);
-        synchRequest = xhr;
+        synchXhr = xhr;
     };
-
-    var callback = sinon.spy();
 
     /* Testing synchronous request */
     var requestManager = new RSETB.RequestManager("testing/post/request", "POST", false);
-    requestManager.request(this.testParams, callback, callback);
 
-    //TODO: See why synchRequest.responseXML returns null
-    //notEqual(synchRequest.responseXML, null, "XML document returned must not be null");
-    ok(callback.calledWith(synchRequest.responseXML), "Callback function arguments should be a DOM representation of test XML document");
+    var response = requestManager.request(this.testParams);
+
+    console.log(synchXhr); //here readyState == 1, why?
+
+    notEqual(response, null, "XML document returned must not be null");
+    equal(response, this.ParsedXMLDocument, "Callback function arguments should be a DOM representation of test XML document");
 
 });
-
 
 test('Testing failed synchronous POST request', function(){
 
@@ -131,12 +131,10 @@ test('Testing failed synchronous POST request', function(){
         xhr.respond(404);
     };
 
-    var callback = sinon.spy();
-
     var requestManager = new RSETB.RequestManager("testing/post/request", "POST", false);
-    requestManager.request(this.testParams, callback, callback);
+    var response = requestManager.request(this.testParams);
 
-    ok(callback.calledWith("Not Found"), "Callback function arguments should be an error response text");
+    ok(response, "Callback function arguments should be an error response text");
 
 });
 

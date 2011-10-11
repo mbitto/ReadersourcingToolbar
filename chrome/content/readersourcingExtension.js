@@ -23,12 +23,13 @@ RSETB.readersourcingExtension = {
     },
 
     initialize : function(){
-        //initialize toolbar
+        // Initialize toolbar
         var toolbar = RSETB.toolbar();
         toolbar.init();
 
-        //initialize login object
-        var login = RSETB.login();
+        // Initialize login object passing its request manager (dependency injection)
+        var loginRM = new RSETB.RequestManager(RSETB.URL_TOOLBAR_REQUESTS + 'login', 'POST', true);
+        var login = RSETB.login(loginRM);
 
         // Create a new object menu and add properties for mainMenu
         var menuTool = new RSETB.Tool('mainMenu', RSETB.MAIN_MENU_BUTTON);
