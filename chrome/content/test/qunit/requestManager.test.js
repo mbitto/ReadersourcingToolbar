@@ -4,6 +4,8 @@
 
 module('RequestManager', {
 
+
+
     setup : function(){
 
         /* Params passed to request manager */
@@ -28,10 +30,15 @@ module('RequestManager', {
         /* Fake the XMLHttpRequest */
         this.xhr = sinon.useFakeXMLHttpRequest();
 
+        /* A fake server for synchronous requests */
+        this.server = sinon.fakeServer.create();
+
     },
     teardown: function(){
         this.xhr.restore();
+        this.server.restore();
     }
+
 });
 
 
@@ -102,24 +109,20 @@ test('Testing failed asynchronous POST request', function(){
 
 test('Testing successful synchronous POST request', function(){
 
-    var doc = this.XMLDocument;
-    var synchXhr = null;
+    this.server.respondWith(
+        "POST", /testing\/post\/request/,
+        [200, { "Content-type": "text/xml" },
+         this.XMLDocument]);
 
-    this.xhr.onCreate = function (xhr) {
-        xhr.async = false;
-        xhr.respond(200, "Content-type: text/xml", doc);
-        synchXhr = xhr;
-    };
+    var doc = this.XMLDocument;
 
     /* Testing synchronous request */
     var requestManager = new RSETB.RequestManager("testing/post/request", "POST", false);
 
     var response = requestManager.request(this.testParams);
 
-    console.log(synchXhr); //here readyState == 1, why?
-
     notEqual(response, null, "XML document returned must not be null");
-    equal(response, this.ParsedXMLDocument, "Callback function arguments should be a DOM representation of test XML document");
+    deepEqual(response, this.ParsedXMLDocument, "Callback function arguments should be a DOM representation of test XML document");
 
 });
 
