@@ -63,8 +63,8 @@ test("Testing login XML document with ok outcome", function(){
                     + "  <response outcome = 'ko'>"
                     + "    <description>Something went wrong with authentication</description>"
                     + "    <errors>"
-                    + "        <error code='101'>Strange server error</error>"
-                    + "        <error code='102'>More strange server error</error>"
+                    + "      <error code='101'>Strange server error</error>"
+                    + "      <error code='102'>More strange server error</error>"
                     + "    </errors>"
                     + "  </response>"
                     + "</login>";

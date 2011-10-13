@@ -22,7 +22,8 @@ RSETB.RequestManager = function(destinationURL, requestType, async){
 
     // Send string and wait for the response of server
     var connect = function(outputMessage){
-        var url = destinationURL + "?" + outputMessage;
+        outputMessage = (outputMessage == "") ? "" : "?" + outputMessage;
+        var url = destinationURL + outputMessage;
 
         if(async){
             return asyncConnection(url);
@@ -73,17 +74,19 @@ RSETB.RequestManager = function(destinationURL, requestType, async){
 
     this.request = function(params, success, fail){
 
+        var httpFormattedString = "";
         successCallback = success || null;
         failCallback = fail || null;
 
-        var httpFormattedString = "";
-        var param, value;
-        for (param in params) {
-            value = params[param];
-            httpFormattedString += param + "=" + value + "&";
+        if(params !== null){
+            var param, value;
+            for (param in params) {
+                value = params[param];
+                httpFormattedString += param + "=" + value + "&";
+            }
+            httpFormattedString = httpFormattedString.slice(0, httpFormattedString.length - 1);
+            httpFormattedString = encodeURI(httpFormattedString);
         }
-        httpFormattedString = httpFormattedString.slice(0, httpFormattedString.length - 1);
-        httpFormattedString = encodeURI(httpFormattedString);
         return connect(httpFormattedString);
     };
 };

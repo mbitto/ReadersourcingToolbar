@@ -9,8 +9,6 @@
 // Define ReaderSourcing Extension ToolBar (RSETB) namespace
 var RSETB = RSETB || {};
 
-//TODO: this should be a instantiable object
-
 /**
  * Singleton that manages basic function of login modal window
  */
@@ -21,6 +19,9 @@ RSETB.loginModal = function(){
     var okCallback = null;
     var cancelCallback = null;
 
+    var modal = null;
+
+    var modalDialog = null;
     var xulUsernameReference = null;
     var xulPasswordReference = null;
     var xulDescriptionReference = null;
@@ -28,6 +29,16 @@ RSETB.loginModal = function(){
     var xulRegisterReference = null;
     var username = null;
     var password = null;
+
+    var forgotPassword = function(){
+        RSETB.readersourcingExtension.openNewTab(RSETB.PASSWORD_RESET_PAGE);
+        this.doCancel();
+    };
+
+    var registerToRS = function(){
+        RSETB.readersourcingExtension.openNewTab(RSETB.REGISTRATION_PAGE);
+        this.doCancel();
+    };
 
     var fieldsFilledIn = function() {
         return  ((xulUsernameReference.value != "") && (xulPasswordReference.value != ""));
@@ -43,25 +54,33 @@ RSETB.loginModal = function(){
         xulDescriptionReference.setAttribute("style", "color: #ff0909");
     };
 
-    var forgotPassword = function(){
-        RSETB.readersourcingExtension.openNewTab(RSETB.PASSWORD_RESET_PAGE);
-        this.doCancel();
+    var welcomeMessage = function(){
+        xulDescriptionReference.setAttribute("value", "Logged In!");
+        xulDescriptionReference.setAttribute("style", "color: #ff0909");
     };
 
-    var registerToRS = function(){
-        RSETB.readersourcingExtension.openNewTab(RSETB.REGISTRATION_PAGE);
-        this.doCancel();
+    var serverError = function(){
+        xulDescriptionReference.setAttribute("value", "Something has gone wrong.");
+        xulDescriptionReference.setAttribute("style", "color: #ff0909");
+    };
+
+    var connectionError = function(){
+        xulDescriptionReference.setAttribute("value", "Something has gone wrong while connecting to the server.");
+        xulDescriptionReference.setAttribute("style", "color: #ff0909");
     };
 
     return{
 
-        addModalScope : function(modalDoc){
+        addModalScope : function(modalScope){
             FBC().log("loginModal initialized");
-            xulUsernameReference = modalDoc.getElementById(RSETB.MODAL_USERNAME_FIELD);
-            xulPasswordReference = modalDoc.getElementById(RSETB.MODAL_PASSWORD_FIELD);
-            xulDescriptionReference = modalDoc.getElementById(RSETB.MODAL_DESCRIPTION_TEXT);
-            xulForgotPasswordReference = modalDoc.getElementById(RSETB.MODAL_FORGOT_PASSWORD_LINK);
-            xulRegisterReference = modalDoc.getElementById(RSETB.MODAL_REGISTER_LINK);
+
+            modal = modalScope;
+            modalDialog = modalScope.document;
+            xulUsernameReference = modalDialog.getElementById(RSETB.MODAL_USERNAME_FIELD);
+            xulPasswordReference = modalDialog.getElementById(RSETB.MODAL_PASSWORD_FIELD);
+            xulDescriptionReference = modalDialog.getElementById(RSETB.MODAL_DESCRIPTION_TEXT);
+            xulForgotPasswordReference = modalDialog.getElementById(RSETB.MODAL_FORGOT_PASSWORD_LINK);
+            xulRegisterReference = modalDialog.getElementById(RSETB.MODAL_REGISTER_LINK);
             xulForgotPasswordReference.addEventListener('click', forgotPassword, 'false');
             xulRegisterReference.addEventListener('click', registerToRS, 'false');
         },
@@ -74,37 +93,68 @@ RSETB.loginModal = function(){
             cancelCallback = cancelCB;
         },
 
+        /**
+         * When user press ok button check the form, and pass data to login object
+         */
         doOk : function() {
             if (!fieldsFilledIn()) {
                 askForFormFill();
-                return false;
             }
-
-            // Pass info to login
-            var username = xulUsernameReference.value;
-            var password = xulPasswordReference.value;
-            okCallback(username,password);
+            else{
+                // Pass info to login
+                var username = xulUsernameReference.value;
+                var password = xulPasswordReference.value;
+                okCallback(username,password);
+            }
         },
 
+        /**
+         * When user press cancel button, call login object related function and close modal window
+         */
         doCancel : function() {
             cancelCallback();
-            return true;
         },
 
-        failedLogin : function (){
+        /**
+         * login has been accepted from the server
+         */
+        successfulLogin : function(response){
+            FBC().log('success');
+            FBC().log(response);
+            welcomeMessage();
+            this.closeModal(1000);
+        },
+
+        /**
+         * Login hasn't been accepted from the server
+         */
+        failedLogin : function (response){
+            FBC().log('failed');
+            FBC().log(response.messages);
             askForRepeatLogin();
         },
 
-        successfulLogin : function(){
-            // Close window
+        badXMLRequest : function(){
+            serverError();
         },
 
+        /**
+         * Something gone wrong on request, ask to retry
+         */
         failedRequest : function(){
-            // Warn user
+            connectionError();
         },
 
-        erroneusRequest : function(){
-            
+        /**
+         * Close modal window after a defined time in ms
+         * @param time (default is 50 ms)
+         */
+        closeModal : function(time){
+            //modal.close();
+            time = time || 50;
+            modal.setTimeout(function(){
+                modal.close();
+            }, time)
         }
     };
 

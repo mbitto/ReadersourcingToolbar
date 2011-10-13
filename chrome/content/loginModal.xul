@@ -5,9 +5,9 @@
     id = "rsour_loginModal"
     title = "Login to readersourcing.org"
     orient = "vertical"
-    onload = "loginModal = window.arguments[0]; loginModal.addModalScope(document);"
-    ondialogaccept = "loginModal.doOk();"
-    ondialogcancel = "loginModal.doCancel();"
+    onload = "loginModal = window.arguments[0]; loginModal.addModalScope(this);"
+    ondialogaccept = "loginModal.doOk(); return false;"
+    ondialogcancel = "loginModal.doCancel(); return false;"
     xmlns = "http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
 
     <script>

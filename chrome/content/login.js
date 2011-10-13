@@ -9,7 +9,7 @@
 // Define ReaderSourcing Extension ToolBar (RSETB) namespace
 var RSETB = RSETB || {};
 
-RSETB.login = function(requestManager, loginModal){
+RSETB.login = function(loginModal){
 
     var userId = null;
 
@@ -21,6 +21,8 @@ RSETB.login = function(requestManager, loginModal){
      */
     var sendUserParams = function(username, password){
 
+        var requestManager = new RSETB.RequestManager(RSETB.URL_REQUESTS_LOGIN, 'POST', true);
+
         requestManager.request(
             // Params of request
             {
@@ -31,14 +33,18 @@ RSETB.login = function(requestManager, loginModal){
             // Successful request callback
             function(doc){
                 var loginResponseParser = new RSETB.LoginResponseParser(doc);
+                // Parse XML document
                 try{
                     var outcome = loginResponseParser.getOutcome();
                     var response = loginResponseParser.checkResponse();
                 }catch(error){
-                    loginModal.erroneusRequest(error);
+                    loginModal.badXMLRequest(error);
                 }
+
                 if(outcome == "ok"){
                     loginModal.successfulLogin(response);
+                    loginModal.closeModal(1000);
+                    // TODO: gestire i messaggi e i rating tools
                 }else{
                     loginModal.failedLogin(response);
                 }
@@ -69,7 +75,7 @@ RSETB.login = function(requestManager, loginModal){
          * Function interface for login modal window to communicate closure of window
          */
         modalCancel : function(){
-
+            loginModal.closeModal();
         },
         /**
          * Open modal window to login . If fields are complete, send params to server
@@ -80,20 +86,26 @@ RSETB.login = function(requestManager, loginModal){
             loginModal.addOkCallback(this.modalOk);
             loginModal.addCancelCallback(this.modalCancel);
 
-            /* Open the modal window (from here function wait until modal window will be closed)
-             * checkUserParam is the callback passed to modal window to call when user fill the form
-             */
             window.openDialog(RSETB.LOGIN_MODAL, "loginModal", windowFeatures, loginModal);
-
-            // User has filled all the fields
-           /* if(credentials.username != null && credentials.username != null){
-                _widget['loginProgress'].setVisible(true);
-                core.loginRequest.setLogin(loginParams);
-            }*/
 
         },
         getUserId : function(){
             return userId;
+        },
+        logout : function(){
+            var logoutRM = new RSETB.RequestManager(RSETB.URL_REQUESTS_LOGOUT, 'GET', true);
+            logoutRM.request(
+                // Empty request
+                null,
+                // Success logout function callback
+                function(){
+                    //TODO: Hide voting tools
+                },
+                // Failed logout function callback
+                function(){
+                    //TODO: Show error window
+                }
+            );
         }
     };
 };

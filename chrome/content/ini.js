@@ -9,7 +9,20 @@
 // Define ReaderSourcing Extension ToolBar (RSETB) namespace
 var RSETB = RSETB || {};
 
-RSETB.URL_TOOLBAR_REQUESTS = "http://www.readersourcing.maraspin.net/toolbar/";
+/**
+ * @constant Readersourcing url for toolbar requests
+ */
+RSETB.URL_REQUESTS = "http://www.readersourcing.maraspin.net/toolbar/";
+
+/**
+ * @constant Parameter for login requests
+ */
+RSETB.URL_REQUESTS_LOGIN = RSETB.URL_REQUESTS + "login";
+
+/**
+ * @constant Parameter for logout requests
+ */
+RSETB.URL_REQUESTS_LOGOUT = RSETB.URL_REQUESTS + "logout";
 
 /**
  * @constant Readersourcing Homepage

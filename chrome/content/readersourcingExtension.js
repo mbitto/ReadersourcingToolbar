@@ -27,10 +27,8 @@ RSETB.readersourcingExtension = {
         var toolbar = RSETB.toolbar();
         toolbar.init();
 
-        // Initialize login object passing its request manager (dependency injection)
-        var loginRM = new RSETB.RequestManager(RSETB.URL_TOOLBAR_REQUESTS + 'login', 'POST', true);
         var loginModal = RSETB.loginModal();
-        var login = RSETB.login(loginRM, loginModal);
+        var login = RSETB.login(loginModal);
 
         // Create a new object menu and add properties for mainMenu
         var menuTool = new RSETB.Tool('mainMenu', RSETB.MAIN_MENU_BUTTON);
@@ -40,7 +38,7 @@ RSETB.readersourcingExtension = {
         toolbar.addTool(loginTool, function(){ login.openLoginModal() });
 
         var logoutTool = new RSETB.Tool('logout', RSETB.LOGOUT_ENTRY);
-        toolbar.addTool(logoutTool);
+        toolbar.addTool(logoutTool, function(){ login.logout() });
 
         var userProfileTool = new RSETB.Tool('userProfile', RSETB.USER_PROFILE_ENTRY);
         toolbar.addTool(userProfileTool, function(){
