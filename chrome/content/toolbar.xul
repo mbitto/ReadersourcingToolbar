@@ -3,13 +3,13 @@
 
 <overlay id="readersourcingToolbar" xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
 
+    <script type="application/x-javascript" src="chrome://readersourcingToolbar/content/lib/MBJSL_0.1/publisher.js" />
     <script type="application/x-javascript" src="chrome://readersourcingToolbar/content/firebugConsole.js" />
     <script type="application/x-javascript" src="chrome://readersourcingToolbar/content/ini.js" />
     <script type="application/x-javascript" src="chrome://readersourcingToolbar/content/readersourcingExtension.js" />
     <script type="application/x-javascript" src="chrome://readersourcingToolbar/content/requestManager.js" />
-    <script type="application/x-javascript" src="chrome://readersourcingToolbar/content/toolbar.js" />
     <script type="application/x-javascript" src="chrome://readersourcingToolbar/content/tool.js" />
-    <script type="application/x-javascript" src="chrome://readersourcingToolbar/content/login.js" />
+    <script type="application/x-javascript" src="chrome://readersourcingToolbar/content/authentication.js" />
     <script type="application/x-javascript" src="chrome://readersourcingToolbar/content/loginModal.js" />
     <script type="application/x-javascript" src="chrome://readersourcingToolbar/content/responseParser.js" />
 
@@ -44,7 +44,7 @@
             -->
 
             <!--Current paper rating-->
-            <!--
+
             <toolbaritem id="rsour_inputRatingWidget">
                 <toolbarseparator />
                 <description class="rsour_text">Rating:</description>
@@ -56,7 +56,7 @@
                     <image class="rsour_star" />
                 </hbox>
             </toolbaritem>
-            -->
+            
 
             <!--Steadiness of current rating-->
             <!--

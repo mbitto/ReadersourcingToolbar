@@ -48,12 +48,12 @@ test('Register callback and test it', function(){
     };
 
     var generateError = function(){
-        tool.registerCallback(callback, "another one");
+        tool.registerUIEvent(callback, "another one");
     };
 
     var tool = new RSETB.Tool('testTool', 'xulElementStub');
 
-    tool.registerCallback(callback, "firstParam", "secondParam");
+    tool.registerUIEvent(callback, "firstParam", "secondParam");
 
     this.xulElementStub.simulateClick();
 

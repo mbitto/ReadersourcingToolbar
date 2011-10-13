@@ -40,7 +40,7 @@ RSETB.Tool = function(name, xulElementId){
      * @param cb callback
      * @param par one or more params for callback function
      */
-    this.registerCallback = function(cb, par){
+    this.registerUIEvent = function(cb, par){
         if(callback !== null){
             throw new Error('Callback function is already defined for ' + name + ' tool');
         }
