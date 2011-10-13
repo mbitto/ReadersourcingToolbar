@@ -29,7 +29,8 @@ RSETB.readersourcingExtension = {
 
         // Initialize login object passing its request manager (dependency injection)
         var loginRM = new RSETB.RequestManager(RSETB.URL_TOOLBAR_REQUESTS + 'login', 'POST', true);
-        var login = RSETB.login(loginRM);
+        var loginModal = RSETB.loginModal();
+        var login = RSETB.login(loginRM, loginModal);
 
         // Create a new object menu and add properties for mainMenu
         var menuTool = new RSETB.Tool('mainMenu', RSETB.MAIN_MENU_BUTTON);

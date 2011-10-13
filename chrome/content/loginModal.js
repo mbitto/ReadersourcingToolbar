@@ -9,12 +9,17 @@
 // Define ReaderSourcing Extension ToolBar (RSETB) namespace
 var RSETB = RSETB || {};
 
+//TODO: this should be a instantiable object
+
 /**
  * Singleton that manages basic function of login modal window
  */
 
 
-RSETB.loginModal = function(okCallback, cancelCallback){
+RSETB.loginModal = function(){
+
+    var okCallback = null;
+    var cancelCallback = null;
 
     var xulUsernameReference = null;
     var xulPasswordReference = null;
@@ -48,21 +53,25 @@ RSETB.loginModal = function(okCallback, cancelCallback){
         this.doCancel();
     };
 
+    return{
 
-    //TODO: move id of XUL elements to ini.js
-    return {
-
-        initialize : function(modalDoc){
-
+        addModalScope : function(modalDoc){
             FBC().log("loginModal initialized");
-            
-            xulUsernameReference = modalDoc.getElementById("rsour_loginModalUsername");
-            xulPasswordReference = modalDoc.getElementById("rsour_loginModalPassword");
-            xulDescriptionReference = modalDoc.getElementById("rsour_loginModalDescription");
-            xulForgotPasswordReference = modalDoc.getElementById("rsour_modalForgotPassword");
+            xulUsernameReference = modalDoc.getElementById(RSETB.MODAL_USERNAME_FIELD);
+            xulPasswordReference = modalDoc.getElementById(RSETB.MODAL_PASSWORD_FIELD);
+            xulDescriptionReference = modalDoc.getElementById(RSETB.MODAL_DESCRIPTION_TEXT);
+            xulForgotPasswordReference = modalDoc.getElementById(RSETB.MODAL_FORGOT_PASSWORD_LINK);
+            xulRegisterReference = modalDoc.getElementById(RSETB.MODAL_REGISTER_LINK);
             xulForgotPasswordReference.addEventListener('click', forgotPassword, 'false');
-            xulRegisterReference = modalDoc.getElementById("rsour_modalRegisterNewUser");
             xulRegisterReference.addEventListener('click', registerToRS, 'false');
+        },
+
+        addOkCallback : function(okCB){
+            okCallback = okCB;
+        },
+
+        addCancelCallback : function(cancelCB){
+            cancelCallback = cancelCB;
         },
 
         doOk : function() {
@@ -74,9 +83,7 @@ RSETB.loginModal = function(okCallback, cancelCallback){
             // Pass info to login
             var username = xulUsernameReference.value;
             var password = xulPasswordReference.value;
-            var temp = okCallback(username,password);
-            console.log(temp);
-            return true;
+            okCallback(username,password);
         },
 
         doCancel : function() {
@@ -90,6 +97,15 @@ RSETB.loginModal = function(okCallback, cancelCallback){
 
         successfulLogin : function(){
             // Close window
+        },
+
+        failedRequest : function(){
+            // Warn user
+        },
+
+        erroneusRequest : function(){
+            
         }
     };
+
 };

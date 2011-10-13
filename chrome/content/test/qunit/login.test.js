@@ -5,23 +5,30 @@
 module('login', {
 
     setup : function(){
-        this.result = 33;
-        var self = this;
-        this.reqManager = new RSETB.RequestManager("url", "POST", true);
-        sinon.stub(this.reqManager, "request", function(params){
-            self.result = [params.username, params.password];
-        });
     },
     teardown: function(){
-       this.reqManager.request.restore();
+
     }
+
 });
 
 
 test('Test params callback from modal window', function(){
-    var login = RSETB.login(this.reqManager);
-    login.modalOk("myUsername", "myPassword");
 
-    deepEqual(this.result, ["myUsername", "myPassword"], "Username and Password")
+    var reqManager = new RSETB.RequestManager("url", "POST", true);
+    var mockReqManager = sinon.mock(reqManager);
+    var myLogin = RSETB.login(reqManager);
+
+    var params = {
+        username : "myUsername",
+        password : "myPassword"
+    };
+
+    mockReqManager.expects("request").withArgs(params);
+
+    myLogin.modalOk("myUsername", "myPassword");
+
+    ok(mockReqManager.verify(), "Array of params callback from modal window");
+    mockReqManager.restore();
     
 });

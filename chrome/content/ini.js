@@ -26,7 +26,6 @@ RSETB.PASSWORD_RESET_PAGE = RSETB.HOME_PAGE + 'resetPassword/';
  */
 RSETB.REGISTRATION_PAGE = RSETB.HOME_PAGE  + 'register/';
 
-
 /**
  * @constant Login modal window path
  */
@@ -61,6 +60,32 @@ RSETB.USER_PROFILE_ENTRY = "rsour_user_profile",
  * @constant Readersourcing homepage
  */
 RSETB.READERSOURCING_HOMEPAGE_ENTRY = "rsour_homepage";
+
+/**
+ * @constant username field on login modal window
+ */
+RSETB.MODAL_USERNAME_FIELD = "rsour_loginModalUsername";
+
+/**
+ * @constant password field on login modal window
+ */
+RSETB.MODAL_PASSWORD_FIELD = "rsour_loginModalPassword";
+
+/**
+ * @constant description text on login modal window
+ */
+RSETB.MODAL_DESCRIPTION_TEXT = "rsour_loginModalDescription";
+
+/**
+ * @constant link to forgot password page present in login modal window
+ */
+RSETB.MODAL_FORGOT_PASSWORD_LINK = "rsour_modalForgotPassword";
+
+/**
+ * @constant link to register new user present in login modal window
+ */
+RSETB.MODAL_REGISTER_LINK = "rsour_modalRegisterNewUser";
+
 
 //initialize toolbar when all contents are loaded
 /*window.addEventListener("load", function(){

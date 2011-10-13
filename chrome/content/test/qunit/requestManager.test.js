@@ -4,8 +4,6 @@
 
 module('RequestManager', {
 
-
-
     setup : function(){
 
         /* Params passed to request manager */
@@ -25,7 +23,7 @@ module('RequestManager', {
         this.XMLDocument += "</response>";
 
         var parser = new DOMParser();
-        this.ParsedXMLDocument = parser.parseFromString(this.XMLDocument, "text/xml");
+        this.parsedXMLDocument = parser.parseFromString(this.XMLDocument, "text/xml");
 
         /* Fake the XMLHttpRequest */
         this.xhr = sinon.useFakeXMLHttpRequest();
@@ -82,7 +80,7 @@ test('Testing successful asynchronous POST request', function(){
 
     ok(callback.calledWith(asyncRequests[0].responseXML), "Callback function arguments should be a DOM representation of test XML document");
 
-    deepEqual(asyncRequests[0].responseXML, this.ParsedXMLDocument, "Callback function arguments should be a DOM representation of test XML document");
+    deepEqual(asyncRequests[0].responseXML, this.parsedXMLDocument, "Callback function arguments should be a DOM representation of test XML document");
 
 });
 
@@ -122,7 +120,7 @@ test('Testing successful synchronous POST request', function(){
     var response = requestManager.request(this.testParams);
 
     notEqual(response, null, "XML document returned must not be null");
-    deepEqual(response, this.ParsedXMLDocument, "Callback function arguments should be a DOM representation of test XML document");
+    deepEqual(response, this.parsedXMLDocument, "Callback function arguments should be a DOM representation of test XML document");
 
 });
 
