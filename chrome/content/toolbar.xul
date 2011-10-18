@@ -3,6 +3,8 @@
 
 <overlay id="readersourcingToolbar" xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
 
+    <script type="application/x-javascript" src="chrome://readersourcingToolbar/content/browsingListener.js" />
+    <script type="application/x-javascript" src="chrome://readersourcingToolbar/content/downloadListener.js" />
     <script type="application/x-javascript" src="chrome://readersourcingToolbar/content/lib/MBJSL_0.1/publisher.js" />
     <script type="application/x-javascript" src="chrome://readersourcingToolbar/content/firebugConsole.js" />
     <script type="application/x-javascript" src="chrome://readersourcingToolbar/content/ini.js" />
@@ -45,7 +47,7 @@
 
             <!--Current paper rating-->
 
-            <toolbaritem id="rsour_inputRatingWidget">
+            <toolbaritem id="rsour_inputRatingTool">
                 <toolbarseparator />
                 <description class="rsour_text">Rating:</description>
                 <hbox class="rsour_ratingManager" >
@@ -56,7 +58,7 @@
                     <image class="rsour_star" />
                 </hbox>
             </toolbaritem>
-            
+
 
             <!--Steadiness of current rating-->
             <!--

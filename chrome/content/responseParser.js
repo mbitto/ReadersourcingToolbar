@@ -10,6 +10,12 @@
 var RSETB = RSETB || {};
 
 
+/**
+ * @constructor Base object to parse the XML response
+ *
+ * @param document
+ * @param expectedRootName
+ */
 RSETB.ResponseParser = function(document, expectedRootName){
     
     var responseTagName = "response";
@@ -70,9 +76,14 @@ RSETB.ResponseParser = function(document, expectedRootName){
     };
 };
 
-
+/**
+ * Parse login XML response
+ *
+ * @param document
+ */
 RSETB.LoginResponseParser = function(document){
 
+    // Inherits from ResponseParser
     this.base = RSETB.ResponseParser;
     this.base(document, 'login');
 
@@ -120,4 +131,5 @@ RSETB.LoginResponseParser = function(document){
     };
 };
 
+// Ensure descendant prototype update
 RSETB.LoginResponseParser.prototype = RSETB.ResponseParser;

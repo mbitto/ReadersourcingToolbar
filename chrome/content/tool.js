@@ -69,6 +69,10 @@ RSETB.Tool = function(name, xulElementId){
         xulElementReference.disabled = disable;
     };
 
+    this.hide = function(visible){
+        xulElementReference.setAttribute("style", visible ? "display : -moz-inline-box" : "display : none");
+    };
+
     /**
      * Get activation state
      */
@@ -91,3 +95,20 @@ RSETB.Tool = function(name, xulElementId){
     };
 
 };
+
+
+RSETB.InputRatingTool = function(name, xulElementId){
+    
+    // Inherits from Tool
+    this.base = RSETB.Tool;
+    this.base(name, xulElementId);
+
+    var stars = xulElementId.getElementsByClassName(RSETB.INPUT_RATING_STAR);
+
+    console.log(stars);
+
+    
+};
+
+// Ensure descendant prototype update
+RSETB.InputRatingTool.prototype = RSETB.Tool;

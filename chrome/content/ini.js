@@ -25,6 +25,11 @@ RSETB.URL_REQUESTS_LOGIN = RSETB.URL_REQUESTS + "login";
 RSETB.URL_REQUESTS_LOGOUT = RSETB.URL_REQUESTS + "logout";
 
 /**
+ * @constant Parameter for get pdf paper requests
+ */
+RSETB.URL_GET_PAPER_PDF = RSETB.URL_REQUESTS + "get-paper-pdf";
+
+/**
  * @constant Readersourcing Homepage
  */
 RSETB.HOME_PAGE = 'www.readersourcing.org/';
@@ -98,6 +103,10 @@ RSETB.MODAL_FORGOT_PASSWORD_LINK = "rsour_modalForgotPassword";
  * @constant link to register new user present in login modal window
  */
 RSETB.MODAL_REGISTER_LINK = "rsour_modalRegisterNewUser";
+
+RSETB.INPUT_RATING_CONTAINER = "rsour_inputRatingContainer";
+
+RSETB.INPUT_RATING_STAR = "rsour_stars";
 
 
 //initialize toolbar when all contents are loaded

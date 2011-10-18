@@ -26,17 +26,25 @@ RSETB.readersourcingExtension = {
 
     initialize : function(){
 
+        // Initialize browsingListener
+        var browsingListener = RSETB.browsingListener();
+        browsingListener.init();
+
+        // Initialize browsingListener
+        var downloadListener = RSETB.downloadListener();
+        downloadListener.init();
+
         var loginModal = RSETB.loginModal();
         var authentication = RSETB.authentication(loginModal);
 
         // Login tool of main menu
-        var loginTool = new RSETB.Tool('login', RSETB.LOGIN_ENTRY);
+        var loginTool = new RSETB.Tool("login", RSETB.LOGIN_ENTRY);
         loginTool.registerUIEvent(function(){
             authentication.openLoginModal(loginModal);
         });
 
         // Logout tool of main menu
-        var logoutTool = new RSETB.Tool('logout', RSETB.LOGOUT_ENTRY);
+        var logoutTool = new RSETB.Tool("logout", RSETB.LOGOUT_ENTRY);
         logoutTool.registerUIEvent(function(){
             authentication.logout();
         });
@@ -58,5 +66,9 @@ RSETB.readersourcingExtension = {
         homePageTool.registerUIEvent( function(){
             this.openNewTab(RSETB.HOME_PAGE);
         });
+
+        // Input rating stars tool
+        //var inputRating = RSETB.inputRating();
+        //var inputRatingTool = new RSETB.InputRatingTool(RSETB.INPUT_RATING_CONTAINER);
     }
 };

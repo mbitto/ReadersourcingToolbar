@@ -49,11 +49,18 @@ test('Testing arguments of xhr open()', function(){
         requests.push(xhr);
     };
 
-    var requestManager = new RSETB.RequestManager("testing/post/request", "POST", true);
-    requestManager.request(this.testParams, function(){}, function(){});
+    var requestManagerGET = new RSETB.RequestManager("testing/get/request", "GET", true);
+    requestManagerGET.request(this.testParams, function(){}, function(){});
 
-    equal(requests[0].url, "testing/post/request?name=manuel&ninja=true&projects=3", "Testing url argument");
-    equal(requests[0].method, "POST", "Testing method argument");
+    equal(requests[0].url, "testing/get/request?name=manuel&ninja=true&projects=3", "Testing url argument of GET request");
+    equal(requests[0].method, "GET", "Testing method argument");
+
+    var requestManagerPOST = new RSETB.RequestManager("testing/post/request", "POST", true);
+    requestManagerPOST.request(this.testParams, function(){}, function(){});
+
+    equal(requests[1].url, "testing/post/request", "Testing url argument of POST request");
+    equal(requests[1].method, "POST", "Testing method argument");
+    equal(requests[1].requestBody, "name=manuel&ninja=true&projects=3", "Testing request body");
 
 });
 

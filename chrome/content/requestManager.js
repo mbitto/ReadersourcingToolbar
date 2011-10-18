@@ -1,18 +1,12 @@
-/**
- * Extract elements form responseXML.documentElement to
- * associative array. preferred Param can be array of
- * particular nodes that you want to get without knowing
- * array or dom hieracy
- *
- * @param _destinationURL
- * @param _requestType
- *
- */
-
 // Define ReaderSourcing Extension ToolBar (RSETB) namespace
 var RSETB = RSETB || {};
 
-//TODO : refactor this object, create a base object and inherit 2 different object, 1 for async (callback) and 1 for sync (return)
+/**
+ * 
+ * @param destinationURL
+ * @param requestType
+ * @param async
+ */
 RSETB.RequestManager = function(destinationURL, requestType, async){
 
     var abortTime = 5;
@@ -22,23 +16,29 @@ RSETB.RequestManager = function(destinationURL, requestType, async){
 
     // Send string and wait for the response of server
     var connect = function(outputMessage){
-        outputMessage = (outputMessage == "") ? "" : "?" + outputMessage;
-        var url = destinationURL + outputMessage;
-
+        var url = destinationURL;
+        if(requestType === "GET"){
+            outputMessage = (outputMessage == "") ? "" : "?" + outputMessage;
+            url += outputMessage;
+        }
+        
         if(async){
-            return asyncConnection(url);
+            return asyncConnection(url, outputMessage);
         }
         else{
-            return syncConnection(url);
+            return syncConnection(url, outputMessage);
         }
     };
 
-    var asyncConnection = function(url){
+    var asyncConnection = function(url, outputMessage){
         httpRequest.open(requestType, url, async);
         httpRequest.onreadystatechange = function(){
             if (httpRequest.readyState == 4) {
                 if (httpRequest.status == 200) {
                     var domElement = httpRequest.responseXML;
+                    if(domElement === null){
+                        throw new Error("XML received could be malformed");
+                    }
                     successCallback(domElement);
                 }
                 else {
@@ -46,15 +46,24 @@ RSETB.RequestManager = function(destinationURL, requestType, async){
                 }
             }
         };
+        var body = null;
+        if(requestType === "POST"){
+            body = outputMessage
+        }
+        httpRequest.send(body);
         //abortAfter(abortTime);
-        httpRequest.send();
         return true;
     };
 
-    var syncConnection = function(url){
+    var syncConnection = function(url, outputMessage){
         httpRequest.open(requestType, url, async);
         //abortAfter(abortTime);
-        httpRequest.send();
+        var body = null;
+        if(requestType === "POST"){
+            body = outputMessage
+        }
+        httpRequest.send(body);
+
         if(httpRequest.status == 200) {
             return httpRequest.responseXML;
         }
