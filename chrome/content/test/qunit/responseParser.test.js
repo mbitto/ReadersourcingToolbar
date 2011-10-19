@@ -16,7 +16,7 @@ module('responseParser', {
     }
 });
 
-test("Testing login XML document with ok outcome", function(){
+test("Testing login XML document with OK outcome", function(){
 
 
     /* XML Server response */
@@ -44,8 +44,6 @@ test("Testing login XML document with ok outcome", function(){
     var loginParser = new RSETB.LoginResponseParser(parsedXMLDocument);
     var response = loginParser.checkResponse();
 
-    console.log(response);
-
     equal(response.messageQty, 2, "There are 2 messages");
     equal(response.messages[0].date, "01/01/2011", "Date of first message");
     equal(response.messages[1].title, "title test 2", "Title of second message");
@@ -54,7 +52,7 @@ test("Testing login XML document with ok outcome", function(){
 });
 
 
-test("Testing login XML document with ok outcome", function(){
+test("Testing login XML document with KO outcome", function(){
 
 
     /* XML Server response */
@@ -75,10 +73,59 @@ test("Testing login XML document with ok outcome", function(){
     var loginParser = new RSETB.LoginResponseParser(parsedXMLDocument);
     var response = loginParser.checkResponse();
 
-    console.log(response);
-
     equal(response.description, "Something went wrong with authentication", "Error description");
     equal(response.messages[0].errorCode, "101", "First error code");
     equal(response.messages[1].errorMessage, "More strange server error", "Second error code");
+
+});
+
+test("Testing get-paper-vote XML document with OK outcome", function(){
+
+
+    /* XML Server response */
+    var xmlDocument = "<?xml version='1.0' encoding='UTF-8' standalone='yes'?>"
+                    + "<get-paper-vote>"
+                    + "  <response outcome = 'ok'>"
+                    + "    <description>Attributes for paper paper_title</description>"
+                    + "    <paper id='paper_id'>"
+                    + "      <title>paper_title</title>"
+                    + "      <rating>paper_rating</rating>"
+                    + "      <steadiness>paper_steadiness</steadiness>"
+                    + "    </paper>"
+                    + "  </response>"
+                    + "</get-paper-vote>";
+
+    var parser = new DOMParser();
+    var parsedXMLDocument = parser.parseFromString(xmlDocument, "text/xml");
+
+    var inputRatingParser = new RSETB.InputRatingResponseParser(parsedXMLDocument);
+    var response = inputRatingParser.checkResponse();
+
+    equal(response.id, 'paper_id', "Id of paper");
+    equal(response.title, 'paper_title', "The title of paper");
+    equal(response.rating, 'paper_rating', "Rating of paper");
+    equal(response.steadiness, 'paper_steadiness', "Steadiness of paper");
+
+});
+
+
+test("Testing get-paper-vote XML document with OK outcome", function(){
+
+
+    /* XML Server response */
+    var xmlDocument = "<?xml version='1.0' encoding='UTF-8' standalone='yes'?>"
+                    + "<get-paper-vote>"
+                    + "  <response outcome = 'ko'>"
+                    + "    <description>Paper Not Indexed within the System</description>"
+                    + "  </response>"
+                    + "</get-paper-vote>";
+
+    var parser = new DOMParser();
+    var parsedXMLDocument = parser.parseFromString(xmlDocument, "text/xml");
+
+    var inputRatingParser = new RSETB.InputRatingResponseParser(parsedXMLDocument);
+    var response = inputRatingParser.checkResponse();
+
+    equal(response.description, 'Paper Not Indexed within the System', "Error description");
 
 });

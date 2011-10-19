@@ -11,7 +11,7 @@
     margin-top: 5px;
 }
 
-.rsour_ratingManager{
+.rsour_inputStarsContainer{
     padding: 2px 0 4px 0;
 }
 .rsour_star{
@@ -73,7 +73,7 @@
 }
 
 
-/*XUL login modal window properties*/
+/* XUL login modal window properties */
 #rsour_loginModal{
     font-family:Arial, Helvetica, sans-serif;
     font-size:small;
@@ -93,7 +93,7 @@
 }
 
 
-/*XUL comment modal window properties*/
+/* XUL comment modal window properties */
 #rsour_commentModal{
     font-family:Arial, Helvetica, sans-serif;
     font-size:small;

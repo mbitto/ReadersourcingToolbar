@@ -16,26 +16,24 @@ test('Test acquired methods of Publisher ', function(){
 
     var authentication = RSETB.authentication();
 
-    var spyDummyLoginButton = sinon.spy();
-    var spyDummyLogoutButton = sinon.spy();
+    var spyActivateLoginButton = sinon.spy();
+    var spyActivateLogoutButton = sinon.spy();
+    var spyDeactivateLoginButton = sinon.spy();
+    var spyDeactivateLogoutButton = sinon.spy();
 
 
-    authentication.subscribe(spyDummyLoginButton, true, "login");
-    authentication.subscribe(spyDummyLogoutButton, false, "login");
+    authentication.subscribe(spyActivateLoginButton, "logout");
+    authentication.subscribe(spyDeactivateLoginButton, "login");
+    authentication.subscribe(spyActivateLogoutButton, "login");
+    authentication.subscribe(spyDeactivateLogoutButton, "logout");
 
     authentication.publish("login");
 
-    console.log(spyDummyLoginButton.called);
-
-    ok(spyDummyLoginButton.calledWith(true), 'Login button deactivated after login');
-    ok(spyDummyLogoutButton.calledWith(false), 'Login button activated after login');
-
-
-    authentication.subscribe(spyDummyLogoutButton, true, "logout");
-    authentication.subscribe(spyDummyLoginButton, false, "logout");
+    ok(spyDeactivateLoginButton.calledWith(), 'Login button deactivated after login');
+    ok(spyActivateLogoutButton.calledWith(), 'Logout button activated after login');
     
     authentication.publish("logout");
 
-    ok(spyDummyLogoutButton.calledWith(true), 'Logout button deactivated after logout');
-    ok(spyDummyLoginButton.calledWith(false), 'Login button activated after logout');
+    ok(spyActivateLoginButton.calledWith(), 'Login button activated after logout');
+    ok(spyDeactivateLogoutButton.calledWith(), 'Logout button deactivated after logout');
 });

@@ -30,6 +30,11 @@ RSETB.URL_REQUESTS_LOGOUT = RSETB.URL_REQUESTS + "logout";
 RSETB.URL_GET_PAPER_PDF = RSETB.URL_REQUESTS + "get-paper-pdf";
 
 /**
+ * @constant Parameter for get pdf paper requests
+ */
+RSETB.URL_GET_PAPER_VOTE = RSETB.URL_REQUESTS + "get-paper-vote";
+
+/**
  * @constant Readersourcing Homepage
  */
 RSETB.HOME_PAGE = 'www.readersourcing.org/';
@@ -48,6 +53,26 @@ RSETB.REGISTRATION_PAGE = RSETB.HOME_PAGE  + 'register/';
  * @constant Login modal window path
  */
 RSETB.LOGIN_MODAL ="chrome://readersourcingToolbar/content/loginModal.xul";
+
+/**
+ * @constant Image reference of switched off star
+ */
+RSETB.RATING_STAR_OFF = "chrome://readersourcingToolbar/skin/star0.png";
+
+/**
+ * @constant Image reference of empty star
+ */
+RSETB.RATING_STAR_EMPTY = "chrome://readersourcingToolbar/skin/star1.png";
+
+/**
+ * @constant Image reference of half star
+ */
+RSETB.RATING_STAR_HALF = "chrome://readersourcingToolbar/skin/star2.png";
+
+/**
+ * @constant Image reference of full star
+ */
+RSETB.RATING_STAR_ON = "chrome://readersourcingToolbar/skin/star3.png";
 
 /**
  * @constant id of xul element test button
@@ -104,9 +129,25 @@ RSETB.MODAL_FORGOT_PASSWORD_LINK = "rsour_modalForgotPassword";
  */
 RSETB.MODAL_REGISTER_LINK = "rsour_modalRegisterNewUser";
 
-RSETB.INPUT_RATING_CONTAINER = "rsour_inputRatingContainer";
+RSETB.INPUT_RATING_TOOL = "rsour_inputRatingTool";
 
-RSETB.INPUT_RATING_STAR = "rsour_stars";
+RSETB.INPUT_RATING_STAR_CONTAINER = "rsour_inputStarsContainer";
+
+RSETB.RATING_STARS = "rsour_stars";
+
+RSETB.STEADINESS_TOOL = "rsour_steadinessTool";
+
+RSETB.STEADINESS_IMAGE = "rsour_steadinessImage";
+
+/**
+ * @constant minimum value for an half star to be on (under this value is off)
+ */
+RSETB.MIN_VALUE_FOR_HALF_STAR = 0.25;
+
+/**
+ * @constant maximum value for an half star to be on (over this value is full)
+ */
+RSETB.MAX_VALUE_FOR_HALF_STAR = 0.75;
 
 
 //initialize toolbar when all contents are loaded

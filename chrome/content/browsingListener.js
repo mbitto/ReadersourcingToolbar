@@ -39,14 +39,41 @@ RSETB.browsingListener = function(){
             if (aURI !== null && aURI.spec !== "about:blank"){
                 var currentURI = aURI.spec;
                 // Check document content type is a pdf
-                // TODO: also check if document is in RS
                 if(aProgress.DOMWindow.document.contentType === "application/pdf"){
                     //check if currentURI is a redirection of RS getFile
-                    if(currentURI.indexOf(RSETB.URL_GET_MARKED_PDF) < 0){
+                    if(currentURI.indexOf(RSETB.URL_GET_PAPER_PDF) < 0){
                         // Abort current request
                         aRequest.cancel(NS_BINDING_ABORTED);
-                        // Make a new request to RS server
-                        window.content.location.href = RSETB.URL_GET_MARKED_PDF + '?url=' + currentURI;
+
+                        // Check if document is in RS
+                         var params = {
+                            url : currentURI
+                        };
+
+                        var requestManager = new RSETB.RequestManager(RSETB.URL_GET_PAPER_PDF, "GET", true);
+                        requestManager.request(params,
+                            // Succesful request callback
+                            function(response){
+
+                                FBC().log(response);
+
+                                var responseParser = new RSETB.ResponseParser(response, "get-paper-pdf");
+                                var outcome = responseParser.getOutcome();
+                                var fileURL = responseParser.getXMLElementContent("url");
+
+                                if(outcome === "ok"){
+                                    FBC().log(outcome);
+                                }
+                                else{
+                                    FBC().log(outcome);
+                                }
+                            },
+
+                            // Failed request callback
+                            function(){
+                                // TODO: manage failed request
+                            }
+                        );
                     }
                 }
             }

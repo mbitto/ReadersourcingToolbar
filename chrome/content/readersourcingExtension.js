@@ -30,7 +30,7 @@ RSETB.readersourcingExtension = {
         var browsingListener = RSETB.browsingListener();
         browsingListener.init();
 
-        // Initialize browsingListener
+        // Initialize downloadListener
         var downloadListener = RSETB.downloadListener();
         downloadListener.init();
 
@@ -50,10 +50,10 @@ RSETB.readersourcingExtension = {
         });
 
         // Subscribe tools to authentication publications
-        authentication.subscribe(logoutTool.setDisabled, false, "login");
-        authentication.subscribe(logoutTool.setDisabled, true, "logout");
-        authentication.subscribe(loginTool.setDisabled, true, "login");
-        authentication.subscribe(loginTool.setDisabled, false, "logout");
+        authentication.subscribe(logoutTool.setEnabled, "login");
+        authentication.subscribe(logoutTool.setDisabled, "logout");
+        authentication.subscribe(loginTool.setDisabled, "login");
+        authentication.subscribe(loginTool.setEnabled, "logout");
 
         // Open user profile tool of main menu
         var userProfileTool = new RSETB.Tool('userProfile', RSETB.USER_PROFILE_ENTRY);
@@ -67,8 +67,14 @@ RSETB.readersourcingExtension = {
             this.openNewTab(RSETB.HOME_PAGE);
         });
 
+        var inputRating = RSETB.inputRating();
+
         // Input rating stars tool
-        //var inputRating = RSETB.inputRating();
-        //var inputRatingTool = new RSETB.InputRatingTool(RSETB.INPUT_RATING_CONTAINER);
+        var inputRatingTool = new RSETB.InputRatingTool("inputRating", RSETB.INPUT_RATING_TOOL);
+        inputRating.subscribe(inputRatingTool.request, "rating");
+        inputRating.subscribe(inputRatingTool.request, "no-rating");
+
+        //inputRating.subscribe(steadinessTool.request, "steadiness");
+        //inputRating.subscribe(steadinessTool.request, "no-steadiness");
     }
 };

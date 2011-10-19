@@ -34,11 +34,8 @@ RSETB.ResponseParser = function(document, expectedRootName){
     this.getXMLElement = function(elementName, parentElement){
         parentElement = parentElement || document;
         var element = parentElement.getElementsByTagName(elementName)[0];
-        if(element.length == 0){
+        if(typeof element === "undefined"){
             throw new Error("Malformed XML: " + elementName + " element  not found in XML response");
-        }
-        if(element.length > 1){
-            throw new Error("Error in XML: " + elementName + " is supposed to be unique in XML response");
         }
         return element;
     };
@@ -133,3 +130,44 @@ RSETB.LoginResponseParser = function(document){
 
 // Ensure descendant prototype update
 RSETB.LoginResponseParser.prototype = RSETB.ResponseParser;
+
+
+/**
+ * Parse get-paper-vote XML response
+ *
+ * @param document
+ */
+RSETB.InputRatingResponseParser = function(document){
+
+    // Inherits from ResponseParser
+    this.base = RSETB.ResponseParser;
+    this.base(document, 'get-paper-vote');
+
+    this.checkResponse = function(){
+        var outcome = this.getOutcome();
+        if(outcome === "ok"){
+
+            var paper = this.getXMLElement("paper");
+            var paperId = this.getXMLAttribute("id", paper);
+
+            var title = this.getXMLElementContent("title", paper);
+            var rating = this.getXMLElementContent("rating", paper);
+            var steadiness = this.getXMLElementContent("steadiness", paper);
+
+            return{
+                id: paperId,
+                title: title,
+                rating: rating,
+                steadiness: steadiness
+            };
+        }
+        else {
+            return {
+                description : this.getXMLElementContent("description")
+            }
+        }
+    };
+};
+
+// Ensure descendant prototype update
+RSETB.InputRatingResponseParser.prototype = RSETB.ResponseParser;

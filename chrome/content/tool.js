@@ -35,6 +35,22 @@ RSETB.Tool = function(name, xulElementId){
     };
 
     /**
+     * Set disabled state and add or remove associated event listener
+     *
+     * @param disable boolean
+     */
+    var setDisabled = function(disable){
+        var enable = !disable;
+        if(enable && xulElementReference.disabled){
+            xulElementReference.addEventListener('click', function(){executeCallback()}, false);
+        }
+        else if (disable && !xulElementReference.disabled){
+            xulElementReference.removeEventListener('click', function(){ executeCallback()}, false);
+        }
+        xulElementReference.disabled = disable;
+    };
+
+    /**
      * Register a function to call when click event is generated from this tool
      *
      * @param cb callback
@@ -52,21 +68,12 @@ RSETB.Tool = function(name, xulElementId){
         xulElementReference.addEventListener('click', function(){ executeCallback() }, false);
     };
 
+    this.setEnabled = function(){
+        setDisabled(false);
+    };
 
-    /**
-     * Set disabled state and add or remove associated event listener
-     *
-     * @param disable boolean
-     */
-    this.setDisabled = function(disable){
-        var enable = !disable;
-        if(enable && xulElementReference.disabled){
-            xulElementReference.addEventListener('click', function(){executeCallback()}, false);
-        }
-        else if (disable && !xulElementReference.disabled){
-            xulElementReference.removeEventListener('click', function(){ executeCallback()}, false);
-        }
-        xulElementReference.disabled = disable;
+    this.setDisabled = function(){
+        setDisabled(true);
     };
 
     this.hide = function(visible){
@@ -94,20 +101,100 @@ RSETB.Tool = function(name, xulElementId){
         return xulElementId;
     };
 
+    /**
+     * Get XUL element reference
+     */
+    this.getXulElementReference = function(){
+        return xulElementReference;
+    };
+
 };
 
 
+/**
+ * @constructor Tool that manages input rating stars behaivour
+ *
+ * @param name
+ * @param xulElementId
+ */
 RSETB.InputRatingTool = function(name, xulElementId){
     
     // Inherits from Tool
     this.base = RSETB.Tool;
     this.base(name, xulElementId);
 
-    var stars = xulElementId.getElementsByClassName(RSETB.INPUT_RATING_STAR);
+    var xulElementReference = this.getXulElementReference();
+    var xulStarsContainer = xulElementReference.getElementsByClassName(RSETB.INPUT_RATING_STAR_CONTAINER)[0];
+    var xulStars = xulStarsContainer.childNodes;
+    var starsQty = xulStars.length;
+    var inputStars = [];
 
-    console.log(stars);
+    for (var i = 1; i <= starsQty; i++) {
+        inputStars[i] = new RSETB.Star(xulStars[i - 1]);
+    }
 
-    
+    this.setRating = function(rating){
+
+        var iterator = 0;
+
+        // Set input rating
+        for (iterator = 1; iterator <= rating; iterator++) {
+            inputStars[iterator].full();
+        }
+        var lastStar = iterator;
+        for (iterator = iterator + 1; iterator <= starsQty; iterator++) {
+            inputStars[iterator].empty();
+        }
+
+        // Set float input rating
+        var integerValue = parseInt(rating, 10);
+
+        var floatValue = rating - integerValue;
+        if (floatValue >= RSETB.MIN_VALUE_FOR_HALF_STAR &&
+            floatValue < RSETB.MAX_VALUE_FOR_HALF_STAR) {
+                inputStars[lastStar].half();
+        }
+        else {
+            if (floatValue >= RSETB.MAX_VALUE_FOR_HALF_STAR) {
+                inputStars[lastStar].full();
+            }
+        }
+    };
+        
+    this.switchOff = function(){
+        // Set input rating
+        for (var i = 1; i <= starsQty; i++) {
+            inputStars[i].empty();
+        }
+    };
+};
+
+// Ensure descendant prototype update
+RSETB.InputRatingTool.prototype = RSETB.Tool;
+
+
+
+/**
+ * @constructor Tool that manages steadiness indicator
+ *
+ * @param name
+ * @param xulElementId
+ */
+RSETB.SteadinessTool = function(name, xulElementId){
+
+    // Inherits from Tool
+    this.base = RSETB.Tool;
+    this.base(name, xulElementId);
+
+    var xulElementReference = this.getXulElementReference();
+
+    this.setSteadiness = function(steady){
+
+    };
+
+    this.switchOff = function(){
+        
+    };
 };
 
 // Ensure descendant prototype update

@@ -35,6 +35,7 @@ RSETB.RequestManager = function(destinationURL, requestType, async){
         httpRequest.onreadystatechange = function(){
             if (httpRequest.readyState == 4) {
                 if (httpRequest.status == 200) {
+                    FBC().log(httpRequest.getAllResponseHeaders());
                     var domElement = httpRequest.responseXML;
                     if(domElement === null){
                         throw new Error("XML received could be malformed");

@@ -23,7 +23,7 @@ module('Tool', {
 
 
         this.getElementByIdStub = sinon.stub(document, "getElementById");
-        this.getElementByIdStub.returns(this.xulElementStub);
+        this.getElementByIdStub.withArgs('xulElementStub').returns(this.xulElementStub);
 
     },
     teardown: function(){
@@ -65,9 +65,9 @@ test('Register callback and test it', function(){
 test('Disable button', function(){
     var tool = new RSETB.Tool('testTool', 'xulElementStub');
 
-    tool.setDisabled(true);
+    tool.setDisabled();
     equal(tool.getDisabledState(), true, "Tool state should be disabled");
-    tool.setDisabled(false);
+    tool.setEnabled();
     equal(tool.getDisabledState(), false, "Tool state shouldn't be disabled");
 
 });

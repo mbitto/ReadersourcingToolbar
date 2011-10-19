@@ -3,18 +3,20 @@
 
 <overlay id="readersourcingToolbar" xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
 
-    <script type="application/x-javascript" src="chrome://readersourcingToolbar/content/browsingListener.js" />
-    <script type="application/x-javascript" src="chrome://readersourcingToolbar/content/downloadListener.js" />
+
     <script type="application/x-javascript" src="chrome://readersourcingToolbar/content/lib/MBJSL_0.1/publisher.js" />
     <script type="application/x-javascript" src="chrome://readersourcingToolbar/content/firebugConsole.js" />
     <script type="application/x-javascript" src="chrome://readersourcingToolbar/content/ini.js" />
+    <script type="application/x-javascript" src="chrome://readersourcingToolbar/content/browsingListener.js" />
+    <script type="application/x-javascript" src="chrome://readersourcingToolbar/content/downloadListener.js" />
+    <script type="application/x-javascript" src="chrome://readersourcingToolbar/content/responseParser.js" />
     <script type="application/x-javascript" src="chrome://readersourcingToolbar/content/readersourcingExtension.js" />
     <script type="application/x-javascript" src="chrome://readersourcingToolbar/content/requestManager.js" />
     <script type="application/x-javascript" src="chrome://readersourcingToolbar/content/tool.js" />
     <script type="application/x-javascript" src="chrome://readersourcingToolbar/content/authentication.js" />
     <script type="application/x-javascript" src="chrome://readersourcingToolbar/content/loginModal.js" />
-    <script type="application/x-javascript" src="chrome://readersourcingToolbar/content/responseParser.js" />
-
+    <script type="application/x-javascript" src="chrome://readersourcingToolbar/content/inputRating.js" />
+    <script type="application/x-javascript" src="chrome://readersourcingToolbar/content/star.js" />
 
     <toolbox id="navigator-toolbox">
 
@@ -33,6 +35,7 @@
                 </menupopup>
             </toolbarbutton>
 
+
             <!--Widget that appear if there is no connection with Readersourcing server-->
             <!--
             <toolbaritem id="rsour_notConnectedWidget">
@@ -46,11 +49,10 @@
             -->
 
             <!--Current paper rating-->
-
             <toolbaritem id="rsour_inputRatingTool">
                 <toolbarseparator />
                 <description class="rsour_text">Rating:</description>
-                <hbox class="rsour_ratingManager" >
+                <hbox class="rsour_inputStarsContainer" >
                     <image class="rsour_star" />
                     <image class="rsour_star" />
                     <image class="rsour_star" />
@@ -61,16 +63,15 @@
 
 
             <!--Steadiness of current rating-->
-            <!--
-            <toolbaritem id="rsour_steadinessWidget">
+
+            <toolbaritem id="rsour_steadinessTool">
                 <toolbarseparator />
                 <description class="rsour_text">Steadiness:</description>
                 <box class="rsour_image">
                     <image id="rsour_steadinessImage" />
                 </box>
             </toolbaritem>
-            -->
-
+            
             <!--The number of comments of current paper-->
             <!--
             <toolbaritem id="rsour_commentsWidget">
