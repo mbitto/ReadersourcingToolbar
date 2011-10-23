@@ -52,7 +52,7 @@
             <toolbaritem id="rsour_inputRatingTool">
                 <toolbarseparator />
                 <description class="rsour_text">Rating:</description>
-                <hbox class="rsour_inputStarsContainer" >
+                <hbox id="rsour_inputStarsContainer" >
                     <image class="rsour_star" />
                     <image class="rsour_star" />
                     <image class="rsour_star" />
@@ -97,11 +97,10 @@
             -->
 
             <!--Output rating panel-->
-            <!--
-            <toolbaritem id="rsour_outputRatingWidget">
+            <toolbaritem id="rsour_outputRatingTool">
                 <toolbarseparator />
                 <description class="rsour_text" value="Rate it:" />
-                <hbox id="rsour_outputStarsManager" class="rsour_ratingManager">
+                <hbox id="rsour_outputStarsContainer">
                     <image class="rsour_star" />
                     <image class="rsour_star" />
                     <image class="rsour_star" />
@@ -110,7 +109,6 @@
                 </hbox>
                 <toolbarbutton id="rsour_submitOutputRating" class="submitRating" label="Confirm" />
             </toolbaritem>
-            -->
 
             <!--Rating in progress message-->
             <!--

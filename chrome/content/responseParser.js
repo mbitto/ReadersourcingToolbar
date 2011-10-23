@@ -1,6 +1,6 @@
 /**
- * Project: ...
- * Version: ...
+ * Project: Readersourcing Extension Toolbar
+ * Version: 1.1
  *
  * Author: Manuel Bitto (manuel.bitto@gmail.com)
  * Date: 12/10/11

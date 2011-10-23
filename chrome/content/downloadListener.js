@@ -1,6 +1,6 @@
 /**
- * Project: ...
- * Version: ...
+ * Project: Readersourcing Extension Toolbar
+ * Version: 1.1
  *
  * Author: Manuel Bitto (manuel.bitto@gmail.com)
  * Date: 14/10/11
@@ -38,8 +38,6 @@ RSETB.downloadListener = function(){
     };
 
     var addDownload = function (from, to, title, mimeInfo){
-
-        FBC().log(title);
 
         var ioService  = Components.classes["@mozilla.org/network/io-service;1"].getService(Components.interfaces.nsIIOService);
         var uri = ioService.newURI(from, null , null);

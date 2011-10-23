@@ -11,7 +11,6 @@
  */
 module('Tool', {
     setup: function(){
-
         this.xulElementStub = {
             disabled : true,
             id : "xulElementStub",
@@ -20,51 +19,44 @@ module('Tool', {
                 this.simulateClick = arguments[1];
             }
         };
-
-
         this.getElementByIdStub = sinon.stub(document, "getElementById");
         this.getElementByIdStub.withArgs('xulElementStub').returns(this.xulElementStub);
-
     },
+
     teardown: function(){
         this.getElementByIdStub.restore();
     }
 });
 
 test('Get name and id', function(){
-    var tool = new RSETB.Tool('testTool', 'xulElementStub');
-
-    equal(tool.getName(), 'testTool', "Tool namme should be testTool");
+    var tool = new RSETB.Tool('xulElementStub');
     equal(tool.getXulElementId(), 'xulElementStub', "Tool id should be xulElementStub");
-
 });
 
 test('Register callback and test it', function(){
 
     var callbackResult = null;
-
-    var callback = function(param1, param2){
-          callbackResult = "called with params: " + param1 + " and " + param2;
+    var callback = function(event, args){
+          callbackResult = "called with: " + event + ", " + args[0] + ' and ' + args[1];
     };
-
     var generateError = function(){
         tool.registerUIEvent(callback, "another one");
     };
+    var tool = new RSETB.Tool('xulElementStub');
 
-    var tool = new RSETB.Tool('testTool', 'xulElementStub');
+    tool.registerUIEvent(function(event, args){
+        callback(event, args);
+    });
 
-    tool.registerUIEvent(callback, "firstParam", "secondParam");
+    this.xulElementStub.simulateClick('anEvent', 'test1', 'test2');
 
-    this.xulElementStub.simulateClick();
-
-    equal(callbackResult, "called with params: firstParam and secondParam", "Result of executeCallback function must include 2 params");
+    equal(callbackResult, "called with: anEvent, test1 and test2", "Result of executeCallback function must include 2 params");
     raises(generateError, "Callback function is already defined for testTool tool", "Cannot register more than one callback function");
 
 });
 
-test('Disable button', function(){
-    var tool = new RSETB.Tool('testTool', 'xulElementStub');
-
+test('Disable tool', function(){
+    var tool = new RSETB.Tool('xulElementStub');
     tool.setDisabled();
     equal(tool.getDisabledState(), true, "Tool state should be disabled");
     tool.setEnabled();

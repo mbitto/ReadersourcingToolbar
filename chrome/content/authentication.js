@@ -1,6 +1,6 @@
 /**
- * Project: ...
- * Version: ...
+ * Project: Readersourcing Extension Toolbar
+ * Version: 1.1
  *
  * Author: Manuel Bitto (manuel.bitto@gmail.com)
  * Date: 07/10/11
@@ -100,10 +100,16 @@ RSETB.authentication = function(loginModal){
         loginModal.closeModal();
     };
 
+    /**
+     * Get the user ID
+     */
     publisher.getUserId = function(){
         return userId;
     };
-    
+
+    /**
+     * Logout user from the system
+     */
     publisher.logout = function(){
         var logoutRM = new RSETB.RequestManager(RSETB.URL_REQUESTS_LOGOUT, 'GET', true);
         logoutRM.request(

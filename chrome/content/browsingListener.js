@@ -1,6 +1,6 @@
 /**
- * Project: ...
- * Version: ...
+ * Project: Readersourcing Extension Toolbar
+ * Version: 1.1
  *
  * Author: Manuel Bitto (manuel.bitto@gmail.com)
  * Date: 14/10/11
@@ -14,6 +14,7 @@ var RSETB = RSETB || {};
  */
 RSETB.browsingListener = function(){
 
+    // Constant to identify abort actions
     const NS_BINDING_ABORTED = 0x804b0002;
 
     return{
@@ -54,8 +55,6 @@ RSETB.browsingListener = function(){
                         requestManager.request(params,
                             // Succesful request callback
                             function(response){
-
-                                FBC().log(response);
 
                                 var responseParser = new RSETB.ResponseParser(response, "get-paper-pdf");
                                 var outcome = responseParser.getOutcome();

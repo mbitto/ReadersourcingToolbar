@@ -1,8 +1,17 @@
+/**
+ * Project: Readersourcing Extension Toolbar
+ * Version: 1.1
+ *
+ * Author: Manuel Bitto (manuel.bitto@gmail.com)
+ * Date: 27/09/11
+ */
+
 // Define ReaderSourcing Extension ToolBar (RSETB) namespace
 var RSETB = RSETB || {};
 
 /**
- * 
+ * @constructor a manager for every request that is generated from the toolbar to RS server
+ *
  * @param destinationURL
  * @param requestType
  * @param async

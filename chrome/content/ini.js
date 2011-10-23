@@ -75,6 +75,36 @@ RSETB.RATING_STAR_HALF = "chrome://readersourcingToolbar/skin/star2.png";
 RSETB.RATING_STAR_ON = "chrome://readersourcingToolbar/skin/star3.png";
 
 /**
+ * @constant chrome address of empty steadiness image
+ */
+RSETB.STEADINESS_OFF = "chrome://readersourcingToolbar/skin/ste0.png";
+
+/**
+ * @constant chrome address of level 1 steadiness image
+ */
+RSETB.STEADINESS_VALUE_1 = "chrome://readersourcingToolbar/skin/ste1.png";
+
+/**
+ * @constant chrome address of level 2 steadiness image
+ */
+RSETB.STEADINESS_VALUE_2 = "chrome://readersourcingToolbar/skin/ste2.png";
+
+/**
+ * @constant chrome address of level 3 steadiness image
+ */
+RSETB.STEADINESS_VALUE_3 = "chrome://readersourcingToolbar/skin/ste3.png";
+
+/**
+ * @constant chrome address of submit button confirmation image
+ */
+RSETB.OUTPUT_RATING_SUBMIT_IMAGE_ON = "chrome://readersourcingToolbar/skin/confirmOn.png";
+
+/**
+ * @constant chrome address of submit button confirmation image
+ */
+RSETB.OUTPUT_RATING_SUBMIT_IMAGE_OFF = "chrome://readersourcingToolbar/skin/confirmOff.png";
+
+/**
  * @constant id of xul element test button
  */
 RSETB.FIREUNIT_TEST_BUTTON = "rsour_fireUnit",
@@ -129,28 +159,57 @@ RSETB.MODAL_FORGOT_PASSWORD_LINK = "rsour_modalForgotPassword";
  */
 RSETB.MODAL_REGISTER_LINK = "rsour_modalRegisterNewUser";
 
+/**
+ * @constant id name of xul element container of input rating tool
+ */
 RSETB.INPUT_RATING_TOOL = "rsour_inputRatingTool";
 
+/**
+ * @constant id name of xul element container of input rating stars
+ */
 RSETB.INPUT_RATING_STAR_CONTAINER = "rsour_inputStarsContainer";
 
+/**
+ * @constant class name of stars xul elements
+ */
 RSETB.RATING_STARS = "rsour_stars";
 
+/**
+ * @constant id name of steadiness tool container
+ */
 RSETB.STEADINESS_TOOL = "rsour_steadinessTool";
 
+/**
+ * @constant id name of xul steadiness image
+ */
 RSETB.STEADINESS_IMAGE = "rsour_steadinessImage";
+
+/**
+ * @constant id name of xul container for output rating tool
+ */
+RSETB.OUTPUT_RATING_TOOL = "rsour_outputRatingTool";
+
+/**
+ * @constant id name of xul stars container for output rating tool
+ */
+RSETB.OUTPUT_RATING_STARS_CONTAINER = "rsour_outputStarsContainer";
+
+/**
+ * @constant id name of xul submit button for output rating tool
+ */
+RSETB.OUTPUT_RATING_SUBMIT_BUTTON = "rsour_submitOutputRating";
 
 /**
  * @constant minimum value for an half star to be on (under this value is off)
  */
-RSETB.MIN_VALUE_FOR_HALF_STAR = 0.25;
+RSETB.MIN_VALUE_FOR_HALF_STAR = 0.26;
 
 /**
  * @constant maximum value for an half star to be on (over this value is full)
  */
 RSETB.MAX_VALUE_FOR_HALF_STAR = 0.75;
 
-
-//initialize toolbar when all contents are loaded
+// Initialize toolbar when all contents are loaded
 /*window.addEventListener("load", function(){
 
     FBC.log("init");
@@ -165,4 +224,4 @@ setTimeout(function(){
     FBC().log("init");
     RSETB.readersourcingExtension.initialize();
 
-}, 1000);
+}, 2000);

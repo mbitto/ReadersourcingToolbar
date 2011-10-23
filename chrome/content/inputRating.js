@@ -1,3 +1,11 @@
+/**
+ * Project: Readersourcing Extension Toolbar
+ * Version: 1.1
+ *
+ * Author: Manuel Bitto (manuel.bitto@gmail.com)
+ * Date: 27/09/11
+ */
+
 // Define ReaderSourcing Extension ToolBar (RSETB) namespace
 var RSETB = RSETB || {};
 
@@ -11,7 +19,12 @@ RSETB.inputRating = function(){
     // Get publisher methods
     var publisher = new MBJSL.Publisher();
 
-    var requestRating = function(url){
+    /**
+     * Request rating and steadiness info about a specific document, given an url
+     *
+     * @param url
+     */
+    publisher.requestRating = function(url){
 
         requestManager.request(
             // Params of request
@@ -47,10 +60,6 @@ RSETB.inputRating = function(){
                 alert("Failed request not managed yet: " + error);
             }
         );
-    };
-
-    publisher.requestRating = function(url){
-        requestRating(url);
     };
 
     return publisher;

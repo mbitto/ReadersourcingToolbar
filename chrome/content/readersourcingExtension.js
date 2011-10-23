@@ -38,13 +38,13 @@ RSETB.readersourcingExtension = {
         var authentication = RSETB.authentication(loginModal);
 
         // Login tool of main menu
-        var loginTool = new RSETB.Tool("login", RSETB.LOGIN_ENTRY);
+        var loginTool = new RSETB.Tool(RSETB.LOGIN_ENTRY);
         loginTool.registerUIEvent(function(){
             authentication.openLoginModal(loginModal);
         });
 
         // Logout tool of main menu
-        var logoutTool = new RSETB.Tool("logout", RSETB.LOGOUT_ENTRY);
+        var logoutTool = new RSETB.Tool(RSETB.LOGOUT_ENTRY);
         logoutTool.registerUIEvent(function(){
             authentication.logout();
         });
@@ -56,13 +56,13 @@ RSETB.readersourcingExtension = {
         authentication.subscribe(loginTool.setEnabled, "logout");
 
         // Open user profile tool of main menu
-        var userProfileTool = new RSETB.Tool('userProfile', RSETB.USER_PROFILE_ENTRY);
+        var userProfileTool = new RSETB.Tool(RSETB.USER_PROFILE_ENTRY);
         userProfileTool.registerUIEvent( function(){
             this.openNewTab(RSETB.HOME_PAGE + "user/" + authentication.getUserId());
         });
 
         // Open home page
-        var homePageTool = new RSETB.Tool('homePage', RSETB.READERSOURCING_HOMEPAGE_ENTRY);
+        var homePageTool = new RSETB.Tool(RSETB.READERSOURCING_HOMEPAGE_ENTRY);
         homePageTool.registerUIEvent( function(){
             this.openNewTab(RSETB.HOME_PAGE);
         });
@@ -70,11 +70,23 @@ RSETB.readersourcingExtension = {
         var inputRating = RSETB.inputRating();
 
         // Input rating stars tool
-        var inputRatingTool = new RSETB.InputRatingTool("inputRating", RSETB.INPUT_RATING_TOOL);
+        var inputRatingTool = new RSETB.InputRatingTool(RSETB.INPUT_RATING_TOOL);
         inputRating.subscribe(inputRatingTool.request, "rating");
         inputRating.subscribe(inputRatingTool.request, "no-rating");
 
-        //inputRating.subscribe(steadinessTool.request, "steadiness");
-        //inputRating.subscribe(steadinessTool.request, "no-steadiness");
+        inputRatingTool.setRating(3.336565656);
+
+        var steadinessTool = new RSETB.SteadinessTool(RSETB.STEADINESS_TOOL);
+
+        inputRating.subscribe(steadinessTool.setSteadiness, "steadiness");
+        inputRating.subscribe(steadinessTool.switchOff, "no-steadiness");
+
+        var outputRatingTool = new RSETB.OutputRatingTool(RSETB.OUTPUT_RATING_TOOL, inputRatingTool);
+        outputRatingTool.registerUIEvent(function(rating){
+            FBC().log("called with: " + rating);
+            //outputRating.setRating();
+        });
+        outputRatingTool.setDisabled(false);
+
     }
 };
