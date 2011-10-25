@@ -9,19 +9,23 @@
 // Define ReaderSourcing Extension ToolBar (RSETB) namespace
 var RSETB = RSETB || {};
 
-
 /**
  * @constructor Base object to parse the XML response
  *
- * @param document
- * @param expectedRootName
  */
-RSETB.ResponseParser = function(document, expectedRootName){
+RSETB.ResponseParser = function(){
     
     var responseTagName = "response";
     var outcomeAttributeName = "outcome";
     var outcomeOk = "ok";
     var outcomeKo = "ko";
+    var expectedRootName = null;
+    var document;
+
+    this.setDocument = function(doc, expRootName){
+        document = doc;
+        expectedRootName = expRootName;
+    };
 
     this.getXMLRoot = function(rootName){
         var root = document.documentElement;
@@ -76,13 +80,11 @@ RSETB.ResponseParser = function(document, expectedRootName){
 /**
  * Parse login XML response
  *
- * @param document
  */
-RSETB.LoginResponseParser = function(document){
+RSETB.LoginResponseParser = function(){
 
     // Inherits from ResponseParser
-    this.base = RSETB.ResponseParser;
-    this.base(document, 'login');
+    RSETB.ResponseParser.call(this);
 
     this.checkResponse = function(){
         var outcome = this.getOutcome();
@@ -135,13 +137,11 @@ RSETB.LoginResponseParser.prototype = RSETB.ResponseParser;
 /**
  * Parse get-paper-vote XML response
  *
- * @param document
  */
-RSETB.InputRatingResponseParser = function(document){
+RSETB.RatingResponseParser = function(){
 
     // Inherits from ResponseParser
-    this.base = RSETB.ResponseParser;
-    this.base(document, 'get-paper-vote');
+    RSETB.ResponseParser.call(this);
 
     this.checkResponse = function(){
         var outcome = this.getOutcome();
@@ -170,4 +170,4 @@ RSETB.InputRatingResponseParser = function(document){
 };
 
 // Ensure descendant prototype update
-RSETB.InputRatingResponseParser.prototype = RSETB.ResponseParser;
+RSETB.RatingResponseParser.prototype = RSETB.ResponseParser;

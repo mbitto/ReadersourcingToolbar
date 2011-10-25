@@ -3,7 +3,7 @@
  * Version: 1.1
  *
  * Author: Manuel Bitto (manuel.bitto@gmail.com)
- * Date: 27/09/11
+ * Date: 24/10/11
  */
 
 // Define ReaderSourcing Extension ToolBar (RSETB) namespace
@@ -12,29 +12,34 @@ var RSETB = RSETB || {};
 /**
  * Singleton that manages requests of input rating and steadiness
  */
-RSETB.inputRating = function(ratingResponseParser){
+RSETB.outputRating = function(ratingResponseParser){
 
-    var requestManager = new RSETB.RequestManager(RSETB.URL_GET_PAPER_VOTE, 'GET', true);
+    var requestManager = new RSETB.RequestManager(RSETB.URL_SET_PAPER_VOTE, 'POST', true);
 
-    // Get publisher methods
+    // Create a publisher to get its methods
     var publisher = new MBJSL.Publisher();
 
     /**
-     * Request rating and steadiness info about a specific document, given an url
+     * Set a new vote to Readersourcing, with an optional message associated
      *
      * @param url
      */
-    publisher.requestRating = function(url){
+    publisher.setRating = function(url, vote, comment){
 
-        requestManager.request(
-            // Params of request
-            {
-                url : url
-            },
+        // Params of request
+        var params = {
+            url : url,
+            vote : vote
+        };
 
+        // If there is a comment add it to request params
+        if(typeof comment !== "undefined"){
+            params.comment = comment;
+        }
+        requestManager.request(params,
             // Successful request callback
             function(doc){
-                ratingResponseParser.setDocument(doc, 'get-paper-vote');
+                ratingResponseParser.setDocument(doc, 'set-paper-vote');
                 // Parse XML document
                 try{
                     var outcome = ratingResponseParser.getOutcome();
@@ -63,4 +68,5 @@ RSETB.inputRating = function(ratingResponseParser){
     };
 
     return publisher;
+
 };

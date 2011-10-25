@@ -15,7 +15,7 @@ var RSETB = RSETB || {};
  *
  * @param loginModal
  */
-RSETB.authentication = function(loginModal){
+RSETB.authentication = function(loginModal, loginResponseParser){
 
     var userId = null;
     
@@ -41,7 +41,7 @@ RSETB.authentication = function(loginModal){
 
             // Successful request callback
             function(doc){
-                var loginResponseParser = new RSETB.LoginResponseParser(doc);
+                loginResponseParser.setDocument(doc, 'login');
                 // Parse XML document
                 try{
                     var outcome = loginResponseParser.getOutcome();

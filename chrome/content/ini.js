@@ -35,6 +35,11 @@ RSETB.URL_GET_PAPER_PDF = RSETB.URL_REQUESTS + "get-paper-pdf";
 RSETB.URL_GET_PAPER_VOTE = RSETB.URL_REQUESTS + "get-paper-vote";
 
 /**
+ * @constant Parameter for set vote to an existing paper
+ */
+RSETB.URL_SET_PAPER_VOTE = RSETB.URL_REQUESTS + "set-paper-vote";
+
+/**
  * @constant Readersourcing Homepage
  */
 RSETB.HOME_PAGE = 'www.readersourcing.org/';

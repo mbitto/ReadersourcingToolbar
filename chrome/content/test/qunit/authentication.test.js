@@ -1,5 +1,5 @@
 /**
- * Test module for RequestManager
+ * Test module for authentication
  */
 
 module('authentication', {

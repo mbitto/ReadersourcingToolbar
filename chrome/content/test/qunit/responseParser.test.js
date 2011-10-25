@@ -41,7 +41,9 @@ test("Testing login XML document with OK outcome", function(){
     var parser = new DOMParser();
     var parsedXMLDocument = parser.parseFromString(xmlDocument, "text/xml");
 
-    var loginParser = new RSETB.LoginResponseParser(parsedXMLDocument);
+    var loginParser = new RSETB.LoginResponseParser();
+    loginParser.setDocument(parsedXMLDocument, 'login');
+
     var response = loginParser.checkResponse();
 
     equal(response.messageQty, 2, "There are 2 messages");
@@ -70,7 +72,8 @@ test("Testing login XML document with KO outcome", function(){
     var parser = new DOMParser();
     var parsedXMLDocument = parser.parseFromString(xmlDocument, "text/xml");
 
-    var loginParser = new RSETB.LoginResponseParser(parsedXMLDocument);
+    var loginParser = new RSETB.LoginResponseParser();
+    loginParser.setDocument(parsedXMLDocument, 'login');
     var response = loginParser.checkResponse();
 
     equal(response.description, "Something went wrong with authentication", "Error description");
@@ -98,7 +101,8 @@ test("Testing get-paper-vote XML document with OK outcome", function(){
     var parser = new DOMParser();
     var parsedXMLDocument = parser.parseFromString(xmlDocument, "text/xml");
 
-    var inputRatingParser = new RSETB.InputRatingResponseParser(parsedXMLDocument);
+    var inputRatingParser = new RSETB.RatingResponseParser();
+    inputRatingParser.setDocument(parsedXMLDocument, 'get-paper-vote');
     var response = inputRatingParser.checkResponse();
 
     equal(response.id, 'paper_id', "Id of paper");
@@ -109,7 +113,7 @@ test("Testing get-paper-vote XML document with OK outcome", function(){
 });
 
 
-test("Testing get-paper-vote XML document with OK outcome", function(){
+test("Testing get-paper-vote XML document with KO outcome", function(){
 
 
     /* XML Server response */
@@ -123,7 +127,8 @@ test("Testing get-paper-vote XML document with OK outcome", function(){
     var parser = new DOMParser();
     var parsedXMLDocument = parser.parseFromString(xmlDocument, "text/xml");
 
-    var inputRatingParser = new RSETB.InputRatingResponseParser(parsedXMLDocument);
+    var inputRatingParser = new RSETB.RatingResponseParser();
+    inputRatingParser.setDocument(parsedXMLDocument, 'get-paper-vote');
     var response = inputRatingParser.checkResponse();
 
     equal(response.description, 'Paper Not Indexed within the System', "Error description");

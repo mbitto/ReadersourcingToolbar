@@ -67,7 +67,8 @@ RSETB.readersourcingExtension = {
             this.openNewTab(RSETB.HOME_PAGE);
         });
 
-        var inputRating = RSETB.inputRating();
+        var ratingResponseParser = new RSETB.RatingResponseParser();
+        var inputRating = RSETB.inputRating(ratingResponseParser);
 
         // Input rating stars tool
         var inputRatingTool = new RSETB.InputRatingTool(RSETB.INPUT_RATING_TOOL);
