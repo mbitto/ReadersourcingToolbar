@@ -62,12 +62,16 @@ RSETB.ResponseParser = function(){
     };
 
     this.getXMLElementContent = function(elementName, parentElement){
+        parentElement = parentElement || document;
         var element = this.getXMLElement(elementName, parentElement);
         return element.textContent;
     };
 
     this.getOutcome = function(){
         var root = this.getXMLRoot(expectedRootName);
+        if(root.nodeName !== expectedRootName){
+            throw new Error("Malformed XML: root is " + root.nodeName + " but " + expectedRootName + " is expected");
+        }
         var response = this.getXMLElement(responseTagName, root);
         var outcome = this.getXMLAttribute(outcomeAttributeName, response);
         if(outcome !== outcomeOk && outcome !== outcomeKo){
@@ -171,3 +175,52 @@ RSETB.RatingResponseParser = function(){
 
 // Ensure descendant prototype update
 RSETB.RatingResponseParser.prototype = RSETB.ResponseParser;
+
+
+/**
+ * Parse get-paper-pdf XML response
+ *
+ */
+RSETB.GetPaperResponseParser = function(){
+
+    // Inherits from ResponseParser
+    RSETB.ResponseParser.call(this);
+
+    this.checkResponse = function(){
+        var outcome = this.getOutcome();
+        if(outcome === "ok"){
+
+            var downloadUrl = this.getXMLElementContent("url");
+            var okDescription = this.getXMLElementContent("description");
+
+            return{
+                url: downloadUrl,
+                description: okDescription
+            };
+        }
+
+        else {
+            var koDescription = this.getXMLElementContent("description");
+            var fallbackUrl = this.getXMLElementContent("url");
+            var errorsRoot = this.getXMLElement("errors");
+            var errors = this.getXMLElements("error", errorsRoot);
+            var errorsQueue = [];
+            for(var j=0; j<errors.length; j++){
+                errorsQueue.push(
+                    {
+                        errorCode: this.getXMLAttribute("code", errors[j]),
+                        errorMessage: errors[j].textContent
+                    }
+                );
+            }
+            return {
+                description : koDescription,
+                url : fallbackUrl,
+                messages : errorsQueue
+            };
+        }
+    };
+};
+
+// Ensure descendant prototype update
+RSETB.GetPaperResponseParser.prototype = RSETB.ResponseParser;

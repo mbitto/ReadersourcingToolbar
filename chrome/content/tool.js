@@ -111,10 +111,14 @@ RSETB.InputRatingTool = function(xulElementId){
     this._stars = [];
     this._rating = 0;
 
+    // Assign to each xul star image a new Star object that controls it
     for (var i = 1; i <= this._starsQty; i++) {
         this._stars[i] = new RSETB.Star(this._xulStars[i - 1]);
     }
 
+    /**
+     * Switch off all stars
+     */
     this.switchOff = function(){
         // Set input rating
         for (var i = 1; i <= this._starsQty; i++) {
@@ -122,6 +126,9 @@ RSETB.InputRatingTool = function(xulElementId){
         }
     };
 
+    /**
+     * Paint all stars as empty
+     */
     this.allStarsEmpty = function(){
         // Set input rating
         for (var i = this._starsQty; i >= 1; i--) {
@@ -130,9 +137,14 @@ RSETB.InputRatingTool = function(xulElementId){
         this._rating = 0;
     };
 
-    // Initialize all stars as empty
-    this.allStarsEmpty();
+    // Initialize all stars as switched off
+    this.switchOff();
 
+    /**
+     * Set the given rating to input stars painting a quantity of stars equal to rating value
+     *
+     * @param rating
+     */
     this.setRating = function(rating){
 
         if(rating < 1 || rating > this._starsQty){
@@ -176,8 +188,6 @@ RSETB.InputRatingTool = function(xulElementId){
         }
 
         this._rating = rating;
-
-        FBC().log("rating: " + rating );
     };
 };
 

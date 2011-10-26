@@ -31,40 +31,55 @@ RSETB.browsingListener = function(){
         throw Components.results.NS_NOINTERFACE;
         },
 
+
+        // This fires when the location bar changes; that is load event is confirmed
+        // or when the user switches tabs. If you use listener for more than one tab/window,
+        // use aProgress.DOMWindow to obtain the tab/window which triggered the change.
         onLocationChange : function(aProgress, aRequest, aURI){
-            // This fires when the location bar changes; that is load event is confirmed
-            // or when the user switches tabs. If you use myListener for more than one tab/window,
-            // use aProgress.DOMWindow to obtain the tab/window which triggered the change.
 
             // Check current URI is not a blank window
             if (aURI !== null && aURI.spec !== "about:blank"){
                 var currentURI = aURI.spec;
                 // Check document content type is a pdf
                 if(aProgress.DOMWindow.document.contentType === "application/pdf"){
-                    //check if currentURI is a redirection of RS getFile
+                    // Check if currentURI is a redirection of RS getFile
                     if(currentURI.indexOf(RSETB.URL_GET_PAPER_PDF) < 0){
-                        // Abort current request
-                        aRequest.cancel(NS_BINDING_ABORTED);
+
+                        // Suspend current request
+                        if(aRequest){
+                            //aRequest.suspend();
+                            //FBC().log('suspeded');
+                        }
 
                         // Check if document is in RS
                          var params = {
                             url : currentURI
                         };
-
                         var requestManager = new RSETB.RequestManager(RSETB.URL_GET_PAPER_PDF, "GET", true);
                         requestManager.request(params,
-                            // Succesful request callback
+                            // Successful request callback
                             function(response){
 
-                                var responseParser = new RSETB.ResponseParser(response, "get-paper-pdf");
+                                var responseParser = new RSETB.GetPaperResponseParser();
+                                responseParser.setDocument(response, "get-paper-pdf");
                                 var outcome = responseParser.getOutcome();
                                 var fileURL = responseParser.getXMLElementContent("url");
 
+                                // File is in RS, download it
                                 if(outcome === "ok"){
-                                    FBC().log(outcome);
+                                    //aRequest.cancel(NS_BINDING_ABORTED);
+                                    //gBrowser.loadURI(fileURL);
+
+                                    //FBC().log('resuming');
+                                    //window.location.replace(fileURL);
                                 }
+
+                                // File in not in RS, resume download
                                 else{
-                                    FBC().log(outcome);
+                                    /*if(aRequest){
+                                        aRequest.resume();
+                                        FBC().log('resumed');
+                                    }*/
                                 }
                             },
 

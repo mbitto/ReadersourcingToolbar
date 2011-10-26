@@ -75,8 +75,6 @@ RSETB.readersourcingExtension = {
         inputRating.subscribe(inputRatingTool.request, "rating");
         inputRating.subscribe(inputRatingTool.request, "no-rating");
 
-        inputRatingTool.setRating(3.336565656);
-
         var steadinessTool = new RSETB.SteadinessTool(RSETB.STEADINESS_TOOL);
 
         inputRating.subscribe(steadinessTool.setSteadiness, "steadiness");
@@ -87,7 +85,6 @@ RSETB.readersourcingExtension = {
             FBC().log("called with: " + rating);
             //outputRating.setRating();
         });
-        outputRatingTool.setDisabled(false);
 
     }
 };

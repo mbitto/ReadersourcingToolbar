@@ -214,6 +214,17 @@ RSETB.MIN_VALUE_FOR_HALF_STAR = 0.26;
  */
 RSETB.MAX_VALUE_FOR_HALF_STAR = 0.75;
 
+/**
+ * @constant default time to clear cache
+ */
+RSETB.CLEAR_CACHE_DEFAULT_TIME = 60;
+
+/**
+ * @constant maximum default number of paper allowed in cache
+ */
+RSETB.MAX_PAPER_IN_CACHE = 100;
+
+
 // Initialize toolbar when all contents are loaded
 /*window.addEventListener("load", function(){
 

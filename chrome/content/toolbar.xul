@@ -7,6 +7,7 @@
     <script type="application/x-javascript" src="chrome://readersourcingToolbar/content/lib/MBJSL_0.1/publisher.js" />
     <script type="application/x-javascript" src="chrome://readersourcingToolbar/content/firebugConsole.js" />
     <script type="application/x-javascript" src="chrome://readersourcingToolbar/content/ini.js" />
+    <script type="application/x-javascript" src="chrome://readersourcingToolbar/content/cache.js" />
     <script type="application/x-javascript" src="chrome://readersourcingToolbar/content/browsingListener.js" />
     <script type="application/x-javascript" src="chrome://readersourcingToolbar/content/downloadListener.js" />
     <script type="application/x-javascript" src="chrome://readersourcingToolbar/content/responseParser.js" />
@@ -73,8 +74,7 @@
             </toolbaritem>
             
             <!--The number of comments of current paper-->
-            <!--
-            <toolbaritem id="rsour_commentsWidget">
+            <toolbaritem id="rsour_commentsTool">
                 <toolbarseparator />
                 <box class="rsour_image">
                     <image id="rsour_commentsDescImage" />
@@ -82,7 +82,6 @@
                 <description class="rsour_text">Comments: </description>
                 <description class="rsour_link text-link"></description>
             </toolbaritem>
-            -->
 
             <!--Displays that current paper is not in Readersourcing database-->
             <!--

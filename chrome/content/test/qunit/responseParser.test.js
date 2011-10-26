@@ -6,7 +6,7 @@
  * Date: 12/10/11
  */
 
-module('responseParser', {
+module('ResponseParser', {
 
     setup : function(){
 
@@ -133,4 +133,58 @@ test("Testing get-paper-vote XML document with KO outcome", function(){
 
     equal(response.description, 'Paper Not Indexed within the System', "Error description");
 
+});
+
+
+test("Testing get-paper-pdf XML document with OK outcome", function(){
+
+    /* XML Server response */
+    var xmlDocument = "<?xml version='1.0' encoding='UTF-8' standalone='yes'?>"
+                    + "<get-paper-pdf>"
+                    + "  <response outcome = 'ok'>"
+                    + "    <description>File can be downloaded from: marked_pdf_url</description>"
+                    + "    <url>marked_pdf_url</url>"
+                    + "  </response>"
+                    + "</get-paper-pdf>";
+
+    var parser = new DOMParser();
+    var parsedXMLDocument = parser.parseFromString(xmlDocument, "text/xml");
+
+    var getPaperParser = new RSETB.GetPaperResponseParser();
+    getPaperParser.setDocument(parsedXMLDocument, 'get-paper-pdf');
+    var response = getPaperParser.checkResponse();
+
+    equal(response.url, "marked_pdf_url", "url for download file");
+    equal(response.description, "File can be downloaded from: marked_pdf_url", "Associate description");
+});
+
+
+test("Testing get-paper-pdf XML document with KO outcome", function(){
+
+
+    /* XML Server response */
+    var xmlDocument = "<?xml version='1.0' encoding='UTF-8' standalone='yes'?>"
+                    + "<get-paper-pdf>"
+                    + "  <response outcome = 'ko'>"
+                    + "    <description>A problem occurred, Falling back to original: original_url</description>"
+                    + "    <url>original_url</url>"
+                    + "    <errors>"
+                    + "      <error code='101'>Strange server error</error>"
+                    + "      <error code='102'>More strange server error</error>"
+                    + "    </errors>"
+                    + "  </response>"
+                    + "</get-paper-pdf>";
+
+
+    var parser = new DOMParser();
+    var parsedXMLDocument = parser.parseFromString(xmlDocument, "text/xml");
+
+    var getPaperParser = new RSETB.GetPaperResponseParser();
+    getPaperParser.setDocument(parsedXMLDocument, 'get-paper-pdf');
+    var response = getPaperParser.checkResponse();
+
+    equal(response.description, "A problem occurred, Falling back to original: original_url", "Error description");
+    equal(response.url, "original_url", "url for download original file");
+    equal(response.messages[0].errorCode, "101", "First error code");
+    equal(response.messages[1].errorMessage, "More strange server error", "Second error code");
 });
