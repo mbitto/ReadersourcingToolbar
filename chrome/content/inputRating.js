@@ -16,8 +16,14 @@ RSETB.inputRating = function(ratingResponseParser){
 
     var requestManager = new RSETB.RequestManager(RSETB.URL_GET_PAPER_VOTE, 'GET', true);
 
-    // Get publisher methods
+    var paperId = null;
+
+    // Create a publisher to mix its methods with inputRating
     var publisher = new MBJSL.Publisher();
+
+    publisher.getPaperId = function(){
+        return paperId;
+    };
 
     /**
      * Request rating and steadiness info about a specific document, given an url
@@ -46,11 +52,10 @@ RSETB.inputRating = function(ratingResponseParser){
                 }
 
                 if(outcome == "ok"){
-                    publisher.publish("rating", response.rating);
-                    publisher.publish("steadiness", response.steadiness);
+                    paperId = response.id;
+                    publisher.publish("new-input-rating", response);
                 }else{
-                    publisher.publish("no-rating", response.description);
-                    publisher.publish("no-steadiness", response.description);
+                    publisher.publish("no-input-rating", response);
                 }
             },
 

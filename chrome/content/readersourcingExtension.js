@@ -26,6 +26,8 @@ RSETB.readersourcingExtension = {
 
     initialize : function(){
 
+        var self = this;
+
         // Initialize browsingListener
         var browsingListener = RSETB.browsingListener();
         browsingListener.init();
@@ -58,13 +60,13 @@ RSETB.readersourcingExtension = {
         // Open user profile tool of main menu
         var userProfileTool = new RSETB.Tool(RSETB.USER_PROFILE_ENTRY);
         userProfileTool.registerUIEvent( function(){
-            this.openNewTab(RSETB.HOME_PAGE + "user/" + authentication.getUserId());
+            self.openNewTab(RSETB.HOME_PAGE + "user/" + authentication.getUserId());
         });
 
         // Open home page
         var homePageTool = new RSETB.Tool(RSETB.READERSOURCING_HOMEPAGE_ENTRY);
         homePageTool.registerUIEvent( function(){
-            this.openNewTab(RSETB.HOME_PAGE);
+            self.openNewTab(RSETB.HOME_PAGE);
         });
 
         var ratingResponseParser = new RSETB.RatingResponseParser();
@@ -72,19 +74,27 @@ RSETB.readersourcingExtension = {
 
         // Input rating stars tool
         var inputRatingTool = new RSETB.InputRatingTool(RSETB.INPUT_RATING_TOOL);
-        inputRating.subscribe(inputRatingTool.request, "rating");
-        inputRating.subscribe(inputRatingTool.request, "no-rating");
+        inputRating.subscribe(inputRatingTool.setRating, "new-input-rating");
+        inputRating.subscribe(inputRatingTool.switchOff, "no-input-rating");
 
         var steadinessTool = new RSETB.SteadinessTool(RSETB.STEADINESS_TOOL);
 
-        inputRating.subscribe(steadinessTool.setSteadiness, "steadiness");
-        inputRating.subscribe(steadinessTool.switchOff, "no-steadiness");
+        inputRating.subscribe(steadinessTool.setSteadiness, "new-input-rating");
+        inputRating.subscribe(steadinessTool.switchOff, "no-input-rating");
+
+        var commentsTool = new RSETB.CommentsTool(RSETB.COMMENTS_TOOL_CONTAINER);
+        commentsTool.registerUIEvent(function(){
+           self.openNewTab(RSETB.HOME_PAGE + "paper/id/" + inputRating.getPaperId());
+        });
+
+        commentsTool.setMessagesQty({messagesQty : 58});
+
+        inputRating.subscribe(commentsTool.setMessagesInfos, "new-input-rating");
+        inputRating.subscribe(commentsTool.setNoMessages, "no-input-rating");
 
         var outputRatingTool = new RSETB.OutputRatingTool(RSETB.OUTPUT_RATING_TOOL, inputRatingTool);
         outputRatingTool.registerUIEvent(function(rating){
             FBC().log("called with: " + rating);
-            //outputRating.setRating();
         });
-
     }
 };

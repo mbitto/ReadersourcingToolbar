@@ -193,7 +193,7 @@ RSETB.GetPaperResponseParser = function(){
             var downloadUrl = this.getXMLElementContent("url");
             var okDescription = this.getXMLElementContent("description");
 
-            return{
+            return {
                 url: downloadUrl,
                 description: okDescription
             };

@@ -143,9 +143,11 @@ RSETB.InputRatingTool = function(xulElementId){
     /**
      * Set the given rating to input stars painting a quantity of stars equal to rating value
      *
-     * @param rating
+     * @param response form server
      */
-    this.setRating = function(rating){
+    this.setRating = function(response){
+
+        var rating = response.rating;
 
         if(rating < 1 || rating > this._starsQty){
             throw new Error("Rating should be between  1 and " + this._starsQty);
@@ -203,7 +205,10 @@ RSETB.SteadinessTool = function(xulElementId){
     RSETB.Tool.call(this, xulElementId);
     this._xulSteadinessImage = document.getElementById(RSETB.STEADINESS_IMAGE);
 
-    this.setSteadiness = function(steady){
+    this.setSteadiness = function(response){
+
+        var steady = response.steadiness;
+
         switch (steady){
             case 1 : this._xulSteadinessImage.src = RSETB.STEADINESS_VALUE_1; break;
             case 2 : this._xulSteadinessImage.src = RSETB.STEADINESS_VALUE_2; break;
@@ -214,6 +219,34 @@ RSETB.SteadinessTool = function(xulElementId){
 
     this.switchOff = function(){
         this._xulSteadinessImage.src = RSETB.STEADINESS_OFF;
+    };
+};
+
+
+/**
+ * @constructor Tool that display how many comments a paper has
+ *
+ * @param xulElementId
+ */
+RSETB.CommentsTool = function(xulElementId){
+
+    // Inherits from Tool
+    RSETB.Tool.call(this, xulElementId);
+
+    this._xulCommentsLink = document.getElementById(RSETB.COMMENTS_TOOL_LINK);
+
+    this.setMessagesQty = function(response){
+
+        if(response.messagesQty < 1){
+            this.setNoMessages();
+        }
+        else{
+            this._xulCommentsLink.textContent = response.messagesQty;
+        }
+    };
+
+    this.setNoMessages = function(){
+        this._xulCommentsLink.textContent = 0;
     };
 };
 
@@ -266,8 +299,10 @@ RSETB.OutputRatingTool = function(xulElementId, inputRatingToolReference){
 
     // Set rating to stars
     this._setRating = function(rating){
+
+        var ratingObject = {rating: rating};
         // Call the InputRatingTool borrowed method
-        inputRatingToolReference.setRating.call(this, rating);
+        inputRatingToolReference.setRating.call(this, ratingObject);
     };
 
     // Turn on selected stars from left to right

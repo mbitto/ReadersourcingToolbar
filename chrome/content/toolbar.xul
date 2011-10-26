@@ -80,7 +80,7 @@
                     <image id="rsour_commentsDescImage" />
                 </box>
                 <description class="rsour_text">Comments: </description>
-                <description class="rsour_link text-link"></description>
+                <description id="rsour_commentsLink" class="rsour_link text-link"></description>
             </toolbaritem>
 
             <!--Displays that current paper is not in Readersourcing database-->

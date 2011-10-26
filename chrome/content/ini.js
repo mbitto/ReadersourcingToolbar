@@ -190,6 +190,16 @@ RSETB.STEADINESS_TOOL = "rsour_steadinessTool";
 RSETB.STEADINESS_IMAGE = "rsour_steadinessImage";
 
 /**
+ * @constant id name of xul steadiness image
+ */
+RSETB.COMMENTS_TOOL_CONTAINER = "rsour_commentsTool";
+
+/**
+ * @constant id name of xul steadiness image
+ */
+RSETB.COMMENTS_TOOL_LINK = "rsour_commentsLink";
+
+/**
  * @constant id name of xul container for output rating tool
  */
 RSETB.OUTPUT_RATING_TOOL = "rsour_outputRatingTool";
