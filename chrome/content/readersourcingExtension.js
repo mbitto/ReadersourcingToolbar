@@ -82,19 +82,28 @@ RSETB.readersourcingExtension = {
         inputRating.subscribe(steadinessTool.setSteadiness, "new-input-rating");
         inputRating.subscribe(steadinessTool.switchOff, "no-input-rating");
 
-        var commentsTool = new RSETB.CommentsTool(RSETB.COMMENTS_TOOL_CONTAINER);
+        var commentsTool = new RSETB.CommentsTool(RSETB.COMMENTS_TOOL_CONTAINER, RSETB.COMMENTS_TOOL_LINK);
         commentsTool.registerUIEvent(function(){
            self.openNewTab(RSETB.HOME_PAGE + "paper/id/" + inputRating.getPaperId());
         });
 
-        commentsTool.setMessagesQty({messagesQty : 58});
-
         inputRating.subscribe(commentsTool.setMessagesInfos, "new-input-rating");
         inputRating.subscribe(commentsTool.setNoMessages, "no-input-rating");
 
+        var suggestPaperTool = new RSETB.Tool("rsour_suggestPaperTool");
+        suggestPaperTool.setActiveElement("rsour_suggestPaperLink");
+        suggestPaperTool.registerUIEvent(function(){
+            var currentUrl = getBrowser().mCurrentBrowser.currentURI.spec;
+            self.openNewTab(RSETB.HOME_PAGE + "suggestPaper/url/" + currentUrl);
+        });
+
+        var outputRating = RSETB.outputRating(ratingResponseParser);
+
         var outputRatingTool = new RSETB.OutputRatingTool(RSETB.OUTPUT_RATING_TOOL, inputRatingTool);
-        outputRatingTool.registerUIEvent(function(rating){
-            FBC().log("called with: " + rating);
+        outputRatingTool.show(false);
+        outputRatingTool.registerUIEvent(function(){
+            var rating = outputRatingTool.getRating();
+            outputRating.setRating(rating);
         });
     }
 };

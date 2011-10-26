@@ -17,12 +17,17 @@ var RSETB = RSETB || {};
 
 RSETB.Tool = function(xulElementId){
 
-    FBC().log("Tool initialized");
+    FBC().log("Tool binded to " + xulElementId + " initialized");
 
      // XUL DOM element reference
     this._xulElementId = xulElementId;
     this._xulElementReference = document.getElementById(xulElementId);
+
+    // By default active element is the same as container element
+    this._xulActiveElementReference = this._xulElementReference;
     this._callback = null;
+
+    this._enebled = true;
 
     /**
      * Set disabled state and add or remove associated event listener
@@ -30,21 +35,18 @@ RSETB.Tool = function(xulElementId){
      * @param disable boolean
      */
     this._setDisabled = function(disable){
-        var enable = !disable;
-        if(enable && this._xulElementReference.disabled){
-            this._xulElementReference.addEventListener('click', function(){this._executeCallback()}, false);
-        }
-        else if (disable && !this._xulElementReference.disabled){
-            this._xulElementReference.removeEventListener('click', function(){ this._executeCallback()}, false);
-        }
-        this._xulElementReference.disabled = disable;
+        this._enebled = !disable;
+        this._xulActiveElementReference.disabled = disable;
+    };
+
+    this.setActiveElement = function(activeElement){
+        this._xulActiveElementReference = document.getElementById(activeElement);
     };
 
     /**
      * Register a function to call when click event is generated from this tool
      *
      * @param cb callback
-     * @param par one or more params for callback function
      */
     this.registerUIEvent = function(cb){
         if(this._callback !== null){
@@ -53,10 +55,10 @@ RSETB.Tool = function(xulElementId){
         this._callback = cb;
         // Use self because this method is public and we need to bind *this* to this object
         var self = this;
-        this._xulElementReference.addEventListener('click', function(e){
-            var args = Array.prototype.slice.call(arguments);
-            args.shift();
-            self._callback.call(self, e, args)
+        this._xulActiveElementReference.addEventListener('click', function(e){
+            if(self._enebled){
+                self._callback.call(self, e);
+            }
         }, false);
     };
 
@@ -68,7 +70,7 @@ RSETB.Tool = function(xulElementId){
         this._setDisabled(true);
     };
 
-    this.hide = function(visible){
+    this.show = function(visible){
         this._xulElementReference.setAttribute("style", visible ? "display : -moz-inline-box" : "display : none");
     };
 
@@ -228,12 +230,12 @@ RSETB.SteadinessTool = function(xulElementId){
  *
  * @param xulElementId
  */
-RSETB.CommentsTool = function(xulElementId){
+RSETB.CommentsTool = function(xulElementId, xulActiveElementId){
 
     // Inherits from Tool
     RSETB.Tool.call(this, xulElementId);
 
-    this._xulCommentsLink = document.getElementById(RSETB.COMMENTS_TOOL_LINK);
+    this.setActiveElement(xulActiveElementId);
 
     this.setMessagesQty = function(response){
 
@@ -241,13 +243,23 @@ RSETB.CommentsTool = function(xulElementId){
             this.setNoMessages();
         }
         else{
-            this._xulCommentsLink.textContent = response.messagesQty;
+            this._xulActiveElementReference.textContent = response.messagesQty;
+            this._xulActiveElementReference.setAttribute("class", "text-link rsour_link");
+            this._setDisabled(false);
+            // TODO: change baloon color
         }
     };
 
     this.setNoMessages = function(){
-        this._xulCommentsLink.textContent = 0;
+        this._xulActiveElementReference.textContent = 0;
+        this._xulActiveElementReference.removeAttribute("class");
+        this._xulActiveElementReference.setAttribute("class", "rsour_link");
+        this._setDisabled(true);
     };
+
+    // Initialize with no messages
+    this.setNoMessages();
+
 };
 
 
@@ -260,6 +272,8 @@ RSETB.OutputRatingTool = function(xulElementId, inputRatingToolReference){
 
     // Inherits from Tool
     RSETB.Tool.call(this, xulElementId);
+
+    this.setActiveElement(RSETB.OUTPUT_RATING_SUBMIT_BUTTON);
 
     this._xulStarsContainer = document.getElementById(RSETB.OUTPUT_RATING_STARS_CONTAINER);
     this._xulSubmitButton = document.getElementById(RSETB.OUTPUT_RATING_SUBMIT_BUTTON);
@@ -372,7 +386,7 @@ RSETB.OutputRatingTool = function(xulElementId, inputRatingToolReference){
         }
     };
 
-    // Overwrite Tool method setDisable
+    // Overwrite Tool method setDisabled
     this.setDisabled = function(disable){
         if(disable){
             this._switchOffStars();
@@ -384,4 +398,8 @@ RSETB.OutputRatingTool = function(xulElementId, inputRatingToolReference){
             this._starsInactive = false;
         }
     };
+
+    this.getRating = function(){
+        return this._rating;
+    }
 };

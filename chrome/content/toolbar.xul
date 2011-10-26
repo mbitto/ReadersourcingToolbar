@@ -17,6 +17,7 @@
     <script type="application/x-javascript" src="chrome://readersourcingToolbar/content/authentication.js" />
     <script type="application/x-javascript" src="chrome://readersourcingToolbar/content/loginModal.js" />
     <script type="application/x-javascript" src="chrome://readersourcingToolbar/content/inputRating.js" />
+    <script type="application/x-javascript" src="chrome://readersourcingToolbar/content/outputRating.js" />
     <script type="application/x-javascript" src="chrome://readersourcingToolbar/content/star.js" />
 
     <toolbox id="navigator-toolbox">
@@ -62,7 +63,6 @@
                 </hbox>
             </toolbaritem>
 
-
             <!--Steadiness of current rating-->
 
             <toolbaritem id="rsour_steadinessTool">
@@ -84,16 +84,14 @@
             </toolbaritem>
 
             <!--Displays that current paper is not in Readersourcing database-->
-            <!--
-            <toolbaritem id="rsour_suggestPaperWidget">
+            <toolbaritem id="rsour_suggestPaperTool">
                 <toolbarseparator />
                 <description class="rsour_text" value="Paper not in readersourcing." />
                 <box class="rsour_image">
                     <image id="rsour_suggestItImage" />
                 </box>
-                <description class ="rsour_link text-link" href="http://www.readersourcing.org" value="Suggest it" />
+                <description id="rsour_suggestPaperLink" class ="rsour_link text-link" href="http://www.readersourcing.org" value="Suggest it" />
             </toolbaritem>
-            -->
 
             <!--Output rating panel-->
             <toolbaritem id="rsour_outputRatingTool">

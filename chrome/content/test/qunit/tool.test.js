@@ -56,10 +56,34 @@ test('Register callback and test it', function(){
 });
 
 test('Disable tool', function(){
+
+
+    var callbackResult = null;
+    var callback = function(event, args){
+          callbackResult = "called with: " + event + ", " + args[0] + ' and ' + args[1];
+    };
+    var generateError = function(){
+        tool.registerUIEvent(callback, "another one");
+    };
     var tool = new RSETB.Tool('xulElementStub');
+
+    tool.registerUIEvent(function(event, args){
+        callback(event, args);
+    });
+
+    this.xulElementStub.simulateClick('anEvent', 'test1', 'test2');
+    equal(callbackResult, "called with: anEvent, test1 and test2", "Result of executeCallback function must include 2 params");
+
+    callbackResult = null;
+
     tool.setDisabled();
+    this.xulElementStub.simulateClick('anEvent', 'test1', 'test2');
     equal(tool.getDisabledState(), true, "Tool state should be disabled");
+    equal(callbackResult, null, "No callback should has been called");
+
     tool.setEnabled();
+    this.xulElementStub.simulateClick('anEvent', 'test1', 'test2');
     equal(tool.getDisabledState(), false, "Tool state shouldn't be disabled");
+    equal(callbackResult, "called with: anEvent, test1 and test2", "Result of executeCallback function must include 2 params");
 
 });

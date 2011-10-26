@@ -34,7 +34,7 @@ module('outputRating', {
 });
 
 
-test('Testing succesful input rating request', function(){
+test('Testing succesful output rating request', function(){
 
     var requestResult = [];
 
@@ -57,4 +57,5 @@ test('Testing succesful input rating request', function(){
     this.requests[0].respond(200, "Content-Type: text/xml", "<?xml version='1.0' encoding='UTF-8' standalone='yes'?><test></test>");
 
     deepEqual(requestResult, [3.8, 2], "Subscriber content should be 3.8 and 2");
+    equal(this.requests[0].method, "POST", "Request method is POST");
 });
