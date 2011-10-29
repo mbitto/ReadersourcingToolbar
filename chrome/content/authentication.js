@@ -21,26 +21,41 @@ RSETB.authentication = function(loginResponseParser, loginModal){
     // Get publisher methods
     var publisher = new MBJSL.Publisher();
 
-    // Password manager interface
-    var passwordManager = Components.classes["@mozilla.org/login-manager;1"].
-                            getService(Components.interfaces.nsILoginManager);
+    // get LoginInfo interface
+    var getLoginInfoInterface = function(){
+        return new Components.Constructor("@mozilla.org/login-manager/loginInfo;1",
+                        Components.interfaces.nsILoginInfo);
+    };
 
-    // Local storage interfaces
-    var ios = Components.classes["@mozilla.org/network/io-service;1"]
-          .getService(Components.interfaces.nsIIOService);
-    var ssm = Components.classes["@mozilla.org/scriptsecuritymanager;1"]
-          .getService(Components.interfaces.nsIScriptSecurityManager);
-    var dsm = Components.classes["@mozilla.org/dom/storagemanager;1"]
-          .getService(Components.interfaces.nsIDOMStorageManager);
+    /**
+     * Get password manager interface
+     */
+    var getPasswordManager = function(){
+        return Components.classes["@mozilla.org/login-manager;1"].
+            getService(Components.interfaces.nsILoginManager);
+    };
 
-    var uri = ios.newURI(RSETB.STORAGE_URI, "", null);
-    var principal = ssm.getCodebasePrincipal(uri);
-    var storage = dsm.getLocalStorageForPrincipal(principal, "");
+    /**
+     * Get local storage interfaces
+     */
+    var getLocalStorageInterface = function(){
+        var ios = Components.classes["@mozilla.org/network/io-service;1"]
+              .getService(Components.interfaces.nsIIOService);
+        var ssm = Components.classes["@mozilla.org/scriptsecuritymanager;1"]
+              .getService(Components.interfaces.nsIScriptSecurityManager);
+        var dsm = Components.classes["@mozilla.org/dom/storagemanager;1"]
+              .getService(Components.interfaces.nsIDOMStorageManager);
+
+        var uri = ios.newURI(RSETB.STORAGE_URI, "", null);
+        var principal = ssm.getCodebasePrincipal(uri);
+        return dsm.getLocalStorageForPrincipal(principal, "");
+    };
 
     /**
      * Get last session login status
      */
     var isLoggedIn = function(){
+        var storage = getLocalStorageInterface();
         var loggedIn = storage.getItem("RSETB_loggedIn");
         FBC().log("is logged in : " + (loggedIn !== null && loggedIn !== false));
         return loggedIn !== null && loggedIn !== false;
@@ -50,6 +65,7 @@ RSETB.authentication = function(loginResponseParser, loginModal){
      * Save login status to true for next session
      */
     var setLoggedIn = function(){
+        var storage = getLocalStorageInterface();
         storage.setItem("RSETB_loggedIn", true);
         FBC().log("loggedIn set to: " + true);
     };
@@ -58,6 +74,7 @@ RSETB.authentication = function(loginResponseParser, loginModal){
      * Save login status to false for next session
      */
     var setNotLoggedIn = function(){
+        var storage = getLocalStorageInterface();
         storage.removeItem("RSETB_loggedIn", false);
         FBC().log("loggedIn set to: " + false);
     };
@@ -68,6 +85,7 @@ RSETB.authentication = function(loginResponseParser, loginModal){
      * @param username
      */
     var saveUsername = function(username){
+        var storage = getLocalStorageInterface();
         storage.setItem("RSETB_username", username);
         FBC().log("saved username: " + username);
     };
@@ -76,6 +94,7 @@ RSETB.authentication = function(loginResponseParser, loginModal){
      * Get the last saved username
      */
     var getLastSavedUsername = function(){
+        var storage = getLocalStorageInterface();
         var username = storage.getItem("RSETB_username");
         FBC().log("username retrieved: " + username);
         return username;
@@ -89,16 +108,15 @@ RSETB.authentication = function(loginResponseParser, loginModal){
      */
     var storePassword = function(username, password){
 
-        // LoginInfo interface
-        var nsLoginInfo = new Components.Constructor("@mozilla.org/login-manager/loginInfo;1",
-                                Components.interfaces.nsILoginInfo);
-
+        var nsLoginInfo = getLoginInfoInterface();
         var userLogin = new nsLoginInfo;
         userLogin.QueryInterface(Ci.nsILoginMetaInfo);
         userLogin.init(RSETB.STORAGE_URI, "", null, username, password, "", "");
 
         var existentLogin = retrieveLogin(username);
-        
+
+        var passwordManager = getPasswordManager();
+
         // New password for this username
         if (null === existentLogin){
             passwordManager.addLogin(userLogin);
@@ -121,6 +139,7 @@ RSETB.authentication = function(loginResponseParser, loginModal){
     var retrieveLogin = function(username){
         try {
             // Find users for the given parameters
+            var passwordManager = getPasswordManager();
             var logins = passwordManager.findLogins({}, RSETB.STORAGE_URI, "", null);
 
             // Find user from returned array of nsILoginInfo objects
@@ -133,6 +152,7 @@ RSETB.authentication = function(loginResponseParser, loginModal){
             return null;
         }
         catch(ex) {
+            // TODO: manage this exception
             FBC().log(ex);
            // This will only happen if there is no nsILoginManager component class
         }

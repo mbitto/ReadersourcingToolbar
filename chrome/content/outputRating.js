@@ -51,11 +51,9 @@ RSETB.outputRating = function(ratingResponseParser, commentModal){
                 }
 
                 if(outcome == "ok"){
-                    publisher.publish("rating", response.rating);
-                    publisher.publish("steadiness", response.steadiness);
+                    publisher.publish("new-input-rating", response);
                 }else{
-                    publisher.publish("no-rating", response.description);
-                    publisher.publish("no-steadiness", response.description);
+                    publisher.publish("no-input-rating", response);
                 }
             },
 

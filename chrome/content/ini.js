@@ -259,6 +259,11 @@ RSETB.CLEAR_CACHE_DEFAULT_TIME = 60;
  */
 RSETB.MAX_PAPER_IN_CACHE = 100;
 
+/**
+ * @constant default time to check for new messages
+ */
+RSETB.CHECK_FOR_MESSAGES_DEFAULT_TIME = 3;
+
 
 // Initialize toolbar when all contents are loaded
 /*window.addEventListener("load", function(){

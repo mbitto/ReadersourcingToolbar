@@ -112,7 +112,7 @@ RSETB.readersourcingExtension = {
         var test = new RSETB.Tool("rsour_test");
         test.registerUIEvent(function(){
             outputRating.openCommentModal();
-        })
+        });
 
 
 

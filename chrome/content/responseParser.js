@@ -241,26 +241,33 @@ RSETB.GetMessagesResponseParser = function(){
     this.checkResponse = function(){
         var outcome = this.getOutcome();
         if(outcome === "ok"){
-            var description = this.getXMLElementContent("description");
             var messagesRoot = this.getXMLElement("messages");
             var messageQty = this.getXMLAttribute("count", messagesRoot);
-            var messages = this.getXMLElements("message", messagesRoot);
-            var messagesQueue = [];
-            for(var i=0; i<messageQty; i++){
-                messagesQueue.push(
-                    {
-                        id : this.getXMLAttribute("id", messages[i]),
-                        sender: this.getXMLElementContent("sender", messages[i]),
-                        date: this.getXMLElementContent("date", messages[i]),
-                        title: this.getXMLElementContent("title", messages[i])
-                    }
-                );
+            if (messageQty > 0 ){
+                var description = this.getXMLElementContent("description");
+                var messages = this.getXMLElements("message", messagesRoot);
+                var messagesQueue = [];
+                for(var i=0; i<messageQty; i++){
+                    messagesQueue.push(
+                        {
+                            id : this.getXMLAttribute("id", messages[i]),
+                            sender: this.getXMLElementContent("sender", messages[i]),
+                            date: this.getXMLElementContent("date", messages[i]),
+                            title: this.getXMLElementContent("title", messages[i])
+                        }
+                    );
+                }
+                return {
+                    description : description,
+                    messageQty : messageQty,
+                    messages : messagesQueue
+                };
             }
-            return {
-                description : description,
-                messageQty : messageQty,
-                messages : messagesQueue
-            };
+            else{
+                return {
+                    messagesQty : 0
+                };
+            }
         }
         else {
             return this.getXMLElementContent("description");
