@@ -57,7 +57,8 @@ RSETB.RequestManager = function(destinationURL, requestType, async){
         };
         var body = null;
         if(requestType === "POST"){
-            body = outputMessage
+            httpRequest.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+            body = outputMessage;
         }
         httpRequest.send(body);
         //abortAfter(abortTime);
@@ -105,6 +106,7 @@ RSETB.RequestManager = function(destinationURL, requestType, async){
             httpFormattedString = httpFormattedString.slice(0, httpFormattedString.length - 1);
             httpFormattedString = encodeURI(httpFormattedString);
         }
+
         return connect(httpFormattedString);
     };
 };

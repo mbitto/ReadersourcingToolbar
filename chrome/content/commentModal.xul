@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+<?xml-stylesheet href="chrome://readersourcingToolbar/skin/style.css" type="text/css"?>
+
+<dialog
+    id = "rsour_commentModal"
+    title = "Comment this paper"
+    orient = "vertical"
+    onload = "commentModal = window.arguments[0]; commentModal.addModalScope(this);"
+    ondialogaccept = "commentModal.doOk(); return false;"
+    ondialogcancel = "commentModal.doCancel(); return false;"
+    xmlns = "http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
+
+    <script> var commentModal; </script>
+
+    <vbox>
+        <spacer flex="1"/>
+        <label id="rsour_commentModalDescription" control ="rsour_commentModalTextbox">
+            Write your comment for this paper.
+        </label>
+        <textbox id="rsour_commentModalTextbox" rows="10" multiline="true"  maxlength="1000" />
+    </vbox>
+</dialog>

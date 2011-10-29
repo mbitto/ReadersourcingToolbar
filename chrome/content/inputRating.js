@@ -25,6 +25,9 @@ RSETB.inputRating = function(ratingResponseParser){
         return paperId;
     };
 
+    // Cache where recent results are saved
+    var cache = RSETB.cache();
+
     /**
      * Request rating and steadiness info about a specific document, given an url
      *
@@ -32,40 +35,60 @@ RSETB.inputRating = function(ratingResponseParser){
      */
     publisher.requestRating = function(url){
 
-        requestManager.request(
-            // Params of request
-            {
-                url : url
-            },
-
-            // Successful request callback
-            function(doc){
-                ratingResponseParser.setDocument(doc, 'get-paper-vote');
-                // Parse XML document
-                try{
-                    var outcome = ratingResponseParser.getOutcome();
-                    var response = ratingResponseParser.checkResponse();
-                }
-                catch(error){
-                    //TODO: manage this error and test it
-                    alert("Error not managed yet: " + error);
-                }
-
-                if(outcome == "ok"){
-                    paperId = response.id;
-                    publisher.publish("new-input-rating", response);
-                }else{
-                    publisher.publish("no-input-rating", response);
-                }
-            },
-
-            // Failed request callback
-            function(error){
-                //TODO: manage this failed request and test it
-                alert("Failed request not managed yet: " + error);
+        // If paper is already in cache get it
+        if(cache.isPaperInCache(url)){
+            var paper = cache.getPaper(url);
+            if(paper.outcome === "ok"){
+                paperId = paper.response.id;
+                publisher.publish("new-input-rating", paper.response);
             }
-        );
-    };
+            else{
+                publisher.publish("no-input-rating", paper.response);
+            }
+        }
+        // Make a request to server
+        else{
+            requestManager.request(
+                // Params of request
+                {
+                    url : url
+                },
 
+                // Successful request callback
+                function(doc){
+                    ratingResponseParser.setDocument(doc, 'get-paper-vote');
+                    // Parse XML document
+                    try{
+                        var outcome = ratingResponseParser.getOutcome();
+                        var response = ratingResponseParser.checkResponse();
+                    }
+                    catch(error){
+                        //TODO: manage this error and test it
+                        alert("Error not managed yet: " + error);
+                    }
+
+                    var paper = {url: url};
+
+                    if(outcome == "ok"){
+                        paper.outcome = outcome;
+                        paper.response = response;
+                        cache.addPaper(paper);
+                        paperId = response.id;
+                        publisher.publish("new-input-rating", response);
+                    }else{
+                        paper.outcome = outcome;
+                        paper.response = response;
+                        publisher.publish("no-input-rating", response);
+                    }
+                },
+
+                // Failed request callback
+                function(error){
+                    //TODO: manage this failed request and test it
+                    alert("Failed request not managed yet: " + error);
+                }
+            );
+        }
+    };
     return publisher;
 };

@@ -10,9 +10,7 @@
     ondialogcancel = "loginModal.doCancel(); return false;"
     xmlns = "http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
 
-    <script>
-        var loginModal;
-    </script>
+    <script> var loginModal; </script>
 
     <vbox>
         <spacer flex="1"/>

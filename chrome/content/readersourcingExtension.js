@@ -28,16 +28,9 @@ RSETB.readersourcingExtension = {
 
         var self = this;
 
-        // Initialize browsingListener
-        var browsingListener = RSETB.browsingListener();
-        browsingListener.init();
-
-        // Initialize downloadListener
-        var downloadListener = RSETB.downloadListener();
-        downloadListener.init();
-
         var loginModal = RSETB.loginModal();
-        var authentication = RSETB.authentication(loginModal);
+        var loginResponseParser = new RSETB.LoginResponseParser();
+        var authentication = RSETB.authentication(loginResponseParser, loginModal);
 
         // Login tool of main menu
         var loginTool = new RSETB.Tool(RSETB.LOGIN_ENTRY);
@@ -50,11 +43,12 @@ RSETB.readersourcingExtension = {
         logoutTool.registerUIEvent(function(){
             authentication.logout();
         });
+        logoutTool.setDisabled();
 
         // Subscribe tools to authentication publications
         authentication.subscribe(logoutTool.setEnabled, "login");
-        authentication.subscribe(logoutTool.setDisabled, "logout");
         authentication.subscribe(loginTool.setDisabled, "login");
+        authentication.subscribe(logoutTool.setDisabled, "logout");
         authentication.subscribe(loginTool.setEnabled, "logout");
 
         // Open user profile tool of main menu
@@ -87,8 +81,16 @@ RSETB.readersourcingExtension = {
            self.openNewTab(RSETB.HOME_PAGE + "paper/id/" + inputRating.getPaperId());
         });
 
-        inputRating.subscribe(commentsTool.setMessagesInfos, "new-input-rating");
-        inputRating.subscribe(commentsTool.setNoMessages, "no-input-rating");
+        inputRating.subscribe(commentsTool.setCommentsQty, "new-input-rating");
+        inputRating.subscribe(commentsTool.setNoComments, "no-input-rating");
+
+        // Initialize browsingListener
+        var browsingListener = RSETB.browsingListener(inputRating);
+        browsingListener.init();
+
+        // Initialize downloadListener
+        var downloadListener = RSETB.downloadListener();
+        downloadListener.init();
 
         var suggestPaperTool = new RSETB.Tool("rsour_suggestPaperTool");
         suggestPaperTool.setActiveElement("rsour_suggestPaperLink");
@@ -97,7 +99,8 @@ RSETB.readersourcingExtension = {
             self.openNewTab(RSETB.HOME_PAGE + "suggestPaper/url/" + currentUrl);
         });
 
-        var outputRating = RSETB.outputRating(ratingResponseParser);
+        var commentModal = RSETB.commentModal();
+        var outputRating = RSETB.outputRating(ratingResponseParser, commentModal);
 
         var outputRatingTool = new RSETB.OutputRatingTool(RSETB.OUTPUT_RATING_TOOL, inputRatingTool);
         outputRatingTool.show(false);
@@ -105,5 +108,16 @@ RSETB.readersourcingExtension = {
             var rating = outputRatingTool.getRating();
             outputRating.setRating(rating);
         });
+
+        var test = new RSETB.Tool("rsour_test");
+        test.registerUIEvent(function(){
+            outputRating.openCommentModal();
+        })
+
+
+
+        // Leave this as last action
+        authentication.autoLogin();
+
     }
 };

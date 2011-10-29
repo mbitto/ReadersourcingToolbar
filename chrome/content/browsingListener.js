@@ -12,7 +12,25 @@ var RSETB = RSETB || {};
 /**
  * Implements nsIWebProgressListener interface
  */
-RSETB.browsingListener = function(){
+RSETB.browsingListener = function(inputRating){
+
+    var redirectedUrl = [];
+
+    var redirectedFromRS = function(url){
+        return redirectedUrl.indexOf(url) != -1;
+    };
+
+    var removeFromRedirectedPapers = function(url){
+        redirectedUrl.splice(redirectedUrl.indexOf(url), 1);
+    };
+
+    var isPdf = function(aProgress){
+        return aProgress.DOMWindow.document.contentType === "application/pdf";
+    };
+
+    var isBlank = function(aURI){
+        return aURI.spec === "about:blank";
+    };
 
     // Constant to identify abort actions
     const NS_BINDING_ABORTED = 0x804b0002;
@@ -38,58 +56,65 @@ RSETB.browsingListener = function(){
         onLocationChange : function(aProgress, aRequest, aURI){
 
             // Check current URI is not a blank window
-            if (aURI !== null && aURI.spec !== "about:blank"){
+            if (aURI && !isBlank(aURI)){
+
                 var currentURI = aURI.spec;
-                // Check document content type is a pdf
-                if(aProgress.DOMWindow.document.contentType === "application/pdf"){
-                    // Check if currentURI is a redirection of RS getFile
-                    if(currentURI.indexOf(RSETB.URL_GET_PAPER_PDF) < 0){
 
-                        // Suspend current request
-                        if(aRequest){
-                            //aRequest.suspend();
-                            //FBC().log('suspeded');
-                        }
+                FBC().log("current URL id: " + aURI.spec);
 
-                        // Check if document is in RS
-                         var params = {
-                            url : currentURI
-                        };
-                        var requestManager = new RSETB.RequestManager(RSETB.URL_GET_PAPER_PDF, "GET", true);
-                        requestManager.request(params,
-                            // Successful request callback
-                            function(response){
+                // If paper is in RS get it from it
+                if(aRequest && isPdf(aProgress) && !redirectedFromRS(currentURI)){
 
-                                var responseParser = new RSETB.GetPaperResponseParser();
-                                responseParser.setDocument(response, "get-paper-pdf");
-                                var outcome = responseParser.getOutcome();
-                                var fileURL = responseParser.getXMLElementContent("url");
+                    // Cancel current request
+                    FBC().log('cancelled');
+                    aRequest.cancel(NS_BINDING_ABORTED);
 
-                                // File is in RS, download it
-                                if(outcome === "ok"){
-                                    //aRequest.cancel(NS_BINDING_ABORTED);
-                                    //gBrowser.loadURI(fileURL);
+                    // Check if document is in RS
+                     var params = {
+                        url : currentURI
+                    };
 
-                                    //FBC().log('resuming');
-                                    //window.location.replace(fileURL);
-                                }
+                    // Request for Readersourcing paper
+                    var requestManager = new RSETB.RequestManager(RSETB.URL_GET_PAPER_PDF, "GET", true);
+                    requestManager.request(params,
+                        // Successful request callback
+                        function(response){
 
-                                // File in not in RS, resume download
-                                else{
-                                    /*if(aRequest){
-                                        aRequest.resume();
-                                        FBC().log('resumed');
-                                    }*/
-                                }
-                            },
+                            var responseParser = new RSETB.GetPaperResponseParser();
+                            responseParser.setDocument(response, "get-paper-pdf");
+                            var outcome = responseParser.getOutcome();
+                            var readersourcingFileURL = responseParser.getXMLElementContent("url");
 
-                            // Failed request callback
-                            function(){
-                                // TODO: manage failed request
+                            // Add URL to redirected URL array
+                            redirectedUrl.push(currentURI);
+
+                            // File is in RS, download it
+                            if(outcome === "ok"){
+                                FBC().log('redirecting to: ' + readersourcingFileURL);
+                                gBrowser.loadURI(readersourcingFileURL);
                             }
-                        );
-                    }
+
+                            // File in not in RS, restart download download
+                            else{
+                                redirectedUrl.push(currentURI);
+                                FBC().log('redirected to the same url');
+                                gBrowser.loadURI(currentURI);
+                            }
+                        },
+
+                        // Failed request callback
+                        function(){
+                            // TODO: manage failed request
+                        }
+                    );
                 }
+                else if(redirectedFromRS(currentURI)){
+                    FBC().log("removed from redirect");
+                    removeFromRedirectedPapers(currentURI);
+                }
+                
+                // Get paper vote
+                inputRating.requestRating(currentURI);
             }
         },
 

@@ -12,7 +12,7 @@ var RSETB = RSETB || {};
 /**
  * Singleton that manages requests of input rating and steadiness
  */
-RSETB.outputRating = function(ratingResponseParser){
+RSETB.outputRating = function(ratingResponseParser, commentModal){
 
     var requestManager = new RSETB.RequestManager(RSETB.URL_SET_PAPER_VOTE, 'POST', true);
 
@@ -65,6 +65,29 @@ RSETB.outputRating = function(ratingResponseParser){
                 alert("Failed request not managed yet: " + error);
             }
         );
+    };
+
+    // Modal window options
+    var windowFeatures = "centerscreen, chrome, modal";
+
+    publisher.openCommentModal = function(){
+
+        commentModal.addOkCallback(this.modalOk);
+        commentModal.addCancelCallback(this.modalCancel);
+
+        window.openDialog(RSETB.COMMENT_MODAL, "commentModal", windowFeatures, commentModal);
+    };
+
+    publisher.modalOk = function(comment){
+        //addComment(comment);
+        FBC().log("add comment: " + comment);
+        commentModal.closeModal();
+    };
+
+    publisher.modalCancel = function(){
+        //noComment();
+        FBC().log("no comment");
+        commentModal.closeModal();
     };
 
     return publisher;

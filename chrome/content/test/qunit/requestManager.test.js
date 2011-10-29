@@ -73,7 +73,6 @@ test('Testing successful asynchronous POST request', function(){
         asyncRequests.push(xhr);
     };
 
-
     var callback = sinon.spy();
 
     /* Testing asynchronous request */
@@ -81,12 +80,16 @@ test('Testing successful asynchronous POST request', function(){
     requestManager.request(this.testParams, callback, callback);
 
     /* Set request response to OK, and set body of response */
-    asyncRequests[0].respond(200, "Content-type: text/xml", this.XMLDocument);
+    asyncRequests[0].respond(200, "Content-Type: text/xml", this.XMLDocument);
 
+    var contentType = {"Content-Type" : "application/x-www-form-urlencoded;charset=utf-8"};
+
+    deepEqual(asyncRequests[0].requestHeaders, contentType, "POST request must have content-type : 'application/x-www-form-urlencoded'");
+    equal(asyncRequests[0].requestBody, "name=manuel&ninja=true&projects=3", "Content of body");
+    ok(asyncRequests[0].async, "Request should be async");
+    equal(asyncRequests[0].method, "POST", "method should be POST");
     notEqual(asyncRequests[0].responseXML, null, "XML document returned must not be null");
-
     ok(callback.calledWith(asyncRequests[0].responseXML), "Callback function arguments should be a DOM representation of test XML document");
-
     deepEqual(asyncRequests[0].responseXML, this.parsedXMLDocument, "Callback function arguments should be a DOM representation of test XML document");
 
 });
@@ -145,5 +148,3 @@ test('Testing failed synchronous POST request', function(){
     ok(response, "Callback function arguments should be an error response text");
 
 });
-
-

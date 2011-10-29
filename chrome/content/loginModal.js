@@ -117,8 +117,6 @@ RSETB.loginModal = function(){
          * login has been accepted from the server
          */
         successfulLogin : function(response){
-            FBC().log('success');
-            FBC().log(response);
             welcomeMessage();
             this.closeModal(1000);
         },
@@ -127,8 +125,6 @@ RSETB.loginModal = function(){
          * Login hasn't been accepted from the server
          */
         failedLogin : function (response){
-            FBC().log('failed');
-            FBC().log(response.messages);
             askForRepeatLogin();
         },
 

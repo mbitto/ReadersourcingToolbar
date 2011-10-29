@@ -36,8 +36,8 @@ test('Get name and id', function(){
 test('Register callback and test it', function(){
 
     var callbackResult = null;
-    var callback = function(event, args){
-          callbackResult = "called with: " + event + ", " + args[0] + ' and ' + args[1];
+    var callback = function(event){
+          callbackResult = "called with event: " + event;
     };
     var generateError = function(){
         tool.registerUIEvent(callback, "another one");
@@ -48,9 +48,9 @@ test('Register callback and test it', function(){
         callback(event, args);
     });
 
-    this.xulElementStub.simulateClick('anEvent', 'test1', 'test2');
+    this.xulElementStub.simulateClick('anEvent');
 
-    equal(callbackResult, "called with: anEvent, test1 and test2", "Result of executeCallback function must include 2 params");
+    equal(callbackResult, "called with event: anEvent", "Result of executeCallback function");
     raises(generateError, "Callback function is already defined for testTool tool", "Cannot register more than one callback function");
 
 });
@@ -60,7 +60,7 @@ test('Disable tool', function(){
 
     var callbackResult = null;
     var callback = function(event, args){
-          callbackResult = "called with: " + event + ", " + args[0] + ' and ' + args[1];
+          callbackResult = "called with event: " + event;
     };
     var generateError = function(){
         tool.registerUIEvent(callback, "another one");
@@ -71,19 +71,19 @@ test('Disable tool', function(){
         callback(event, args);
     });
 
-    this.xulElementStub.simulateClick('anEvent', 'test1', 'test2');
-    equal(callbackResult, "called with: anEvent, test1 and test2", "Result of executeCallback function must include 2 params");
+    this.xulElementStub.simulateClick('anEvent');
+    equal(callbackResult, "called with event: anEvent", "Result of executeCallback function");
 
     callbackResult = null;
 
     tool.setDisabled();
-    this.xulElementStub.simulateClick('anEvent', 'test1', 'test2');
+    this.xulElementStub.simulateClick('anEvent');
     equal(tool.getDisabledState(), true, "Tool state should be disabled");
     equal(callbackResult, null, "No callback should has been called");
 
     tool.setEnabled();
-    this.xulElementStub.simulateClick('anEvent', 'test1', 'test2');
+    this.xulElementStub.simulateClick('anEvent');
     equal(tool.getDisabledState(), false, "Tool state shouldn't be disabled");
-    equal(callbackResult, "called with: anEvent, test1 and test2", "Result of executeCallback function must include 2 params");
+    equal(callbackResult, "called with event: anEvent", "Result of executeCallback");
 
 });

@@ -25,19 +25,24 @@ RSETB.URL_REQUESTS_LOGIN = RSETB.URL_REQUESTS + "login";
 RSETB.URL_REQUESTS_LOGOUT = RSETB.URL_REQUESTS + "logout";
 
 /**
- * @constant Parameter for get pdf paper requests
+ * @constant Parameter to get pdf paper requests
  */
 RSETB.URL_GET_PAPER_PDF = RSETB.URL_REQUESTS + "get-paper-pdf";
 
 /**
- * @constant Parameter for get pdf paper requests
+ * @constant Parameter to get pdf paper requests
  */
 RSETB.URL_GET_PAPER_VOTE = RSETB.URL_REQUESTS + "get-paper-vote";
 
 /**
- * @constant Parameter for set vote to an existing paper
+ * @constant Parameter to set vote to an existing paper
  */
 RSETB.URL_SET_PAPER_VOTE = RSETB.URL_REQUESTS + "set-paper-vote";
+
+/**
+ * @constant Parameter to get user messages qty
+ */
+RSETB.URL_REQUESTS_MESSAGES = RSETB.URL_REQUESTS + "get-msg";
 
 /**
  * @constant Readersourcing Homepage
@@ -55,9 +60,19 @@ RSETB.PASSWORD_RESET_PAGE = RSETB.HOME_PAGE + 'resetPassword/';
 RSETB.REGISTRATION_PAGE = RSETB.HOME_PAGE  + 'register/';
 
 /**
+ * @constant Fake uri used by extension to store some information in firefox
+ */
+RSETB.STORAGE_URI ="http://readersourcing.extension.toolbar.storage";
+
+/**
  * @constant Login modal window path
  */
 RSETB.LOGIN_MODAL ="chrome://readersourcingToolbar/content/loginModal.xul";
+
+/**
+ * @constant Login modal window path
+ */
+RSETB.COMMENT_MODAL ="chrome://readersourcingToolbar/content/commentModal.xul";
 
 /**
  * @constant Image reference of switched off star
@@ -163,6 +178,16 @@ RSETB.MODAL_FORGOT_PASSWORD_LINK = "rsour_modalForgotPassword";
  * @constant link to register new user present in login modal window
  */
 RSETB.MODAL_REGISTER_LINK = "rsour_modalRegisterNewUser";
+
+/**
+ * @constant text description of comment modal
+ */
+RSETB.MODAL_COMMENT_DESCRIPTION_TEXT = "rsour_commentModalDescription";
+
+/**
+ * @constant text field of comment modal
+ */
+RSETB.MODAL_COMMENT_FIELD = "rsour_commentModalTextbox";
 
 /**
  * @constant id name of xul element container of input rating tool

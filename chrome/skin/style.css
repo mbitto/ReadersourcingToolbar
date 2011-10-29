@@ -139,3 +139,7 @@
 #rsour_paneOptions groupbox>label{
     font-weight:bold;
  }
+
+#rsour_messagesInbox{
+    list-style-image: url("chrome://readersourcingToolbar/skin/messageOn.png");
+}

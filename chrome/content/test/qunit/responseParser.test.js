@@ -18,7 +18,6 @@ module('ResponseParser', {
 
 test("Testing login XML document with OK outcome", function(){
 
-
     /* XML Server response */
     var xmlDocument = "<?xml version='1.0' encoding='UTF-8' standalone='yes'?>"
                     + "<login>"
@@ -55,7 +54,6 @@ test("Testing login XML document with OK outcome", function(){
 
 
 test("Testing login XML document with KO outcome", function(){
-
 
     /* XML Server response */
     var xmlDocument = "<?xml version='1.0' encoding='UTF-8' standalone='yes'?>"
@@ -94,6 +92,7 @@ test("Testing get-paper-vote XML document with OK outcome", function(){
                     + "      <title>paper_title</title>"
                     + "      <rating>paper_rating</rating>"
                     + "      <steadiness>paper_steadiness</steadiness>"
+                    + "      <comments>10</comments>"
                     + "    </paper>"
                     + "  </response>"
                     + "</get-paper-vote>";
@@ -109,6 +108,7 @@ test("Testing get-paper-vote XML document with OK outcome", function(){
     equal(response.title, 'paper_title', "The title of paper");
     equal(response.rating, 'paper_rating', "Rating of paper");
     equal(response.steadiness, 'paper_steadiness', "Steadiness of paper");
+    equal(response.commentsQty, '10', "Comments quantity of paper");
 
 });
 
@@ -188,3 +188,62 @@ test("Testing get-paper-pdf XML document with KO outcome", function(){
     equal(response.messages[0].errorCode, "101", "First error code");
     equal(response.messages[1].errorMessage, "More strange server error", "Second error code");
 });
+
+
+test("Testing get-msg XML document with OK outcome", function(){
+
+    /* XML Server response */
+    var xmlDocument = "<?xml version='1.0' encoding='UTF-8' standalone='yes'?>"
+                    + "<get-msg>"
+                    + "  <response outcome = 'ok'>"
+                    + "    <description>Fetching New Messages for user Manuel</description>"
+                    + "      <messages count='2'>"
+                    + "         <message id='message_id'>"
+                    + "            <sender>sender1_email</sender>"
+                    + "            <date>message1_date</date>"
+                    + "            <title>message1_title</title>"
+                    + "         </message>"
+                    + "         <message id='message_id'>"
+                    + "            <sender>sender2_email</sender>"
+                    + "            <date>message2_date</date>"
+                    + "            <title>message2_title</title>"
+                    + "         </message>"
+                    + "     </messages>"
+                    + "  </response>"
+                    + "</get-msg>";
+
+    var parser = new DOMParser();
+    var parsedXMLDocument = parser.parseFromString(xmlDocument, "text/xml");
+
+    var getMessagesParser = new RSETB.GetMessagesResponseParser();
+    getMessagesParser.setDocument(parsedXMLDocument, 'get-msg');
+    var response = getMessagesParser.checkResponse();
+
+    equal(response.description, "Fetching New Messages for user Manuel", "A Description");
+    equal(response.messageQty, "2", "Messages quantity");
+    equal(response.messages[0].sender, "sender1_email", "Sender email");
+    equal(response.messages[1].date, "message2_date", "Sender date");
+    equal(response.messages[1].title, "message2_title", "Sender title");
+});
+
+
+test("Testing get-msg XML document with KO outcome", function(){
+
+    /* XML Server response */
+    var xmlDocument = "<?xml version='1.0' encoding='UTF-8' standalone='yes'?>"
+                    + "<get-msg>"
+                    + "  <response outcome = 'ko'>"
+                    + "    <description>You Are Not Logged in. Have you disabled support for session cookies?</description>"
+                    + "  </response>"
+                    + "</get-msg>";
+
+    var parser = new DOMParser();
+    var parsedXMLDocument = parser.parseFromString(xmlDocument, "text/xml");
+
+    var getMessagesParser = new RSETB.GetMessagesResponseParser();
+    getMessagesParser.setDocument(parsedXMLDocument, 'get-msg');
+    var response = getMessagesParser.checkResponse();
+
+    equal(response, "You Are Not Logged in. Have you disabled support for session cookies?", "An error Description");
+});
+

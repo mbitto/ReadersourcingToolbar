@@ -17,6 +17,7 @@
     <script type="application/x-javascript" src="chrome://readersourcingToolbar/content/authentication.js" />
     <script type="application/x-javascript" src="chrome://readersourcingToolbar/content/loginModal.js" />
     <script type="application/x-javascript" src="chrome://readersourcingToolbar/content/inputRating.js" />
+    <script type="application/x-javascript" src="chrome://readersourcingToolbar/content/commentModal.js" />
     <script type="application/x-javascript" src="chrome://readersourcingToolbar/content/outputRating.js" />
     <script type="application/x-javascript" src="chrome://readersourcingToolbar/content/star.js" />
 
@@ -37,6 +38,8 @@
                 </menupopup>
             </toolbarbutton>
 
+
+            <toolbarbutton id="rsour_test">test</toolbarbutton>
 
             <!--Widget that appear if there is no connection with Readersourcing server-->
             <!--
@@ -163,12 +166,10 @@
             -->
 
             <!--Inbox message button-->
-            <!--
             <toolbaritem id="rsour_messagesWidget">
                 <toolbarseparator />
-                <toolbarbutton id="rsour_messagesInbox" tooltiptext="inbox messages" label="" />
+                <toolbarbutton id="rsour_messagesInbox" tooltiptext="New inbox messages" />
             </toolbaritem>
-            -->
         </toolbar>
     </toolbox>
 </overlay>

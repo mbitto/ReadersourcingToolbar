@@ -126,6 +126,7 @@ RSETB.LoginResponseParser = function(){
                     }
                 );
             }
+            FBC().log(description);
             return {
                 description : description,
                 messages : errorsQueue
@@ -157,12 +158,14 @@ RSETB.RatingResponseParser = function(){
             var title = this.getXMLElementContent("title", paper);
             var rating = this.getXMLElementContent("rating", paper);
             var steadiness = this.getXMLElementContent("steadiness", paper);
+            var comments = this.getXMLElementContent("comments", paper);
 
             return{
-                id: paperId,
-                title: title,
-                rating: rating,
-                steadiness: steadiness
+                id : paperId,
+                title : title,
+                rating : rating,
+                steadiness : steadiness,
+                commentsQty : comments
             };
         }
         else {
@@ -224,3 +227,46 @@ RSETB.GetPaperResponseParser = function(){
 
 // Ensure descendant prototype update
 RSETB.GetPaperResponseParser.prototype = RSETB.ResponseParser;
+
+
+/**
+ * Parse get-msg XML response
+ *
+ */
+RSETB.GetMessagesResponseParser = function(){
+
+    // Inherits from ResponseParser
+    RSETB.ResponseParser.call(this);
+
+    this.checkResponse = function(){
+        var outcome = this.getOutcome();
+        if(outcome === "ok"){
+            var description = this.getXMLElementContent("description");
+            var messagesRoot = this.getXMLElement("messages");
+            var messageQty = this.getXMLAttribute("count", messagesRoot);
+            var messages = this.getXMLElements("message", messagesRoot);
+            var messagesQueue = [];
+            for(var i=0; i<messageQty; i++){
+                messagesQueue.push(
+                    {
+                        id : this.getXMLAttribute("id", messages[i]),
+                        sender: this.getXMLElementContent("sender", messages[i]),
+                        date: this.getXMLElementContent("date", messages[i]),
+                        title: this.getXMLElementContent("title", messages[i])
+                    }
+                );
+            }
+            return {
+                description : description,
+                messageQty : messageQty,
+                messages : messagesQueue
+            };
+        }
+        else {
+            return this.getXMLElementContent("description");
+        }
+    };
+};
+
+// Ensure descendant prototype update
+RSETB.GetMessagesResponseParser.prototype = RSETB.ResponseParser;

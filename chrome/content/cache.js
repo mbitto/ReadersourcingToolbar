@@ -68,6 +68,10 @@ RSETB.cache = function(){
             return papersInfo[url] || null;
         },
 
+        isPaperInCache : function(url){
+            return this.getPaper(url) !== null;
+        },
+
         /**
          * Add a paper in cache if it not exists yet.
          * If cache is full delete first element of cache and add the new paper as last element

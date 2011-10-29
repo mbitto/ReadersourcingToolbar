@@ -29,6 +29,8 @@ RSETB.Tool = function(xulElementId){
 
     this._enebled = true;
 
+    var self = this;
+
     /**
      * Set disabled state and add or remove associated event listener
      *
@@ -63,36 +65,36 @@ RSETB.Tool = function(xulElementId){
     };
 
     this.setEnabled = function(){
-        this._setDisabled(false);
+        self._setDisabled(false);
     };
 
     this.setDisabled = function(){
-        this._setDisabled(true);
+        self._setDisabled(true);
     };
 
     this.show = function(visible){
-        this._xulElementReference.setAttribute("style", visible ? "display : -moz-inline-box" : "display : none");
+        self._xulElementReference.setAttribute("style", visible ? "display : -moz-inline-box" : "display : none");
     };
 
     /**
      * Get activation state
      */
     this.getDisabledState = function(){
-        return this._xulElementReference.disabled;
+        return self._xulElementReference.disabled;
     };
 
     /**
      * Get the id of associated XUL element
      */
     this.getXulElementId = function(){
-        return this._xulElementId;
+        return self._xulElementId;
     };
 
     /**
      * Get XUL element reference
      */
     this.getXulElementReference = function(){
-        return this._xulElementReference;
+        return self._xulElementReference;
     };
 };
 
@@ -118,13 +120,16 @@ RSETB.InputRatingTool = function(xulElementId){
         this._stars[i] = new RSETB.Star(this._xulStars[i - 1]);
     }
 
+    // Public methods must have reference to proper *this*
+    var self = this;
+
     /**
      * Switch off all stars
      */
     this.switchOff = function(){
         // Set input rating
-        for (var i = 1; i <= this._starsQty; i++) {
-            this._stars[i].off();
+        for (var i = 1; i <= self._starsQty; i++) {
+            self._stars[i].off();
         }
     };
 
@@ -133,10 +138,10 @@ RSETB.InputRatingTool = function(xulElementId){
      */
     this.allStarsEmpty = function(){
         // Set input rating
-        for (var i = this._starsQty; i >= 1; i--) {
-            this._stars[i].empty();
+        for (var i = self._starsQty; i >= 1; i--) {
+            self._stars[i].empty();
         }
-        this._rating = 0;
+        self._rating = 0;
     };
 
     // Initialize all stars as switched off
@@ -149,13 +154,15 @@ RSETB.InputRatingTool = function(xulElementId){
      */
     this.setRating = function(response){
 
+        self.allStarsEmpty();
+
         var rating = response.rating;
 
-        if(rating < 1 || rating > this._starsQty){
-            throw new Error("Rating should be between  1 and " + this._starsQty);
+        if(rating < 1 || rating > self._starsQty){
+            throw new Error("Rating should be between  1 and " + self._starsQty);
         }
 
-        var currentRating = this._rating;
+        var currentRating = self._rating;
 
         var iterator = 1;
         var ratingFloor = Math.floor(rating);
@@ -167,14 +174,14 @@ RSETB.InputRatingTool = function(xulElementId){
             }
             // Turn on stars
             for (iterator; iterator <= ratingFloor; iterator++) {
-                this._stars[iterator].full();
+                self._stars[iterator].full();
             }
         }
         else{
             iterator = ratingFloor + 1;
             // Switch off stars
-            for (iterator; iterator <= this._starsQty; iterator++) {
-                this._stars[iterator].empty();
+            for (iterator; iterator <= self._starsQty; iterator++) {
+                self._stars[iterator].empty();
             }
         }
 
@@ -183,15 +190,15 @@ RSETB.InputRatingTool = function(xulElementId){
 
         if (floatValue >= RSETB.MIN_VALUE_FOR_HALF_STAR &&
             floatValue < RSETB.MAX_VALUE_FOR_HALF_STAR) {
-                this._stars[ratingFloor].half();
+                self._stars[ratingFloor + 1].half();
         }
         else {
             if (floatValue >= RSETB.MAX_VALUE_FOR_HALF_STAR) {
-                this._stars[ratingFloor].full();
+                self._stars[ratingFloor + 1].full();
             }
         }
 
-        this._rating = rating;
+        self._rating = rating;
     };
 };
 
@@ -207,20 +214,35 @@ RSETB.SteadinessTool = function(xulElementId){
     RSETB.Tool.call(this, xulElementId);
     this._xulSteadinessImage = document.getElementById(RSETB.STEADINESS_IMAGE);
 
+    // Public methods must have reference to proper *this*
+    var self = this;
+
     this.setSteadiness = function(response){
 
         var steady = response.steadiness;
 
+        /*
+          FIXME: values of steadiness received from xml should be between 1 and 3.
+          Now server returns float values that will be ceiled, and values higher than 3
+          that will be revalued as 3
+        */
+        steady = Math.floor(steady) > 3 ? 3 : Math.ceil(steady);
+        /*
+          End of FIXME
+        */
+
+        FBC().log(steady);
+
         switch (steady){
-            case 1 : this._xulSteadinessImage.src = RSETB.STEADINESS_VALUE_1; break;
-            case 2 : this._xulSteadinessImage.src = RSETB.STEADINESS_VALUE_2; break;
-            case 3 : this._xulSteadinessImage.src = RSETB.STEADINESS_VALUE_3; break;
-            default : this._xulSteadinessImage.src = RSETB.STEADINESS_OFF;
+            case 1 : self._xulSteadinessImage.src = RSETB.STEADINESS_VALUE_1; break;
+            case 2 : self._xulSteadinessImage.src = RSETB.STEADINESS_VALUE_2; break;
+            case 3 : self._xulSteadinessImage.src = RSETB.STEADINESS_VALUE_3; break;
+            default : self._xulSteadinessImage.src = RSETB.STEADINESS_OFF;
         }
     };
 
     this.switchOff = function(){
-        this._xulSteadinessImage.src = RSETB.STEADINESS_OFF;
+        self._xulSteadinessImage.src = RSETB.STEADINESS_OFF;
     };
 };
 
@@ -237,28 +259,31 @@ RSETB.CommentsTool = function(xulElementId, xulActiveElementId){
 
     this.setActiveElement(xulActiveElementId);
 
-    this.setMessagesQty = function(response){
+    // Public methods must have reference to proper *this*
+    var self = this;
 
-        if(response.messagesQty < 1){
-            this.setNoMessages();
+    this.setCommentsQty = function(response){
+
+        if(response.commentsQty < 1){
+            self.setNoComments();
         }
         else{
-            this._xulActiveElementReference.textContent = response.messagesQty;
-            this._xulActiveElementReference.setAttribute("class", "text-link rsour_link");
-            this._setDisabled(false);
+            self._xulActiveElementReference.textContent = response.commentsQty;
+            self._xulActiveElementReference.setAttribute("class", "text-link rsour_link");
+            self._setDisabled(false);
             // TODO: change baloon color
         }
     };
 
-    this.setNoMessages = function(){
-        this._xulActiveElementReference.textContent = 0;
-        this._xulActiveElementReference.removeAttribute("class");
-        this._xulActiveElementReference.setAttribute("class", "rsour_link");
-        this._setDisabled(true);
+    this.setNoComments = function(){
+        self._xulActiveElementReference.textContent = 0;
+        self._xulActiveElementReference.removeAttribute("class");
+        self._xulActiveElementReference.setAttribute("class", "rsour_link");
+        self._setDisabled(true);
     };
 
     // Initialize with no messages
-    this.setNoMessages();
+    this.setNoComments();
 
 };
 
@@ -374,17 +399,6 @@ RSETB.OutputRatingTool = function(xulElementId, inputRatingToolReference){
 
     // Initialize rating button as disabled
     this._enableRatingButton();
-
-    /**
-     * Overwrite Tool executeCallback function
-     */
-    this._executeCallback = function(e){
-        if(e.target === this._xulSubmitButton){
-            if(!this._starsInactive){
-               this._callback.call(this, this._rating);
-            }
-        }
-    };
 
     // Overwrite Tool method setDisabled
     this.setDisabled = function(disable){
