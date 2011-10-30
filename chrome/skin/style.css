@@ -34,10 +34,6 @@
     list-style-image : url("chrome://readersourcingToolbar/skin/logout.png");
 }
 
-#rsour_notConnectedImage{
-    list-style-image : url("chrome://readersourcingToolbar/skin/notConnected.png");
-}
-
 #rsour_steadinessImage{
     list-style-image : url("chrome://readersourcingToolbar/skin/ste0.png");
 }

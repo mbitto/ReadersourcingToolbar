@@ -26,6 +26,8 @@ RSETB.readersourcingExtension = {
 
     initialize : function(){
 
+        var nb = new RSETB.NotificationBox("Something wrong happened here. Go to Readersourcing if you want", RSETB.HOME_PAGE);
+
         var self = this;
 
         var loginModal = RSETB.loginModal();

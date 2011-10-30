@@ -21,6 +21,8 @@
     <script type="application/x-javascript" src="chrome://readersourcingToolbar/content/outputRating.js" />
     <script type="application/x-javascript" src="chrome://readersourcingToolbar/content/star.js" />
     <script type="application/x-javascript" src="chrome://readersourcingToolbar/content/messages.js" />
+    <script type="application/x-javascript" src="chrome://readersourcingToolbar/content/notificationBox.js" />
+
 
     <toolbox id="navigator-toolbox">
 
@@ -41,18 +43,6 @@
 
 
             <toolbarbutton id="rsour_test">test</toolbarbutton>
-
-            <!--Widget that appear if there is no connection with Readersourcing server-->
-            <!--
-            <toolbaritem id="rsour_notConnectedWidget">
-                <toolbarseparator />
-                <box class="rsour_image">
-                    <image id="rsour_notConnectedImage" />
-                </box>
-                <description class="rsour_text" value="Oops, there are some problems with server connection. Readersourcing extension is not avaiable." />
-                <description class ="rsour_link text-link" href="http://www.readersourcing.org" value="Try Readersourcing website" />
-            </toolbaritem>
-            -->
 
             <!--Current paper rating-->
             <toolbaritem id="rsour_inputRatingTool">
