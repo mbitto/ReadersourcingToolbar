@@ -114,10 +114,14 @@ RSETB.readersourcingExtension = {
             outputRating.openCommentModal();
         });
 
-
+        var messagesTool = new RSETB.Tool(RSETB.MESSAGES_TOOL);
+        messagesTool.setToolImage(RSETB.MESSAGE_IMAGE_INACTIVE);
+        messagesTool.setToolTip("Uga Buga Azzi Mazzi");
+        var messagesParser = new RSETB.GetMessagesResponseParser();
+        var messages = RSETB.messages(messagesParser);
+        messages.subscribe(messagesTool);
 
         // Leave this as last action
         authentication.autoLogin();
-
     }
 };

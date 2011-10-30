@@ -125,6 +125,16 @@ RSETB.OUTPUT_RATING_SUBMIT_IMAGE_ON = "chrome://readersourcingToolbar/skin/confi
 RSETB.OUTPUT_RATING_SUBMIT_IMAGE_OFF = "chrome://readersourcingToolbar/skin/confirmOff.png";
 
 /**
+ * @constant image path for message active button
+ */
+RSETB.MESSAGE_IMAGE_ACTIVE = "chrome://readersourcingToolbar/skin/messageOn.png";
+
+/**
+ * @constant image path for message inactive button
+ */
+RSETB.MESSAGE_IMAGE_INACTIVE = "chrome://readersourcingToolbar/skin/messageOff.png";
+
+/**
  * @constant id of xul element test button
  */
 RSETB.FIREUNIT_TEST_BUTTON = "rsour_fireUnit",
@@ -238,6 +248,11 @@ RSETB.OUTPUT_RATING_STARS_CONTAINER = "rsour_outputStarsContainer";
  * @constant id name of xul submit button for output rating tool
  */
 RSETB.OUTPUT_RATING_SUBMIT_BUTTON = "rsour_submitOutputRating";
+
+/**
+ * @constant id name of xul messages button
+ */
+RSETB.MESSAGES_TOOL = "rsour_messagesTool";
 
 /**
  * @constant minimum value for an half star to be on (under this value is off)

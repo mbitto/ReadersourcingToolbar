@@ -38,14 +38,16 @@ test('Testing succesful output rating request', function(){
 
     var requestResult = [];
 
-    var verifyRequest = function(aVar){
-        requestResult.push(aVar);
+    var verifyRequest = function(request){
+        requestResult.push(request.rating);
+        requestResult.push(request.steadiness);
+        requestResult.push(request.description);
     };
 
     var outputRating = RSETB.outputRating(this.responseParserStub);
 
-    outputRating.subscribe(verifyRequest, 'rating');
-    outputRating.subscribe(verifyRequest, 'steadiness');
+
+    outputRating.subscribe(verifyRequest, 'new-input-rating');
 
     var params = {
         url : "test/url",
@@ -56,6 +58,6 @@ test('Testing succesful output rating request', function(){
 
     this.requests[0].respond(200, "Content-Type: text/xml", "<?xml version='1.0' encoding='UTF-8' standalone='yes'?><test></test>");
 
-    deepEqual(requestResult, [3.8, 2], "Subscriber content should be 3.8 and 2");
+    deepEqual(requestResult, [3.8, 2, 'a description'], "Subscriber content should be 3.8 and 2");
     equal(this.requests[0].method, "POST", "Request method is POST");
 });

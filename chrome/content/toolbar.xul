@@ -20,6 +20,7 @@
     <script type="application/x-javascript" src="chrome://readersourcingToolbar/content/commentModal.js" />
     <script type="application/x-javascript" src="chrome://readersourcingToolbar/content/outputRating.js" />
     <script type="application/x-javascript" src="chrome://readersourcingToolbar/content/star.js" />
+    <script type="application/x-javascript" src="chrome://readersourcingToolbar/content/messages.js" />
 
     <toolbox id="navigator-toolbox">
 
@@ -166,9 +167,10 @@
             -->
 
             <!--Inbox message button-->
-            <toolbaritem id="rsour_messagesWidget">
+            <toolbaritem id="rsour_messagesTool">
                 <toolbarseparator />
-                <toolbarbutton id="rsour_messagesInbox" tooltiptext="New inbox messages" />
+                <toolbarbutton id="rsour_messagesInbox" class="main-tool-image"
+                        image="chrome://readersourcingToolbar/skin/messageOn.png" />
             </toolbaritem>
         </toolbar>
     </toolbox>

@@ -23,6 +23,8 @@ RSETB.Tool = function(xulElementId){
     this._xulElementId = xulElementId;
     this._xulElementReference = document.getElementById(xulElementId);
 
+    this._xulMainImageReference = this._xulElementReference.getElementsByClassName("main-tool-image")[0];
+    
     // By default active element is the same as container element
     this._xulActiveElementReference = this._xulElementReference;
     this._callback = null;
@@ -95,6 +97,18 @@ RSETB.Tool = function(xulElementId){
      */
     this.getXulElementReference = function(){
         return self._xulElementReference;
+    };
+
+    this.setToolImage = function(image){
+        if(typeof(self._xulMainImageReference) === "undefined"){
+            throw new Error("No main image reference for tool binded to " + self._xulElementId);
+        }
+        self._xulMainImageReference.image = image;
+    };
+
+    this.setToolTip = function(message){
+        self._xulElementReference.tooltipText = message;
+        FBC().log(self._xulElementReference.tooltipText);
     };
 };
 
