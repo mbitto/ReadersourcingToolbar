@@ -25,18 +25,41 @@ RSETB.downloadListener = function(){
     var downloadOriginalQueue = [];
     var downloadFromRS = [];
 
+    /**
+     * ???
+     *
+     * @param id
+     */
     var downloadOriginal = function(id){
         return (downloadOriginalQueue.indexOf(id) >= 0);
     };
 
+    /**
+     * Check if downloading file is a pdf
+     *
+     * @param mimeInfo
+     */
     var isPdf = function(mimeInfo){
         return (mimeInfo.MIMEType === "application/pdf");
     };
 
+    /**
+     * Check if download file comes form RS
+     *
+     * @param url
+     */
     var isUrlFromRS = function(url){
         return url.indexOf(RSETB.URL_REQUESTS) < 0;
     };
 
+    /**
+     * Add a download to download manager
+     *
+     * @param from
+     * @param to
+     * @param title
+     * @param mimeInfo
+     */
     var addDownload = function (from, to, title, mimeInfo){
 
         var ioService  = Components.classes["@mozilla.org/network/io-service;1"].getService(Components.interfaces.nsIIOService);
@@ -58,10 +81,16 @@ RSETB.downloadListener = function(){
 
     return {
 
+        /**
+         * Initialize download listener
+         */
         init: function(){
             downloadManager.addListener(this);
         },
 
+        /**
+         * Uninitialize download listener
+         */
         uninit: function(){
             downloadManager.removeListener(this);
         },
@@ -74,6 +103,7 @@ RSETB.downloadListener = function(){
             throw Components.results.NS_NOINTERFACE;
         },
 
+        // TODO: this could be rewritten in a more simple way: https://forums.mozilla.org/addons/viewtopic.php?p=12594&sid=ab4c773da7ac9a29251158f21dd04466
         onDownloadStateChange: function(aState, aDownload){
 
             switch(aDownload.state) {

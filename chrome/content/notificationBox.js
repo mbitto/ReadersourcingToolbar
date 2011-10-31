@@ -9,6 +9,12 @@
 // Define ReaderSourcing Extension ToolBar (RSETB) namespace
 var RSETB = RSETB || {};
 
+/**
+ * Object that permits to manage all the extension errors and warnings notifications in the firefox way
+ *
+ * @param message The notification text
+ * @param destinationURL (optional) An url that user can visit to bypass a problem
+ */
 RSETB.NotificationBox = function(message, destinationURL){
     var nb = gBrowser.getNotificationBox();
 
@@ -36,6 +42,7 @@ RSETB.NotificationBox = function(message, destinationURL){
     };
     buttonsToShow.push(closeButton);
 
+    // Show notification box in browser
     nb.appendNotification(
         message, 'readersourcing-notification',
         "chrome://readersourcingToolbar/skin/alert.png",

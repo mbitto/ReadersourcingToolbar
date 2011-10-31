@@ -109,12 +109,12 @@
     font-size:small;
     background-color: menu !important;
     opacity: 1.0;
-    width: 350px;
-    height: 200px;
+    width: 400px;
+    height: 250px;
 }
 
 #rsour_commentModalDescription{
-    margin-bottom:5px;
+    margin-bottom:15px;
 }
 
 

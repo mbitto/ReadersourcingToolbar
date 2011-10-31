@@ -22,16 +22,27 @@ RSETB.commentModal = function(){
     var xulCommentTextboxReference = null;
     var xulDescriptionReference = null;
 
-    var fieldsFilledIn = function() {
+    /**
+     * Check if field is filled
+     */
+    var fieldFilledIn = function() {
         return  ((xulCommentTextboxReference.value != ""));
     };
 
+    /**
+     * Ask user to fill in the form or continue
+     */
     var askForFormFill = function(){
-        xulDescriptionReference.setAttribute("value", "Please fill in comment field");
+        xulDescriptionReference.setAttribute("value", "Please insert a comment or continue without comment");
         xulDescriptionReference.setAttribute("style", "color: #ff0909");
     };
 
     return{
+        /**
+         * Set the modal window scope
+         *
+         * @param modalScope
+         */
         addModalScope : function(modalScope){
             FBC().log("commentModal initialized");
             modal = modalScope;
@@ -40,16 +51,29 @@ RSETB.commentModal = function(){
             xulDescriptionReference = modalDialog.getElementById(RSETB.MODAL_COMMENT_DESCRIPTION_TEXT);
         },
 
+        /**
+         * Set callback for OK button
+         *
+         * @param okCB
+         */
         addOkCallback : function(okCB){
             okCallback = okCB;
         },
 
+        /**
+         * Set callback for cancel button
+         *
+         * @param cancelCB
+         */
         addCancelCallback : function(cancelCB){
             cancelCallback = cancelCB;
         },
 
+        /**
+         * Action called when user press OK button
+         */
         doOk : function() {
-            if (!fieldsFilledIn()) {
+            if (!fieldFilledIn()) {
                 askForFormFill();
             }
             else{
@@ -59,12 +83,16 @@ RSETB.commentModal = function(){
             }
         },
 
+        /**
+         * Action called when user press Cancel button
+         */
         doCancel : function() {
             cancelCallback();
         },
 
         /**
          * Close modal window after a defined time in ms
+         * 
          * @param time (default is 50 ms)
          */
         closeModal : function(time){

@@ -10,7 +10,7 @@
 var RSETB = RSETB || {};
 
 /**
- * Singleton that manages requests of input rating and steadiness
+ * Object that manages requests of input rating and steadiness
  */
 RSETB.outputRating = function(ratingResponseParser, commentModal){
 
@@ -68,6 +68,9 @@ RSETB.outputRating = function(ratingResponseParser, commentModal){
     // Modal window options
     var windowFeatures = "centerscreen, chrome, modal";
 
+    /**
+     * Open comment modal where user can optionally write his comment
+     */
     publisher.openCommentModal = function(){
 
         commentModal.addOkCallback(this.modalOk);
@@ -76,12 +79,20 @@ RSETB.outputRating = function(ratingResponseParser, commentModal){
         window.openDialog(RSETB.COMMENT_MODAL, "commentModal", windowFeatures, commentModal);
     };
 
+    /**
+     * Callback activated from modal ok button click
+     *
+     * @param comment
+     */
     publisher.modalOk = function(comment){
         //addComment(comment);
         FBC().log("add comment: " + comment);
         commentModal.closeModal();
     };
 
+    /**
+     * Callback activate from modal cancel button click
+     */
     publisher.modalCancel = function(){
         //noComment();
         FBC().log("no comment");

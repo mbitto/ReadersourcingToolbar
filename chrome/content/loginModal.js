@@ -28,40 +28,64 @@ RSETB.loginModal = function(){
     var username = null;
     var password = null;
 
+    /**
+     * Response to click on forgot password link
+     */
     var forgotPassword = function(){
         RSETB.readersourcingExtension.openNewTab(RSETB.PASSWORD_RESET_PAGE);
         this.doCancel();
     };
 
+    /**
+     * Response to click on register to RS link
+     */
     var registerToRS = function(){
         RSETB.readersourcingExtension.openNewTab(RSETB.REGISTRATION_PAGE);
         this.doCancel();
     };
 
+    /**
+     * Check if fields are filled in
+     */
     var fieldsFilledIn = function() {
         return  ((xulUsernameReference.value != "") && (xulPasswordReference.value != ""));
     };
 
+    /**
+     * Ask user to fill the forms
+     */
     var askForFormFill = function(){
         xulDescriptionReference.setAttribute("value", "Please fill in both fields");
         xulDescriptionReference.setAttribute("style", "color: #ff0909");
     };
 
+    /**
+     * Ask user to repeat login
+     */
     var askForRepeatLogin = function(){
         xulDescriptionReference.setAttribute("value", "Invalid username or password");
         xulDescriptionReference.setAttribute("style", "color: #ff0909");
     };
 
+    /**
+     * Show welcome message
+     */
     var welcomeMessage = function(){
         xulDescriptionReference.setAttribute("value", "Logged In!");
         xulDescriptionReference.setAttribute("style", "color: #ff0909");
     };
 
+    /**
+     * Show a server error
+     */
     var serverError = function(){
         xulDescriptionReference.setAttribute("value", "Something has gone wrong.");
         xulDescriptionReference.setAttribute("style", "color: #ff0909");
     };
 
+    /**
+     * Show a connection error
+     */
     var connectionError = function(){
         xulDescriptionReference.setAttribute("value", "Something has gone wrong while connecting to the server.");
         xulDescriptionReference.setAttribute("style", "color: #ff0909");
@@ -69,6 +93,11 @@ RSETB.loginModal = function(){
 
     return{
 
+        /**
+         * Set the scope of modal window
+         *
+         * @param modalScope
+         */
         addModalScope : function(modalScope){
             FBC().log("loginModal initialized");
 
@@ -83,10 +112,20 @@ RSETB.loginModal = function(){
             xulRegisterReference.addEventListener('click', registerToRS, 'false');
         },
 
+        /**
+         * Set callback function for OK button
+         *
+         * @param okCB
+         */
         addOkCallback : function(okCB){
             okCallback = okCB;
         },
 
+        /**
+         * Set callback function for Cancel button
+         *
+         * @param cancelCB
+         */
         addCancelCallback : function(cancelCB){
             cancelCallback = cancelCB;
         },
@@ -128,6 +167,9 @@ RSETB.loginModal = function(){
             askForRepeatLogin();
         },
 
+        /**
+         * Show server error
+         */
         badXMLRequest : function(){
             serverError();
         },
@@ -141,6 +183,7 @@ RSETB.loginModal = function(){
 
         /**
          * Close modal window after a defined time in ms
+         * 
          * @param time (default is 50 ms)
          */
         closeModal : function(time){

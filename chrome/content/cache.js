@@ -9,19 +9,16 @@
 // Define ReaderSourcing Extension ToolBar (RSETB) namespace
 var RSETB = RSETB || {};
 
+/**
+ * Object that keeps in memory last received paper informations
+ */
 RSETB.cache = function(){
 
-    /**
-     * Time, in minutes, to clear cache
-     */
+    // Time, in minutes, to clear cache
     var clearEvery = RSETB.CLEAR_CACHE_DEFAULT_TIME;
-    /**
-     * Maximum number of papers allowed in cache
-     */
+    // Maximum number of papers allowed in cache
     var maxPapers = RSETB.MAX_PAPER_IN_CACHE;
-    /**
-     * Literal of cached papers
-     */
+    // Literal of cached papers
     var papersInfo = {};
 
     /**
@@ -53,14 +50,14 @@ RSETB.cache = function(){
         /**
          * Set the max numbers of papers allowed in cache
          *
-         * @param qty
+         * @param qty number of papers allowed in cache
          */
         setMaxPaperInCache : function(qty){
             maxPapers = qty;
         },
 
         /**
-         * Get paper with defined url if exists in cache
+         * Get paper with a defined url if it exists in cache
          *
          * @param url
          */
@@ -68,6 +65,11 @@ RSETB.cache = function(){
             return papersInfo[url] || null;
         },
 
+        /**
+         * Check if paper with a given url exists in cache
+         *
+         * @param url
+         */
         isPaperInCache : function(url){
             return this.getPaper(url) !== null;
         },

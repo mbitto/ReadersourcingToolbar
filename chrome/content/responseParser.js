@@ -22,19 +22,34 @@ RSETB.ResponseParser = function(){
     var expectedRootName = null;
     var document;
 
+    /**
+     * Set XML document
+     *
+     * @param doc
+     * @param expRootName
+     */
     this.setDocument = function(doc, expRootName){
         document = doc;
         expectedRootName = expRootName;
     };
 
-    this.getXMLRoot = function(rootName){
+    /**
+     * Get root element of XML document
+     */
+    this.getXMLRoot = function(){
         var root = document.documentElement;
         if(typeof root === "undefined"){
-            throw new Error("Malformed XML: " + rootName + " root not found in XML response");
+            throw new Error("Malformed XML: root not found in XML response");
         }
         return root;
     };
 
+    /**
+     * Get an element matching given name and (optionally) the parent element
+     *
+     * @param elementName
+     * @param parentElement (optional)
+     */
     this.getXMLElement = function(elementName, parentElement){
         parentElement = parentElement || document;
         var element = parentElement.getElementsByTagName(elementName)[0];
@@ -44,6 +59,12 @@ RSETB.ResponseParser = function(){
         return element;
     };
 
+    /**
+     * Get elements matching given name and (optionally) the parent element
+     *
+     * @param elementName
+     * @param parentElement (optional)
+     */
     this.getXMLElements = function(elementName, parentElement){
         parentElement = parentElement || document;
         var elements = parentElement.getElementsByTagName(elementName);
@@ -53,6 +74,12 @@ RSETB.ResponseParser = function(){
         return elements;
     };
 
+    /**
+     * Get an attribute matching given name and related element
+     *
+     * @param attributeName
+     * @param relatedComponent
+     */
     this.getXMLAttribute = function(attributeName, relatedComponent){
         var attribute = relatedComponent.getAttribute(attributeName);
         if(attribute === null){
@@ -61,12 +88,21 @@ RSETB.ResponseParser = function(){
         return attribute;
     };
 
+    /**
+     * Get content of element matching given name and (optionally) the parent element
+     *
+     * @param elementName
+     * @param parentElement (optional)
+     */
     this.getXMLElementContent = function(elementName, parentElement){
         parentElement = parentElement || document;
         var element = this.getXMLElement(elementName, parentElement);
         return element.textContent;
     };
 
+    /**
+     * Get the content of outcome element
+     */
     this.getOutcome = function(){
         var root = this.getXMLRoot(expectedRootName);
         if(root.nodeName !== expectedRootName){
@@ -90,6 +126,9 @@ RSETB.LoginResponseParser = function(){
     // Inherits from ResponseParser
     RSETB.ResponseParser.call(this);
 
+    /**
+     * Return an object containing server response for login request
+     */
     this.checkResponse = function(){
         var outcome = this.getOutcome();
         if(outcome === "ok"){
@@ -148,6 +187,9 @@ RSETB.RatingResponseParser = function(){
     // Inherits from ResponseParser
     RSETB.ResponseParser.call(this);
 
+    /**
+     * Return an object containing server response for rating request
+     */
     this.checkResponse = function(){
         var outcome = this.getOutcome();
         if(outcome === "ok"){
@@ -189,6 +231,9 @@ RSETB.GetPaperResponseParser = function(){
     // Inherits from ResponseParser
     RSETB.ResponseParser.call(this);
 
+    /**
+     * Return an object containing server response for get-pdf request
+     */
     this.checkResponse = function(){
         var outcome = this.getOutcome();
         if(outcome === "ok"){
@@ -238,6 +283,9 @@ RSETB.GetMessagesResponseParser = function(){
     // Inherits from ResponseParser
     RSETB.ResponseParser.call(this);
 
+    /**
+     * Return an object containing server response for get-messages request
+     */
     this.checkResponse = function(){
         var outcome = this.getOutcome();
         if(outcome === "ok"){

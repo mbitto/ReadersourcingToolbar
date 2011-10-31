@@ -57,14 +57,12 @@ RSETB.browsingListener = function(inputRating){
 
             // Check current URI is not a blank window
             if (aURI && !isBlank(aURI)){
-
                 var currentURI = aURI.spec;
 
                 FBC().log("current URL id: " + aURI.spec);
 
-                // If paper is in RS get it from it
+                // If paper is in RS get it from RS
                 if(aRequest && isPdf(aProgress) && !redirectedFromRS(currentURI)){
-
                     // Cancel current request
                     FBC().log('cancelled');
                     aRequest.cancel(NS_BINDING_ABORTED);
@@ -94,7 +92,7 @@ RSETB.browsingListener = function(inputRating){
                                 gBrowser.loadURI(readersourcingFileURL);
                             }
 
-                            // File in not in RS, restart download download
+                            // File in not in RS, restart download
                             else{
                                 redirectedUrl.push(currentURI);
                                 FBC().log('redirected to the same url');

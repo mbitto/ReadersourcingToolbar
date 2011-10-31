@@ -142,8 +142,6 @@ RSETB.Tool = function(xulElementId){
         tooltip.appendChild(description2Node);
         // Add the tooltip reference to this tool
         this._xulElementReference.setAttribute("tooltip", ("info-tooltip-" + this._xulElementId));
-        FBC().log(tooltip);
-
     };
 };
 

@@ -11,7 +11,7 @@ var RSETB = RSETB || {};
 
 
 /**
- * Singleton that manages authentications and logout to the server
+ * Object that manages authentication and logout to the server and store username and password on user's profile
  *
  * @param loginResponseParser parser for received xml response
  * @param loginModal modal window to login
@@ -21,7 +21,9 @@ RSETB.authentication = function(loginResponseParser, loginModal){
     // Get publisher methods
     var publisher = new MBJSL.Publisher();
 
-    // get LoginInfo interface
+    /**
+     * Get LoginInfo interface
+     */
     var getLoginInfoInterface = function(){
         return new Components.Constructor("@mozilla.org/login-manager/loginInfo;1",
                         Components.interfaces.nsILoginInfo);
@@ -128,7 +130,6 @@ RSETB.authentication = function(loginResponseParser, loginModal){
             passwordManager.modifyLogin(existentLogin, userLogin);
         }
         // Password is already stored, nothing else to do
-
     };
 
     /**
@@ -207,7 +208,7 @@ RSETB.authentication = function(loginResponseParser, loginModal){
     };
 
     /**
-     * Open modal window to login . If fields are complete, send params to server
+     * Open modal window to login. If fields are complete, send params to server
      *
      */
     publisher.openLoginModal = function(){
@@ -238,6 +239,9 @@ RSETB.authentication = function(loginResponseParser, loginModal){
         loginModal.closeModal();
     };
 
+    /**
+     * Get last session login status
+     */
     publisher.isLoggedIn = function(){
         return isLoggedIn();
     };
@@ -264,7 +268,7 @@ RSETB.authentication = function(loginResponseParser, loginModal){
     };
 
     /**
-     * Login automatically if last session was logged in
+     * Login automatically if, in last session, user was logged in
      */
     publisher.autoLogin = function(){
         // If last session user was logged in and firefox login informations was not deleted

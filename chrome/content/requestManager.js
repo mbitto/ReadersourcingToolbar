@@ -23,20 +23,14 @@ RSETB.RequestManager = function(destinationURL, requestType, async){
     var failCallback = null;
     var httpRequest = new XMLHttpRequest();
 
-    // Send string and wait for the response of server
-    var connect = function(outputMessage){
+    // Format url
+    var prepareUrl = function(outputMessage){
         var url = destinationURL;
         if(requestType === "GET"){
             outputMessage = (outputMessage == "") ? "" : "?" + outputMessage;
             url += outputMessage;
         }
-        
-        if(async){
-            return asyncConnection(url, outputMessage);
-        }
-        else{
-            return syncConnection(url, outputMessage);
-        }
+        return url;
     };
 
     var asyncConnection = function(url, outputMessage){
@@ -82,6 +76,7 @@ RSETB.RequestManager = function(destinationURL, requestType, async){
         }
     };
 
+    // TODO: test this method
     var abortAfter = function(seconds){
         setTimeout(function(){
             if(httpRequest != null){
@@ -91,12 +86,20 @@ RSETB.RequestManager = function(destinationURL, requestType, async){
         }, seconds * 1000);
     };
 
+    /**
+     * Make a request to server
+     *
+     * @param params of the request
+     * @param success callback called when server sends a successful response
+     * @param fail callback called when server doesn't respond or sends an error response
+     */
     this.request = function(params, success, fail){
 
         var httpFormattedString = "";
         successCallback = success || null;
         failCallback = fail || null;
 
+        // Convert params to a http formatted string
         if(params !== null){
             var param, value;
             for (param in params) {
@@ -107,6 +110,13 @@ RSETB.RequestManager = function(destinationURL, requestType, async){
             httpFormattedString = encodeURI(httpFormattedString);
         }
 
-        return connect(httpFormattedString);
+        var url = prepareUrl(httpFormattedString);
+
+        if(async){
+            asyncConnection(url, httpFormattedString);
+        }
+        else{
+            return syncConnection(url, httpFormattedString);
+        }
     };
 };

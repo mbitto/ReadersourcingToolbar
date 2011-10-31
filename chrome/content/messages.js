@@ -10,7 +10,7 @@
 var RSETB = RSETB || {};
 
 /**
- * Singleton that manages requests of input rating and steadiness
+ * Object that manages requests of input rating and steadiness
  */
 RSETB.messages = function(messagesResponseParser){
 
