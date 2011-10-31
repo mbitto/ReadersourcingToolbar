@@ -17,6 +17,9 @@ module('Tool', {
             simulateClick : null,
             addEventListener : function(){
                 this.simulateClick = arguments[1];
+            },
+            getElementsByClassName : function(){
+                return {};
             }
         };
         this.getElementByIdStub = sinon.stub(document, "getElementById");
@@ -26,11 +29,6 @@ module('Tool', {
     teardown: function(){
         this.getElementByIdStub.restore();
     }
-});
-
-test('Get name and id', function(){
-    var tool = new RSETB.Tool('xulElementStub');
-    equal(tool.getXulElementId(), 'xulElementStub', "Tool id should be xulElementStub");
 });
 
 test('Register callback and test it', function(){

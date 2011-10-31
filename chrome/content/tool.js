@@ -12,37 +12,43 @@ var RSETB = RSETB || {};
 /**
  * @constructor A basic tool for the toolbar
  *
- * @param xulElementId id of element associated to this tool
+ * @param xulElementId id of xul container element of this tool
  */
 
 RSETB.Tool = function(xulElementId){
 
     FBC().log("Tool binded to " + xulElementId + " initialized");
 
-     // XUL DOM element reference
+    // Id of xul tool container
     this._xulElementId = xulElementId;
+    // Get XUL element reference
     this._xulElementReference = document.getElementById(xulElementId);
-
+    // Tool main image xul reference (if exists)
     this._xulMainImageReference = this._xulElementReference.getElementsByClassName("main-tool-image")[0];
-    
-    // By default active element is the same as container element
+    // Element of tool that respond to a user event. By default active element is the same as container element
     this._xulActiveElementReference = this._xulElementReference;
-    this._callback = null;
-
+    // Tools are enabled by default
     this._enebled = true;
+    // Callback function for user generated event on tool active element
+    this._callback = null;
 
     var self = this;
 
     /**
      * Set disabled state and add or remove associated event listener
      *
-     * @param disable boolean
+     * @param disable state (boolean)
      */
     this._setDisabled = function(disable){
         this._enebled = !disable;
         this._xulActiveElementReference.disabled = disable;
     };
 
+    /**
+     * Set the active element of tool
+     *
+     * @param activeElement xul node id of active element
+     */
     this.setActiveElement = function(activeElement){
         this._xulActiveElementReference = document.getElementById(activeElement);
     };
@@ -57,8 +63,6 @@ RSETB.Tool = function(xulElementId){
             throw new Error('Callback function is already defined for this tool');
         }
         this._callback = cb;
-        // Use self because this method is public and we need to bind *this* to this object
-        var self = this;
         this._xulActiveElementReference.addEventListener('click', function(e){
             if(self._enebled){
                 self._callback.call(self, e);
@@ -66,14 +70,25 @@ RSETB.Tool = function(xulElementId){
         }, false);
     };
 
+    /**
+     * Enable tool
+     */
     this.setEnabled = function(){
         self._setDisabled(false);
     };
 
+    /**
+     * Disable tool
+     */
     this.setDisabled = function(){
         self._setDisabled(true);
     };
 
+    /**
+     * Make tool visible or not visible
+     *
+     * @param visible
+     */
     this.show = function(visible){
         self._xulElementReference.setAttribute("style", visible ? "display : -moz-inline-box" : "display : none");
     };
@@ -86,19 +101,10 @@ RSETB.Tool = function(xulElementId){
     };
 
     /**
-     * Get the id of associated XUL element
+     * Set image of tool main-image if exists
+     *
+     * @param image
      */
-    this.getXulElementId = function(){
-        return self._xulElementId;
-    };
-
-    /**
-     * Get XUL element reference
-     */
-    this.getXulElementReference = function(){
-        return self._xulElementReference;
-    };
-
     this.setToolImage = function(image){
         if(typeof(self._xulMainImageReference) === "undefined"){
             throw new Error("No main image reference for tool binded to " + self._xulElementId);
@@ -106,9 +112,38 @@ RSETB.Tool = function(xulElementId){
         self._xulMainImageReference.image = image;
     };
 
-    this.setToolTip = function(message){
-        self._xulElementReference.tooltipText = message;
-        FBC().log(self._xulElementReference.tooltipText);
+    /**
+     * Set tool tooltip text
+     *
+     * @param text of tooltip
+     */
+    this.setToolTip = function(text){
+        self._xulElementReference.tooltipText = text;
+    };
+
+    this.setInfoToolTip = function(line1, line2){
+
+        // Create a line 1 description node
+        var tooltipNode = document.createElement("tooltip");
+        tooltipNode.setAttribute("id", ("info-tooltip-" + this._xulElementId));
+        tooltipNode.setAttribute("class", ("info-tooltip"));
+        var tooltip = self._xulElementReference.appendChild(tooltipNode);
+        var description1Node = document.createElement("description");
+        description1Node.setAttribute("class", "info-tooltip-line1");
+        var description1 = document.createTextNode(line1);
+        description1Node.appendChild(description1);
+        tooltip.appendChild(description1Node);
+
+        // Create a line 2 description node
+        var description2Node = document.createElement("description");
+        description2Node.setAttribute("class", "info-tooltip-line2");
+        var description2 = document.createTextNode(line2);
+        description2Node.appendChild(description2);
+        tooltip.appendChild(description2Node);
+        // Add the tooltip reference to this tool
+        this._xulElementReference.setAttribute("tooltip", ("info-tooltip-" + this._xulElementId));
+        FBC().log(tooltip);
+
     };
 };
 
@@ -157,9 +192,6 @@ RSETB.InputRatingTool = function(xulElementId){
         }
         self._rating = 0;
     };
-
-    // Initialize all stars as switched off
-    this.switchOff();
 
     /**
      * Set the given rating to input stars painting a quantity of stars equal to rating value
@@ -231,6 +263,11 @@ RSETB.SteadinessTool = function(xulElementId){
     // Public methods must have reference to proper *this*
     var self = this;
 
+    /**
+     * Set steadiness value changing the main image of this tool
+     *
+     * @param response
+     */
     this.setSteadiness = function(response){
 
         var steady = response.steadiness;
@@ -245,8 +282,6 @@ RSETB.SteadinessTool = function(xulElementId){
           End of FIXME
         */
 
-        FBC().log(steady);
-
         switch (steady){
             case 1 : self._xulSteadinessImage.src = RSETB.STEADINESS_VALUE_1; break;
             case 2 : self._xulSteadinessImage.src = RSETB.STEADINESS_VALUE_2; break;
@@ -255,6 +290,9 @@ RSETB.SteadinessTool = function(xulElementId){
         }
     };
 
+    /**
+     * Set off image to steadiness tool
+     */
     this.switchOff = function(){
         self._xulSteadinessImage.src = RSETB.STEADINESS_OFF;
     };
@@ -266,16 +304,19 @@ RSETB.SteadinessTool = function(xulElementId){
  *
  * @param xulElementId
  */
-RSETB.CommentsTool = function(xulElementId, xulActiveElementId){
+RSETB.CommentsTool = function(xulElementId){
 
     // Inherits from Tool
     RSETB.Tool.call(this, xulElementId);
 
-    this.setActiveElement(xulActiveElementId);
-
     // Public methods must have reference to proper *this*
     var self = this;
 
+    /**
+     * Set the number of comments and change the label to "clickable"
+     *
+     * @param response
+     */
     this.setCommentsQty = function(response){
 
         if(response.commentsQty < 1){
@@ -295,10 +336,6 @@ RSETB.CommentsTool = function(xulElementId, xulActiveElementId){
         self._xulActiveElementReference.setAttribute("class", "rsour_link");
         self._setDisabled(true);
     };
-
-    // Initialize with no messages
-    this.setNoComments();
-
 };
 
 
@@ -306,6 +343,8 @@ RSETB.CommentsTool = function(xulElementId, xulActiveElementId){
  * @constructor Tool that manages output rating
  *
  * @param xulElementId
+ * @param inputRatingToolReference A reference of input rating tool, to steal it some useful methods
+ *
  */
 RSETB.OutputRatingTool = function(xulElementId, inputRatingToolReference){
 
@@ -314,20 +353,27 @@ RSETB.OutputRatingTool = function(xulElementId, inputRatingToolReference){
 
     this.setActiveElement(RSETB.OUTPUT_RATING_SUBMIT_BUTTON);
 
+    // Output rating stars container
     this._xulStarsContainer = document.getElementById(RSETB.OUTPUT_RATING_STARS_CONTAINER);
+    // Submit score button
     this._xulSubmitButton = document.getElementById(RSETB.OUTPUT_RATING_SUBMIT_BUTTON);
+    // Array of reference of xul stars
     this._xulStars = this._xulStarsContainer.childNodes;
-
     this._starsQty = this._xulStars.length;
-    
+
+    // Array of Stars javascript objects
     this._stars = [];
+    // Current Rating
     this._rating = 0;
 
+    // When stars are locked don't change status on mouse over
     this._starsLocked = false;
+    // Inactive stars are gray
     this._starsInactive = false;
-
+    // A timeout before reset stars status after mouse over
     this._rollOutTimeout = null;
 
+    // Make a new Star object from every xul reference
     for (var j = 1; j <= this._starsQty; j++) {
         this._stars[j] = new RSETB.Star(this._xulStars[j - 1]);
     }
@@ -350,15 +396,22 @@ RSETB.OutputRatingTool = function(xulElementId, inputRatingToolReference){
         })(i);
     }
 
-    // Set rating to stars
+    /**
+     * Set rating to stars
+     * 
+     * @param rating
+     */
     this._setRating = function(rating){
-
         var ratingObject = {rating: rating};
         // Call the InputRatingTool borrowed method
         inputRatingToolReference.setRating.call(this, ratingObject);
     };
 
-    // Turn on selected stars from left to right
+    /**
+     * Turn on selected stars from left to right
+     * 
+     * @param rating
+     */
     this._starRollOver = function(rating){
         if (!this._starsLocked && !this._starsInactive) {
             if(this._rollOutTimeout !== null){
@@ -368,7 +421,9 @@ RSETB.OutputRatingTool = function(xulElementId, inputRatingToolReference){
         }
     };
 
-    // Set all stars empty
+    /**
+     * Set all stars empty
+     */
     this._starRollOut = function(){
         if (!this._starsLocked && !this._starsInactive) {
             var self = this;
@@ -378,7 +433,11 @@ RSETB.OutputRatingTool = function(xulElementId, inputRatingToolReference){
         }
     };
 
-    // Block selected star
+    /**
+     * Block selected star
+     * 
+     * @param rating
+     */
     this._starSelected = function(rating){
         if(!this._starsInactive){
             if (this._starsLocked){
@@ -390,29 +449,42 @@ RSETB.OutputRatingTool = function(xulElementId, inputRatingToolReference){
         }
     };
 
+    /**
+     * Enable rating button
+     */
     this._enableRatingButton = function(){
         this._xulSubmitButton.disabled = false;
         this._xulSubmitButton.image = RSETB.OUTPUT_RATING_SUBMIT_IMAGE_ON;
     };
 
+    /**
+     * Disable rating button
+     */
     this._disableRatingButton = function(){
         this._xulSubmitButton.disabled = true;
         this._xulSubmitButton.image = RSETB.OUTPUT_RATING_SUBMIT_IMAGE_OFF;
     };
 
+    /**
+     * Set all stars empty
+     */
     this._allStarsEmpty = function(){
         inputRatingToolReference.allStarsEmpty.call(this);
+    };
+
+    /**
+     * Set all stars off
+     */
+    this._switchOffStars = function(){
+        inputRatingToolReference.switchOff.call(this);
     };
 
     // Initialize all stars as empty
     this._allStarsEmpty();
 
-    this._switchOffStars = function(){
-        inputRatingToolReference.switchOff.call(this);
-    };
-
     // Initialize rating button as disabled
     this._enableRatingButton();
+
 
     // Overwrite Tool method setDisabled
     this.setDisabled = function(disable){
@@ -427,6 +499,9 @@ RSETB.OutputRatingTool = function(xulElementId, inputRatingToolReference){
         }
     };
 
+    /**
+     * Get current rating
+     */
     this.getRating = function(){
         return this._rating;
     }

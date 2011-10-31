@@ -39,11 +39,20 @@
 }
 
 #rsour_commentsDescImage{
-    list-style-image : url("chrome://readersourcingToolbar/skin/comments.png");
+    
+}
+
+#rsour_commentsLink{
+    padding-top:1px;
+    margin-left:-1px;
 }
 
 #rsour_suggestItImage{
     list-style-image : url("chrome://readersourcingToolbar/skin/addPaper.png");
+}
+
+#rsour_suggestPaperLink{
+    margin-left:-3px;
 }
 
 #rsour_submitOutputRating{
@@ -137,5 +146,21 @@
  }
 
 #rsour_messagesInbox{
-    /*list-style-image: url("chrome://readersourcingToolbar/skin/messageOn.png");*/
+
+}
+
+.info-tooltip{
+
+}
+
+.info-tooltip-line1{
+    font-weight: bold;
+    font-size:14px;
+}
+
+.info-tooltip-line2{
+    border-top: 1px black solid;
+    padding:10px 10px 5px 10px;
+    font-style: italic;
+    font-size:12px;
 }

@@ -1,7 +1,8 @@
 <?xml version="1.0"?>
 <?xml-stylesheet href="chrome://readersourcingToolbar/skin/style.css" type="text/css"?>
 
-<overlay id="readersourcingToolbar" xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
+<overlay id="readersourcingToolbar"
+         xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
 
 
     <script type="application/x-javascript" src="chrome://readersourcingToolbar/content/lib/MBJSL_0.1/publisher.js" />
@@ -22,6 +23,8 @@
     <script type="application/x-javascript" src="chrome://readersourcingToolbar/content/star.js" />
     <script type="application/x-javascript" src="chrome://readersourcingToolbar/content/messages.js" />
     <script type="application/x-javascript" src="chrome://readersourcingToolbar/content/notificationBox.js" />
+    <script type="application/x-javascript" src="chrome://readersourcingToolbar/content/delme.js" />
+
 
 
     <toolbox id="navigator-toolbox">
@@ -42,7 +45,9 @@
             </toolbarbutton>
 
 
-            <toolbarbutton id="rsour_test">test</toolbarbutton>
+            <toolbaritem id="rsour_test">
+                <toolbarbutton>test</toolbarbutton>
+            </toolbaritem>
 
             <!--Current paper rating-->
             <toolbaritem id="rsour_inputRatingTool">
@@ -71,7 +76,7 @@
             <toolbaritem id="rsour_commentsTool">
                 <toolbarseparator />
                 <box class="rsour_image">
-                    <image id="rsour_commentsDescImage" />
+                    <image src="chrome://readersourcingToolbar/skin/commentsOff.png" class="main-tool-image" id="rsour_commentsDescImage" />
                 </box>
                 <description class="rsour_text">Comments: </description>
                 <description id="rsour_commentsLink" class="rsour_link text-link"></description>
@@ -80,10 +85,10 @@
             <!--Displays that current paper is not in Readersourcing database-->
             <toolbaritem id="rsour_suggestPaperTool">
                 <toolbarseparator />
-                <description class="rsour_text" value="Paper not in readersourcing." />
                 <box class="rsour_image">
                     <image id="rsour_suggestItImage" />
                 </box>
+                <description class="rsour_text" value="Paper not in readersourcing." />
                 <description id="rsour_suggestPaperLink" class ="rsour_link text-link" href="http://www.readersourcing.org" value="Suggest it" />
             </toolbaritem>
 
@@ -162,6 +167,7 @@
                 <toolbarbutton id="rsour_messagesInbox" class="main-tool-image"
                         image="chrome://readersourcingToolbar/skin/messageOn.png" />
             </toolbaritem>
+            
         </toolbar>
     </toolbox>
 </overlay>

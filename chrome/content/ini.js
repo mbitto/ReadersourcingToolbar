@@ -15,39 +15,39 @@ var RSETB = RSETB || {};
 RSETB.URL_REQUESTS = "http://www.readersourcing.maraspin.net/toolbar/";
 
 /**
- * @constant Parameter for login requests
+ * @constant Readersourcing Homepage
+ */
+RSETB.HOME_PAGE = 'www.readersourcing.org/';
+
+/**
+ * @constant URL parameter for login requests
  */
 RSETB.URL_REQUESTS_LOGIN = RSETB.URL_REQUESTS + "login";
 
 /**
- * @constant Parameter for logout requests
+ * @constant URL parameter for logout requests
  */
 RSETB.URL_REQUESTS_LOGOUT = RSETB.URL_REQUESTS + "logout";
 
 /**
- * @constant Parameter to get pdf paper requests
+ * @constant URL parameter to get pdf paper requests
  */
 RSETB.URL_GET_PAPER_PDF = RSETB.URL_REQUESTS + "get-paper-pdf";
 
 /**
- * @constant Parameter to get pdf paper requests
+ * @constant URL parameter to get pdf paper requests
  */
 RSETB.URL_GET_PAPER_VOTE = RSETB.URL_REQUESTS + "get-paper-vote";
 
 /**
- * @constant Parameter to set vote to an existing paper
+ * @constant URL parameter to set vote to an existing paper
  */
 RSETB.URL_SET_PAPER_VOTE = RSETB.URL_REQUESTS + "set-paper-vote";
 
 /**
- * @constant Parameter to get user messages qty
+ * @constant URL parameter to get user messages qty
  */
 RSETB.URL_REQUESTS_MESSAGES = RSETB.URL_REQUESTS + "get-msg";
-
-/**
- * @constant Readersourcing Homepage
- */
-RSETB.HOME_PAGE = 'www.readersourcing.org/';
 
 /**
  * @constant Readersourcing page for password reset
@@ -70,7 +70,7 @@ RSETB.STORAGE_URI ="http://readersourcing.extension.toolbar.storage";
 RSETB.LOGIN_MODAL ="chrome://readersourcingToolbar/content/loginModal.xul";
 
 /**
- * @constant Login modal window path
+ * @constant Add messages modal window path
  */
 RSETB.COMMENT_MODAL ="chrome://readersourcingToolbar/content/commentModal.xul";
 
@@ -125,37 +125,47 @@ RSETB.OUTPUT_RATING_SUBMIT_IMAGE_ON = "chrome://readersourcingToolbar/skin/confi
 RSETB.OUTPUT_RATING_SUBMIT_IMAGE_OFF = "chrome://readersourcingToolbar/skin/confirmOff.png";
 
 /**
- * @constant image path for message active button
+ * @constant Image path for message active button
  */
 RSETB.MESSAGE_IMAGE_ACTIVE = "chrome://readersourcingToolbar/skin/messageOn.png";
 
 /**
- * @constant image path for message inactive button
+ * @constant Image path for message inactive button
  */
 RSETB.MESSAGE_IMAGE_INACTIVE = "chrome://readersourcingToolbar/skin/messageOff.png";
 
 /**
- * @constant id of xul element test button
+ * @constant Image path for comments on image
+ */
+RSETB.COMMENTS_IMAGE_ON = "chrome://readersourcingToolbar/skin/commentsOn.png";
+
+/**
+ * @constant Image path for comments off image
+ */
+RSETB.COMMENTS_IMAGE_OFF = "chrome://readersourcingToolbar/skin/commentsOff.png";
+
+/**
+ * @constant Id of xul element test button
  */
 RSETB.FIREUNIT_TEST_BUTTON = "rsour_fireUnit",
 
 /**
- * @constant id name of xul element main menu
+ * @constant Id name of xul element main menu
  */
 RSETB.MAIN_MENU_BUTTON = "rsour_mainMenu",
 
 /**
- * @constant id name of xul element login
+ * @constant Id name of xul element login
  */
 RSETB.LOGIN_ENTRY = "rsour_login",
 
 /**
- * @constant id name of xul element logout
+ * @constant Id name of xul element logout
  */
 RSETB.LOGOUT_ENTRY = "rsour_logout",
 
 /**
- * @constant id name of xul element user profile
+ * @constant Id name of xul element user profile
  */
 RSETB.USER_PROFILE_ENTRY = "rsour_user_profile",
 
@@ -165,47 +175,47 @@ RSETB.USER_PROFILE_ENTRY = "rsour_user_profile",
 RSETB.READERSOURCING_HOMEPAGE_ENTRY = "rsour_homepage";
 
 /**
- * @constant username field on login modal window
+ * @constant Username field on login modal window
  */
 RSETB.MODAL_USERNAME_FIELD = "rsour_loginModalUsername";
 
 /**
- * @constant password field on login modal window
+ * @constant Password field on login modal window
  */
 RSETB.MODAL_PASSWORD_FIELD = "rsour_loginModalPassword";
 
 /**
- * @constant description text on login modal window
+ * @constant Description text on login modal window
  */
 RSETB.MODAL_DESCRIPTION_TEXT = "rsour_loginModalDescription";
 
 /**
- * @constant link to forgot password page present in login modal window
+ * @constant Link to forgot password page present in login modal window
  */
 RSETB.MODAL_FORGOT_PASSWORD_LINK = "rsour_modalForgotPassword";
 
 /**
- * @constant link to register new user present in login modal window
+ * @constant Link to register new user present in login modal window
  */
 RSETB.MODAL_REGISTER_LINK = "rsour_modalRegisterNewUser";
 
 /**
- * @constant text description of comment modal
+ * @constant Text Description of comment modal
  */
 RSETB.MODAL_COMMENT_DESCRIPTION_TEXT = "rsour_commentModalDescription";
 
 /**
- * @constant text field of comment modal
+ * @constant Text field of comment modal
  */
 RSETB.MODAL_COMMENT_FIELD = "rsour_commentModalTextbox";
 
 /**
- * @constant id name of xul element container of input rating tool
+ * @constant Id name of xul element container of input rating tool
  */
 RSETB.INPUT_RATING_TOOL = "rsour_inputRatingTool";
 
 /**
- * @constant id name of xul element container of input rating stars
+ * @constant Id name of xul element container of input rating stars
  */
 RSETB.INPUT_RATING_STAR_CONTAINER = "rsour_inputStarsContainer";
 
@@ -215,67 +225,67 @@ RSETB.INPUT_RATING_STAR_CONTAINER = "rsour_inputStarsContainer";
 RSETB.RATING_STARS = "rsour_stars";
 
 /**
- * @constant id name of steadiness tool container
+ * @constant Id name of steadiness tool container
  */
 RSETB.STEADINESS_TOOL = "rsour_steadinessTool";
 
 /**
- * @constant id name of xul steadiness image
+ * @constant Id name of xul steadiness image
  */
 RSETB.STEADINESS_IMAGE = "rsour_steadinessImage";
 
 /**
- * @constant id name of xul steadiness image
+ * @constant Id name of xul comments container
  */
 RSETB.COMMENTS_TOOL_CONTAINER = "rsour_commentsTool";
 
 /**
- * @constant id name of xul steadiness image
+ * @constant Id name of xul comments link
  */
 RSETB.COMMENTS_TOOL_LINK = "rsour_commentsLink";
 
 /**
- * @constant id name of xul container for output rating tool
+ * @constant Id name of xul container for output rating tool
  */
 RSETB.OUTPUT_RATING_TOOL = "rsour_outputRatingTool";
 
 /**
- * @constant id name of xul stars container for output rating tool
+ * @constant Id name of xul stars container for output rating tool
  */
 RSETB.OUTPUT_RATING_STARS_CONTAINER = "rsour_outputStarsContainer";
 
 /**
- * @constant id name of xul submit button for output rating tool
+ * @constant Id name of xul submit button for output rating tool
  */
 RSETB.OUTPUT_RATING_SUBMIT_BUTTON = "rsour_submitOutputRating";
 
 /**
- * @constant id name of xul messages button
+ * @constant Id name of xul messages button
  */
 RSETB.MESSAGES_TOOL = "rsour_messagesTool";
 
 /**
- * @constant minimum value for an half star to be on (under this value is off)
+ * @constant Minimum value for an half star to be on (under this value is off)
  */
 RSETB.MIN_VALUE_FOR_HALF_STAR = 0.26;
 
 /**
- * @constant maximum value for an half star to be on (over this value is full)
+ * @constant Maximum value for an half star to be on (over this value is full)
  */
 RSETB.MAX_VALUE_FOR_HALF_STAR = 0.75;
 
 /**
- * @constant default time to clear cache
+ * @constant Default time to clear cache
  */
 RSETB.CLEAR_CACHE_DEFAULT_TIME = 60;
 
 /**
- * @constant maximum default number of paper allowed in cache
+ * @constant Maximum default number of paper allowed in cache
  */
 RSETB.MAX_PAPER_IN_CACHE = 100;
 
 /**
- * @constant default time to check for new messages
+ * @constant Default time to check for new messages
  */
 RSETB.CHECK_FOR_MESSAGES_DEFAULT_TIME = 3;
 
@@ -284,8 +294,7 @@ RSETB.CHECK_FOR_MESSAGES_DEFAULT_TIME = 3;
 /*window.addEventListener("load", function(){
 
     FBC.log("init");
-    var toolbar = RSETB.toolbar();
-    toolbar.init(debugMode);
+    RSETB.readersourcingExtension.initialize();
 
 }, false);*/
 
