@@ -311,9 +311,7 @@ RSETB.authentication = function(loginResponseParser, loginModal){
                     // TODO: manage this error
                 }
             );
-
         }
     };
-
     return publisher;
 };

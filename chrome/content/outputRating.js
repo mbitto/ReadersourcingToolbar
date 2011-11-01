@@ -14,17 +14,20 @@ var RSETB = RSETB || {};
  */
 RSETB.outputRating = function(ratingResponseParser, commentModal){
 
+    var currentRating = null;
+    var currentUrl = null;
+
     var requestManager = new RSETB.RequestManager(RSETB.URL_SET_PAPER_VOTE, 'POST', true);
 
-    // Create a publisher to get its methods
-    var publisher = new MBJSL.Publisher();
+    // Modal window options
+    var windowFeatures = "centerscreen, chrome, modal";
 
     /**
      * Set a new vote to Readersourcing, with an optional message associated
      *
      * @param url
      */
-    publisher.setRating = function(url, vote, comment){
+    var setRating = function(url, vote, comment){
 
         // Params of request
         var params = {
@@ -36,6 +39,7 @@ RSETB.outputRating = function(ratingResponseParser, commentModal){
         if(typeof comment !== "undefined"){
             params.comment = comment;
         }
+
         requestManager.request(params,
             // Successful request callback
             function(doc){
@@ -51,8 +55,12 @@ RSETB.outputRating = function(ratingResponseParser, commentModal){
                 }
 
                 if(outcome == "ok"){
+                    FBC().log("outp. rat. ok outcome");
+                    FBC().log(response);
                     publisher.publish("new-input-rating", response);
                 }else{
+                    FBC().log("outp. rat. ko outcome");
+                    FBC().log(response);
                     publisher.publish("no-input-rating", response);
                 }
             },
@@ -60,21 +68,19 @@ RSETB.outputRating = function(ratingResponseParser, commentModal){
             // Failed request callback
             function(error){
                 //TODO: manage this failed request and test it
+                FBC().log("outp. rat. some error");
                 alert("Failed request not managed yet: " + error);
             }
         );
     };
 
-    // Modal window options
-    var windowFeatures = "centerscreen, chrome, modal";
-
     /**
      * Open comment modal where user can optionally write his comment
      */
-    publisher.openCommentModal = function(){
+    var openCommentModal = function(){
 
-        commentModal.addOkCallback(this.modalOk);
-        commentModal.addCancelCallback(this.modalCancel);
+        commentModal.addOkCallback(modalOk);
+        commentModal.addCancelCallback(modalCancel);
 
         window.openDialog(RSETB.COMMENT_MODAL, "commentModal", windowFeatures, commentModal);
     };
@@ -84,19 +90,29 @@ RSETB.outputRating = function(ratingResponseParser, commentModal){
      *
      * @param comment
      */
-    publisher.modalOk = function(comment){
-        //addComment(comment);
+    var modalOk = function(comment){
         FBC().log("add comment: " + comment);
+        setRating(currentUrl, currentRating, comment);
         commentModal.closeModal();
     };
 
     /**
      * Callback activate from modal cancel button click
      */
-    publisher.modalCancel = function(){
-        //noComment();
+    var modalCancel = function(){
         FBC().log("no comment");
+        setRating(currentUrl, currentRating);
         commentModal.closeModal();
+    };
+
+    // Create a publisher to get its methods
+    var publisher = new MBJSL.Publisher();
+
+    // Open comments modal and send rating to server
+    publisher.sendRating = function(url, rating){
+        currentUrl = url;
+        currentRating = rating;
+        openCommentModal();
     };
 
     return publisher;

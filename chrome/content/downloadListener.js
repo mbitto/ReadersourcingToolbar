@@ -16,23 +16,12 @@ RSETB.downloadListener = function(){
 
     // Get firefox download manager service
     var downloadManager = Components.classes["@mozilla.org/download-manager;1"].getService(Components.interfaces.nsIDownloadManager);
-    const DOWNLOADING = Components.interfaces.nsIDownloadManager.DOWNLOAD_DOWNLOADING;
-    const PAUSED = Components.interfaces.nsIDownloadManager.DOWNLOAD_PAUSED;
-    const CANCELED = Components.interfaces.nsIDownloadManager.DOWNLOAD_CANCELED;
-    const FINISHED = Components.interfaces.nsIDownloadManager.DOWNLOAD_FINISHED;
-    const BLOCKED = Components.interfaces.nsIDownloadManager.DOWNLOAD_BLOCKED_PARENTAL;
 
-    var downloadOriginalQueue = [];
-    var downloadFromRS = [];
+    // Status of download when has just been added to download queue
+    const DOWNLOAD_QUEUED = Components.interfaces.nsIDownloadManager.DOWNLOAD_QUEUED;
 
-    /**
-     * ???
-     *
-     * @param id
-     */
-    var downloadOriginal = function(id){
-        return (downloadOriginalQueue.indexOf(id) >= 0);
-    };
+    // Array of url that have been already verified on RS server
+    var verifiedUrlSet = [];
 
     /**
      * Check if downloading file is a pdf
@@ -43,13 +32,24 @@ RSETB.downloadListener = function(){
         return (mimeInfo.MIMEType === "application/pdf");
     };
 
-    /**
-     * Check if download file comes form RS
+     /**
+     * Check if url is from RS get-file or url has already been verified by RS server
      *
      * @param url
      */
-    var isUrlFromRS = function(url){
-        return url.indexOf(RSETB.URL_REQUESTS) < 0;
+    var verifiedUrl = function(url){
+        FBC().log(url);
+        FBC().log(RSETB.URL_GET_FILE_PDF);
+        return (url.indexOf(RSETB.URL_GET_FILE_PDF) !== -1 || verifiedUrlSet.indexOf(url) !== -1);
+    };
+
+    /**
+     * Check if url has already been verified by RS server
+     *
+     * @param state
+     */
+    var isInQueuedState = function(state){
+        return state === DOWNLOAD_QUEUED;
     };
 
     /**
@@ -78,9 +78,7 @@ RSETB.downloadListener = function(){
     };
 
 
-
     return {
-
         /**
          * Initialize download listener
          */
@@ -95,103 +93,66 @@ RSETB.downloadListener = function(){
             downloadManager.removeListener(this);
         },
 
-        QueryInterface: function(aIID){
-            if (aIID.equals(Components.interfaces.nsIWebProgressListener) ||
-            aIID.equals(Components.interfaces.nsISupportsWeakReference) ||
-            aIID.equals(Components.interfaces.nsISupports))
-                return this;
-            throw Components.results.NS_NOINTERFACE;
-        },
+        onDownloadStateChange: function(aState, aDownload){},
+        onStateChange: function(aWebProgress, aRequest, aStateFlags, aStatus, aDownload){
 
-        // TODO: this could be rewritten in a more simple way: https://forums.mozilla.org/addons/viewtopic.php?p=12594&sid=ab4c773da7ac9a29251158f21dd04466
-        onDownloadStateChange: function(aState, aDownload){
+            var currentUrl = aDownload.source.spec;
+            var downloadId = aDownload.id;
+            var targetURI = aDownload.target;
+            var displayName = aDownload.displayName;
+            var mimeInfo= aDownload.MIMEInfo;
 
-            switch(aDownload.state) {
-                case DOWNLOADING:
-                    FBC().log("downloading");
 
-                    if(!downloadOriginal(aDownload.id)){
-                        downloadManager.pauseDownload(aDownload.id);
+            if(isInQueuedState(aDownload.state) && isPdf(mimeInfo) && !verifiedUrl(currentUrl)){
+                try{
+                    downloadManager.cancelDownload(downloadId);
+                    downloadManager.removeDownload(downloadId);
+                    FBC().log("Download from " + currentUrl + " cancelled");
+                }
+                catch(e){
+                    // TODO: manage this error
+                    FBC().log(e);
+                }
+
+                // Do some checks -> url in RS
+                var params = {
+                    url : currentUrl
+                };
+
+                var requestManager = new RSETB.RequestManager(RSETB.URL_GET_PAPER_PDF, "GET", true);
+                requestManager.request(params,
+                    // Succesful request callback
+                    function(response){
+
+                        FBC().log(response);
+
+                        var responseParser = new RSETB.ResponseParser();
+                        responseParser.setDocument(response, "get-paper-pdf");
+                        var outcome = responseParser.getOutcome();
+                        var rsFileUrl = responseParser.getXMLElementContent("url");
+
+                        verifiedUrlSet.push(currentUrl);
+
+                        if(outcome === "ok"){
+                            // Start a download from RS
+                            FBC().log("start download from " + rsFileUrl);
+                            addDownload(rsFileUrl, targetURI, displayName, mimeInfo);
+                        }
+                        else{
+                            // (Re)start previous download
+                            FBC().log("start download from " + currentUrl);
+                            addDownload(currentUrl, targetURI, displayName, mimeInfo);
+                        }
+                    },
+
+                    // Failed request callback
+                    function(){
+                        // TODO: manage failed request
                     }
+                );
 
-                    break;
-                case PAUSED:
-                    FBC().log("paused");
-
-                    if(isPdf(aDownload.MIMEInfo) && isUrlFromRS(aDownload.source.spec)){
-
-                        // Do some checks -> url in RS
-
-                        var params = {
-                            url : aDownload.source.spec
-                        };
-
-                        var requestManager = new RSETB.RequestManager(RSETB.URL_GET_PAPER_PDF, "GET", true);
-                        requestManager.request(params,
-                            // Succesful request callback
-                            function(response){
-
-                                FBC().log(response);
-
-                                var responseParser = new RSETB.ResponseParser(response, "get-paper-pdf");
-                                var outcome = responseParser.getOutcome();
-                                var fileURL = responseParser.getXMLElementContent("url");
-
-                                if(outcome === "ok"){
-                                    downloadFromRS[id] = fileURL;
-                                    downloadManager.cancelDownload(aDownload.id);
-                                }
-                                else{
-                                    downloadOriginalQueue.push(aDownload.id);
-                                    downloadManager.resumeDownload(aDownload.id);
-                                }
-                            },
-
-                            // Failed request callback
-                            function(){
-                                // TODO: manage failed request
-                            }
-                        );
-                    }
-                    else{
-                        downloadOriginalQueue.push(aDownload.id);
-                        downloadManager.resumeDownload(aDownload.id);
-                    }
-
-                    break;
-                case CANCELED:
-
-                    var oldDownloadURI = aDownload.source.spec;
-                    var targetURI = aDownload.target;
-                    var displayName = aDownload.displayName;
-                    var mimeInfo= aDownload.MIMEInfo;
-                    var newDownloadURI = downloadFromRS[aDownload.id];
-                    
-                    FBC().log("cancelled");
-                    FBC().log("start: " + newDownloadURI);
-
-                    downloadManager.removeDownload(aDownload.id);
-                    //aDownload.cancelable.cancel(0x804b0002);
-                    downloadManager.cleanUp();
-
-                    addDownload(newDownloadURI, targetURI, displayName, mimeInfo);
-
-                    break;
-                case FINISHED:
-
-                    FBC().log("finished");
-
-                    break;
-
-                case BLOCKED:
-
-                    FBC().log("blocked");
-
-                    break;
             }
         },
-
-        onStateChange: function(aWebProgress, aRequest, aStateFlags, aStatus, aDownload){},
         onProgressChange: function(a, b, c, d, e, f, g){},
         onSecurityChange: function(a, b, c, d){}
     };

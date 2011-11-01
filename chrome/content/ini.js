@@ -15,6 +15,11 @@ var RSETB = RSETB || {};
 RSETB.URL_REQUESTS = "http://www.readersourcing.maraspin.net/toolbar/";
 
 /**
+ * @constant URL parameter to get pdf file requests
+ */
+RSETB.URL_GET_FILE_PDF = "http://www.readersourcing.maraspin.net/paper/get-file";
+
+/**
  * @constant Readersourcing Homepage
  */
 RSETB.HOME_PAGE = 'www.readersourcing.org/';

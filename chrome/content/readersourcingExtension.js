@@ -67,6 +67,7 @@ RSETB.readersourcingExtension = {
         // Tool of main menu that opens user profile on RS
         var userProfileTool = new RSETB.Tool(RSETB.USER_PROFILE_ENTRY);
         userProfileTool.registerUIEvent( function(){
+            // FIXME: authentication.getUserId() doesn't exist
             self.openNewTab(RSETB.HOME_PAGE + "user/" + authentication.getUserId());
         });
 
@@ -97,15 +98,19 @@ RSETB.readersourcingExtension = {
         commentsTool.setToolImage(RSETB.COMMENTS_IMAGE_OFF);
 
         // Subscribe tools to input rating publications
-        inputRating.subscribe(inputRatingTool.setRating, "new-input-rating");
-        inputRating.subscribe(inputRatingTool.switchOff, "no-input-rating");
-        inputRating.subscribe(steadinessTool.setSteadiness, "new-input-rating");
-        inputRating.subscribe(steadinessTool.switchOff, "no-input-rating");
         inputRating.subscribe(function(response){
+            // Method called using *call* to preserve binding of *this* tp inputRatingTool
+            FBC().log(response);
+            inputRatingTool.allStarsEmpty.call(inputRatingTool);
+            inputRatingTool.setRating.call(inputRatingTool, response);
+            steadinessTool.setSteadiness(response);
             commentsTool.setCommentsQty(response);
             commentsTool.setToolImage(RSETB.COMMENTS_IMAGE_ON);
         }, "new-input-rating");
+
         inputRating.subscribe(function(){
+            inputRatingTool.switchOff();
+            steadinessTool.switchOff();
             commentsTool.setNoComments();
             commentsTool.setToolImage(RSETB.COMMENTS_IMAGE_OFF);
         }, "no-input-rating");
@@ -123,10 +128,10 @@ RSETB.readersourcingExtension = {
         var outputRatingTool = new RSETB.OutputRatingTool(RSETB.OUTPUT_RATING_TOOL, inputRatingTool);
         outputRatingTool.registerUIEvent(function(){
             var rating = outputRatingTool.getRating();
-            outputRating.setRating(rating);
+            outputRating.sendRating(self.getCurrentUrl(), rating);
         });
         // Default display option for outputRating is false
-        outputRatingTool.show(false);
+        outputRatingTool.show(true);
 
         // Manages alert for new user's messages
         var messagesTool = new RSETB.Tool(RSETB.MESSAGES_TOOL);
@@ -155,6 +160,7 @@ RSETB.readersourcingExtension = {
 
         // Initialize downloadListener
         var downloadListener = RSETB.downloadListener();
+        // Get firefox download manager service
         downloadListener.init();
 
         // Login user if last session was logged in

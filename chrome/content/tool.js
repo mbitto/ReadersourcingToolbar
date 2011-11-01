@@ -175,8 +175,8 @@ RSETB.InputRatingTool = function(xulElementId){
      */
     this.switchOff = function(){
         // Set input rating
-        for (var i = 1; i <= self._starsQty; i++) {
-            self._stars[i].off();
+        for (var i = 1; i <= this._starsQty; i++) {
+            this._stars[i].off();
         }
     };
 
@@ -185,10 +185,10 @@ RSETB.InputRatingTool = function(xulElementId){
      */
     this.allStarsEmpty = function(){
         // Set input rating
-        for (var i = self._starsQty; i >= 1; i--) {
-            self._stars[i].empty();
+        for (var i = this._starsQty; i >= 1; i--) {
+            this._stars[i].empty();
         }
-        self._rating = 0;
+        this._rating = 0;
     };
 
     /**
@@ -198,15 +198,13 @@ RSETB.InputRatingTool = function(xulElementId){
      */
     this.setRating = function(response){
 
-        self.allStarsEmpty();
-
         var rating = response.rating;
 
-        if(rating < 1 || rating > self._starsQty){
-            throw new Error("Rating should be between  1 and " + self._starsQty);
+        if(rating < 1 || rating > this._starsQty){
+            throw new Error("Rating should be between  1 and " + this._starsQty);
         }
 
-        var currentRating = self._rating;
+        var currentRating = this._rating;
 
         var iterator = 1;
         var ratingFloor = Math.floor(rating);
@@ -218,14 +216,14 @@ RSETB.InputRatingTool = function(xulElementId){
             }
             // Turn on stars
             for (iterator; iterator <= ratingFloor; iterator++) {
-                self._stars[iterator].full();
+                this._stars[iterator].full();
             }
         }
         else{
             iterator = ratingFloor + 1;
             // Switch off stars
-            for (iterator; iterator <= self._starsQty; iterator++) {
-                self._stars[iterator].empty();
+            for (iterator; iterator <= this._starsQty; iterator++) {
+                this._stars[iterator].empty();
             }
         }
 
@@ -234,15 +232,15 @@ RSETB.InputRatingTool = function(xulElementId){
 
         if (floatValue >= RSETB.MIN_VALUE_FOR_HALF_STAR &&
             floatValue < RSETB.MAX_VALUE_FOR_HALF_STAR) {
-                self._stars[ratingFloor + 1].half();
+                this._stars[ratingFloor + 1].half();
         }
         else {
             if (floatValue >= RSETB.MAX_VALUE_FOR_HALF_STAR) {
-                self._stars[ratingFloor + 1].full();
+                this._stars[ratingFloor + 1].full();
             }
         }
 
-        self._rating = rating;
+        this._rating = rating;
     };
 };
 

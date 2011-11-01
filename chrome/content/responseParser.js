@@ -165,7 +165,6 @@ RSETB.LoginResponseParser = function(){
                     }
                 );
             }
-            FBC().log(description);
             return {
                 description : description,
                 messages : errorsQueue
