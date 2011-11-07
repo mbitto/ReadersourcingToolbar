@@ -147,7 +147,7 @@ RSETB.LoginResponseParser = function(){
                 );
             }
             return {
-                messageQty : messagesQty,
+                messagesQty : messagesQty,
                 messages : messagesQueue
             };
         }
@@ -181,7 +181,7 @@ RSETB.LoginResponseParser.prototype = RSETB.ResponseParser;
  * Parse get-paper-vote XML response
  *
  */
-RSETB.RatingResponseParser = function(){
+RSETB.GetRatingResponseParser = function(){
 
     // Inherits from ResponseParser
     RSETB.ResponseParser.call(this);
@@ -218,7 +218,7 @@ RSETB.RatingResponseParser = function(){
 };
 
 // Ensure descendant prototype update
-RSETB.RatingResponseParser.prototype = RSETB.ResponseParser;
+RSETB.GetRatingResponseParser.prototype = RSETB.ResponseParser;
 
 
 /**
@@ -289,12 +289,12 @@ RSETB.GetMessagesResponseParser = function(){
         var outcome = this.getOutcome();
         if(outcome === "ok"){
             var messagesRoot = this.getXMLElement("messages");
-            var messageQty = this.getXMLAttribute("count", messagesRoot);
-            if (messageQty > 0 ){
+            var messagesQty = this.getXMLAttribute("count", messagesRoot);
+            if (messagesQty > 0 ){
                 var description = this.getXMLElementContent("description");
                 var messages = this.getXMLElements("message", messagesRoot);
                 var messagesQueue = [];
-                for(var i=0; i<messageQty; i++){
+                for(var i=0; i<messagesQty; i++){
                     messagesQueue.push(
                         {
                             id : this.getXMLAttribute("id", messages[i]),
@@ -306,7 +306,7 @@ RSETB.GetMessagesResponseParser = function(){
                 }
                 return {
                     description : description,
-                    messageQty : messageQty,
+                    messagesQty : messagesQty,
                     messages : messagesQueue
                 };
             }
@@ -324,3 +324,46 @@ RSETB.GetMessagesResponseParser = function(){
 
 // Ensure descendant prototype update
 RSETB.GetMessagesResponseParser.prototype = RSETB.ResponseParser;
+
+
+
+/**
+ * Parse set-paper-vote XML response
+ *
+ */
+RSETB.SetRatingResponseParser = function(){
+
+    // Inherits from ResponseParser
+    RSETB.ResponseParser.call(this);
+
+    /**
+     * Return an object containing server response for rating request
+     */
+    this.checkResponse = function(){
+        var outcome = this.getOutcome();
+        if(outcome === "ok"){
+
+            var paper = this.getXMLElement("paper");
+            var paperId = this.getXMLAttribute("id", paper);
+
+            var title = this.getXMLElementContent("title", paper);
+            var rating = this.getXMLElementContent("rating", paper);
+            var steadiness = this.getXMLElementContent("steadiness", paper);
+
+            return{
+                id : paperId,
+                title : title,
+                rating : rating,
+                steadiness : steadiness
+            };
+        }
+        else {
+            return {
+                description : this.getXMLElementContent("description")
+            }
+        }
+    };
+};
+
+// Ensure descendant prototype update
+RSETB.SetRatingResponseParser.prototype = RSETB.ResponseParser;

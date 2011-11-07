@@ -21,6 +21,7 @@ RSETB.commentModal = function(){
     var cancelCallback = null;
     var xulCommentTextboxReference = null;
     var xulDescriptionReference = null;
+    var paperName = "";
 
     /**
      * Check if field is filled
@@ -49,6 +50,9 @@ RSETB.commentModal = function(){
             modalDialog = modalScope.document;
             xulCommentTextboxReference = modalDialog.getElementById(RSETB.MODAL_COMMENT_FIELD);
             xulDescriptionReference = modalDialog.getElementById(RSETB.MODAL_COMMENT_DESCRIPTION_TEXT);
+            xulDescriptionReference.value = "Write your comment for paper:";
+            var xulBoldDescriptionReference = modalDialog.getElementById("rsour_commentModalDescriptionBold");
+            xulBoldDescriptionReference.value = paperName;
         },
 
         /**
@@ -100,6 +104,10 @@ RSETB.commentModal = function(){
             modal.setTimeout(function(){
                 modal.close();
             }, time)
+        },
+
+        setPaperName : function(name){
+            paperName = name;
         }
     };
 };

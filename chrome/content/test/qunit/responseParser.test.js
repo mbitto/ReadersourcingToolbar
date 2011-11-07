@@ -45,7 +45,7 @@ test("Testing login XML document with OK outcome", function(){
 
     var response = loginParser.checkResponse();
 
-    equal(response.messageQty, 2, "There are 2 messages");
+    equal(response.messagesQty, 2, "There are 2 messages");
     equal(response.messages[0].date, "01/01/2011", "Date of first message");
     equal(response.messages[1].title, "title test 2", "Title of second message");
     equal(response.messages[1].sender, "test2@test.com", "Sender of second message");
@@ -100,7 +100,7 @@ test("Testing get-paper-vote XML document with OK outcome", function(){
     var parser = new DOMParser();
     var parsedXMLDocument = parser.parseFromString(xmlDocument, "text/xml");
 
-    var inputRatingParser = new RSETB.RatingResponseParser();
+    var inputRatingParser = new RSETB.GetRatingResponseParser();
     inputRatingParser.setDocument(parsedXMLDocument, 'get-paper-vote');
     var response = inputRatingParser.checkResponse();
 
@@ -127,7 +127,7 @@ test("Testing get-paper-vote XML document with KO outcome", function(){
     var parser = new DOMParser();
     var parsedXMLDocument = parser.parseFromString(xmlDocument, "text/xml");
 
-    var inputRatingParser = new RSETB.RatingResponseParser();
+    var inputRatingParser = new RSETB.GetRatingResponseParser();
     inputRatingParser.setDocument(parsedXMLDocument, 'get-paper-vote');
     var response = inputRatingParser.checkResponse();
 
@@ -220,7 +220,7 @@ test("Testing get-msg XML document with OK outcome", function(){
     var response = getMessagesParser.checkResponse();
 
     equal(response.description, "Fetching New Messages for user Manuel", "A Description");
-    equal(response.messageQty, "2", "Messages quantity");
+    equal(response.messagesQty, "2", "Messages quantity");
     equal(response.messages[0].sender, "sender1_email", "Sender email");
     equal(response.messages[1].date, "message2_date", "Sender date");
     equal(response.messages[1].title, "message2_title", "Sender title");

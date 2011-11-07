@@ -28,7 +28,7 @@ RSETB.Tool = function(xulElementId){
     // Element of tool that respond to a user event. By default active element is the same as container element
     this._xulActiveElementReference = this._xulElementReference;
     // Tools are enabled by default
-    this._enebled = true;
+    this._enabled = true;
     // Callback function for user generated event on tool active element
     this._callback = null;
 
@@ -40,8 +40,15 @@ RSETB.Tool = function(xulElementId){
      * @param disable state (boolean)
      */
     this._setDisabled = function(disable){
-        this._enebled = !disable;
+        this._enabled = !disable;
         this._xulActiveElementReference.disabled = disable;
+        // TODO: take out these colors
+        if(disable){
+            this._xulElementReference.setAttribute("style", "color:#999999");
+        }
+        else{
+            this._xulElementReference.setAttribute("style", "color:#000000");
+        }
     };
 
     /**
@@ -64,7 +71,7 @@ RSETB.Tool = function(xulElementId){
         }
         this._callback = cb;
         this._xulActiveElementReference.addEventListener('click', function(e){
-            if(self._enebled){
+            if(self._enabled){
                 self._callback.call(self, e);
             }
         }, false);
@@ -74,23 +81,32 @@ RSETB.Tool = function(xulElementId){
      * Enable tool
      */
     this.setEnabled = function(){
-        self._setDisabled(false);
+        if(!self._enabled){
+            self._setDisabled(false);
+        }
     };
 
     /**
      * Disable tool
      */
     this.setDisabled = function(){
-        self._setDisabled(true);
+        if(self._enabled){
+            self._setDisabled(true);
+        }
     };
 
     /**
-     * Make tool visible or not visible
-     *
-     * @param visible
+     * Make tool visible
      */
-    this.show = function(visible){
-        self._xulElementReference.setAttribute("style", visible ? "display : -moz-inline-box" : "display : none");
+    this.show = function(){
+        self._xulElementReference.setAttribute("style", "display : -moz-inline-box");
+    };
+
+    /**
+     * Make tool not visible
+     */
+    this.hide = function(){
+        self._xulElementReference.setAttribute("style", "display : none");
     };
 
     /**
@@ -109,7 +125,9 @@ RSETB.Tool = function(xulElementId){
         if(typeof(self._xulMainImageReference) === "undefined"){
             throw new Error("No main image reference for tool binded to " + self._xulElementId);
         }
-        self._xulMainImageReference.image = image;
+        FBC().log("image : " + image);
+        self._xulMainImageReference.src = image;
+        FBC().log("_xulMainImageReference.image: " + self._xulMainImageReference.src);
     };
 
     /**
@@ -167,9 +185,6 @@ RSETB.InputRatingTool = function(xulElementId){
         this._stars[i] = new RSETB.Star(this._xulStars[i - 1]);
     }
 
-    // Public methods must have reference to proper *this*
-    var self = this;
-
     /**
      * Switch off all stars
      */
@@ -178,6 +193,7 @@ RSETB.InputRatingTool = function(xulElementId){
         for (var i = 1; i <= this._starsQty; i++) {
             this._stars[i].off();
         }
+        this.setDisabled();
     };
 
     /**
@@ -197,6 +213,8 @@ RSETB.InputRatingTool = function(xulElementId){
      * @param response form server
      */
     this.setRating = function(response){
+
+        this.setEnabled();
 
         var rating = response.rating;
 
@@ -266,6 +284,8 @@ RSETB.SteadinessTool = function(xulElementId){
      */
     this.setSteadiness = function(response){
 
+        self.setEnabled();
+
         var steady = response.steadiness;
 
         /*
@@ -291,6 +311,7 @@ RSETB.SteadinessTool = function(xulElementId){
      */
     this.switchOff = function(){
         self._xulSteadinessImage.src = RSETB.STEADINESS_OFF;
+        self.setDisabled();
     };
 };
 
@@ -315,14 +336,16 @@ RSETB.CommentsTool = function(xulElementId){
      */
     this.setCommentsQty = function(response){
 
+        response.commentsQty = 5;
+
         if(response.commentsQty < 1){
             self.setNoComments();
         }
         else{
             self._xulActiveElementReference.textContent = response.commentsQty;
             self._xulActiveElementReference.setAttribute("class", "text-link rsour_link");
-            self._setDisabled(false);
-            // TODO: change baloon color
+            self.setEnabled();
+            // Change image color
         }
     };
 
@@ -330,7 +353,7 @@ RSETB.CommentsTool = function(xulElementId){
         self._xulActiveElementReference.textContent = 0;
         self._xulActiveElementReference.removeAttribute("class");
         self._xulActiveElementReference.setAttribute("class", "rsour_link");
-        self._setDisabled(true);
+        self.setDisabled();
     };
 };
 

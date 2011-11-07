@@ -17,9 +17,8 @@
 
     <vbox>
         <spacer flex="1"/>
-        <label id="rsour_commentModalDescription" control ="rsour_commentModalTextbox">
-            Write your comment for this paper.
-        </label>
+        <label id="rsour_commentModalDescription" control ="rsour_commentModalTextbox"></label>
+        <label id="rsour_commentModalDescriptionBold" control ="rsour_commentModalTextbox"></label>
         <textbox id="rsour_commentModalTextbox" rows="10" multiline="true"  maxlength="1000" />
     </vbox>
 </dialog>

@@ -20,6 +20,9 @@ module('Tool', {
             },
             getElementsByClassName : function(){
                 return {};
+            },
+            setAttribute : function(){
+                // Do nothing
             }
         };
         this.getElementByIdStub = sinon.stub(document, "getElementById");

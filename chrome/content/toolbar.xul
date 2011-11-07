@@ -43,11 +43,6 @@
                 </menupopup>
             </toolbarbutton>
 
-
-            <toolbaritem id="rsour_test">
-                <toolbarbutton>test</toolbarbutton>
-            </toolbaritem>
-
             <!--Current paper rating-->
             <toolbaritem id="rsour_inputRatingTool">
                 <toolbarseparator />
@@ -62,7 +57,6 @@
             </toolbaritem>
 
             <!--Steadiness of current rating-->
-
             <toolbaritem id="rsour_steadinessTool">
                 <toolbarseparator />
                 <description class="rsour_text">Steadiness:</description>
@@ -91,6 +85,15 @@
                 <description id="rsour_suggestPaperLink" class ="rsour_link text-link" href="http://www.readersourcing.org" value="Suggest it" />
             </toolbaritem>
 
+            <!--Not logged in message-->
+            <toolbaritem id="rsour_notLoggedInStateTool">
+                <toolbarseparator />
+                <box class="rsour_image">
+                    <image id="rsour_loginStateImage" />
+                </box>
+                <description class="rsour_text">You are not logged in</description>
+            </toolbaritem>
+
             <!--Output rating panel-->
             <toolbaritem id="rsour_outputRatingTool">
                 <toolbarseparator />
@@ -105,30 +108,7 @@
                 <toolbarbutton id="rsour_submitOutputRating" class="submitRating" label="Confirm" />
             </toolbaritem>
 
-            <!--Rating in progress message-->
-            <!--
-            <toolbaritem id="rsour_ratingProgressWidget">
-                <toolbarseparator />
-                <description class="rsour_text">Rating...</description>
-                <box class="rsour_image">
-                    <image id="rsour_ratingProgressImage" />
-                </box>
-            </toolbaritem>
-            -->
-
-            <!--Thanks message-->
-            <!--
-            <toolbaritem id="rsour_thanksMessageWidget">
-                <toolbarseparator />
-                <box class="rsour_image">
-                    <image id="rsour_thanksMessageImage" />
-                </box>
-                <description class="rsour_text">Thanks for rating!</description>
-            </toolbaritem>
-            -->
-
             <!--Already rated message-->
-            <!--
             <toolbaritem id="rsour_ratedMessageWidget">
                 <toolbarseparator />
                 <box class="rsour_image">
@@ -136,35 +116,22 @@
                 </box>
                 <description class="rsour_text">You have already voted this paper</description>
             </toolbaritem>
-            -->
 
-            <!--Not logged in message-->
-            <!--
-            <toolbaritem id="rsour_loginStateWidget">
+            <!--Thanks message-->
+            <toolbaritem id="rsour_thanksMessageWidget">
                 <toolbarseparator />
                 <box class="rsour_image">
-                    <image id="rsour_loginStateImage" />
+                    <image id="rsour_thanksMessageImage" />
                 </box>
-                <description class="rsour_text">You are not logged in</description>
+                <description class="rsour_text">Thanks for rating!</description>
             </toolbaritem>
-            -->
-
-             <!--Logging in progress message-->
-            <!--
-            <toolbaritem id="rsour_loginProgressWidget">
-                <toolbarseparator />
-                <description class="rsour_text">Logging in...</description>
-                <box class="rsour_image">
-                    <image id="rsour_loginProgressImage" />
-                </box>
-            </toolbaritem>
-            -->
 
             <!--Inbox message button-->
             <toolbaritem id="rsour_messagesTool">
                 <toolbarseparator />
-                <toolbarbutton id="rsour_messagesInbox" class="main-tool-image"
-                        image="chrome://readersourcingToolbar/skin/messageOn.png" />
+                <toolbarbutton id="rsour_messagesInbox">
+                    <image class="main-tool-image" src="chrome://readersourcingToolbar/skin/messageOn.png" />
+                </toolbarbutton>
             </toolbaritem>
             
         </toolbar>

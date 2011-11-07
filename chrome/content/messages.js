@@ -20,6 +20,8 @@ RSETB.messages = function(messagesResponseParser){
     var publisher = new MBJSL.Publisher();
 
     publisher.init = function(){
+
+        // TODO: Use set interval here when sinon fake timer is fixed
         setTimeout(function(){
 
             requestManager.request(
@@ -28,7 +30,7 @@ RSETB.messages = function(messagesResponseParser){
 
                 // Succesfull callback
                 function(doc){
-                    messagesResponseParser.setDocument(doc, 'set-paper-vote');
+                    messagesResponseParser.setDocument(doc, 'get-msg');
                     // Parse XML document
                     try{
                         var outcome = messagesResponseParser.getOutcome();
@@ -40,12 +42,14 @@ RSETB.messages = function(messagesResponseParser){
                     }
 
                     if(outcome == "ok"){
-                        if(response.messagesQty == 0){
+
+                        if(response.messagesQty <= 0){
                             publisher.publish("no-new-messages", response);
                         }
                         else{
                             publisher.publish("new-messages", response);
                         }
+
                     }else{
                         // TODO: manage this situation
                     }

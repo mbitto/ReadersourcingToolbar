@@ -32,94 +32,93 @@ RSETB.browsingListener = function(inputRating){
         return aURI.spec === "about:blank";
     };
 
+    // Create a publisher to mix its methods with browsingListener
+    var publisher = new MBJSL.Publisher();
+
     // Constant to identify abort actions
     const NS_BINDING_ABORTED = 0x804b0002;
 
-    return{
+    publisher.init = function(){
+        gBrowser.addProgressListener(this);
+    };
 
-        init : function(){
-            gBrowser.addProgressListener(this);
-        },
-
-        QueryInterface : function(aIID){
+    publisher.QueryInterface = function(aIID){
         if (aIID.equals(Components.interfaces.nsIWebProgressListener) ||
             aIID.equals(Components.interfaces.nsISupportsWeakReference) ||
             aIID.equals(Components.interfaces.nsISupports))
             return this;
         throw Components.results.NS_NOINTERFACE;
-        },
-
-
-        // This fires when the location bar changes; that is load event is confirmed
-        // or when the user switches tabs. If you use listener for more than one tab/window,
-        // use aProgress.DOMWindow to obtain the tab/window which triggered the change.
-        onLocationChange : function(aProgress, aRequest, aURI){
-
-            // Check current URI is not a blank window
-            if (aURI && !isBlank(aURI)){
-                var currentURI = aURI.spec;
-
-                FBC().log("current URL id: " + aURI.spec);
-
-                // If paper is in RS get it from RS
-                if(aRequest && isPdf(aProgress) && !redirectedFromRS(currentURI)){
-                    // Cancel current request
-                    FBC().log('cancelled');
-                    aRequest.cancel(NS_BINDING_ABORTED);
-
-                    // Check if document is in RS
-                     var params = {
-                        url : currentURI
-                    };
-
-                    // Request for Readersourcing paper
-                    var requestManager = new RSETB.RequestManager(RSETB.URL_GET_PAPER_PDF, "GET", true);
-                    requestManager.request(params,
-                        // Successful request callback
-                        function(response){
-
-                            var responseParser = new RSETB.GetPaperResponseParser();
-                            responseParser.setDocument(response, "get-paper-pdf");
-                            var outcome = responseParser.getOutcome();
-                            var readersourcingFileURL = responseParser.getXMLElementContent("url");
-
-                            // Add URL to redirected URL array
-                            redirectedUrl.push(currentURI);
-
-                            // File is in RS, download it
-                            if(outcome === "ok"){
-                                FBC().log('redirecting to: ' + readersourcingFileURL);
-                                gBrowser.loadURI(readersourcingFileURL);
-                            }
-
-                            // File in not in RS, restart download
-                            else{
-                                redirectedUrl.push(currentURI);
-                                FBC().log('redirected to the same url');
-                                gBrowser.loadURI(currentURI);
-                            }
-                        },
-
-                        // Failed request callback
-                        function(){
-                            // TODO: manage failed request
-                        }
-                    );
-                }
-                else if(redirectedFromRS(currentURI)){
-                    FBC().log("removed from redirect");
-                    removeFromRedirectedPapers(currentURI);
-                }
-                
-                // Get paper vote
-                inputRating.requestRating(currentURI);
-            }
-        },
-
-        // For definitions of the remaining functions see related documentation
-        onStateChange : function(aWebProgress, aRequest, aFlag, aStatus){},
-        onProgressChange : function(aWebProgress, aRequest, curSelf, maxSelf, curTot, maxTot) {},
-        onStatusChange : function(aWebProgress, aRequest, aStatus, aMessage) {},
-        onSecurityChange : function(aWebProgress, aRequest, aState) {}
     };
+
+    // This fires when the location bar changes; that is load event is confirmed
+    // or when the user switches tabs. If you use listener for more than one tab/window,
+    // use aProgress.DOMWindow to obtain the tab/window which triggered the change.
+    publisher.onLocationChange = function(aProgress, aRequest, aURI){
+
+        // Check current URI is not a blank window
+        if (aURI && !isBlank(aURI)){
+            var currentURI = aURI.spec;
+
+            FBC().log("current URL id: " + aURI.spec);
+
+            // If paper is in RS get it from RS
+            if(aRequest && isPdf(aProgress) && !redirectedFromRS(currentURI)){
+                // Cancel current request
+                FBC().log('cancelled');
+                aRequest.cancel(NS_BINDING_ABORTED);
+
+                // Check if document is in RS
+                 var params = {
+                    url : currentURI
+                };
+
+                // Request for Readersourcing paper
+                var requestManager = new RSETB.RequestManager(RSETB.URL_GET_PAPER_PDF, "GET", true);
+                requestManager.request(params,
+                    // Successful request callback
+                    function(response){
+
+                        var responseParser = new RSETB.GetPaperResponseParser();
+                        responseParser.setDocument(response, "get-paper-pdf");
+                        var outcome = responseParser.getOutcome();
+                        var readersourcingFileURL = responseParser.getXMLElementContent("url");
+
+                        // Add URL to redirected URL array
+                        redirectedUrl.push(currentURI);
+
+                        // File is in RS, download it
+                        if(outcome === "ok"){
+                            FBC().log('redirecting to: ' + readersourcingFileURL);
+                            gBrowser.loadURI(readersourcingFileURL);
+                        }
+
+                        // File in not in RS, restart download
+                        else{
+                            redirectedUrl.push(currentURI);
+                            FBC().log('redirected to the same url');
+                            gBrowser.loadURI(currentURI);
+                        }
+                    },
+
+                    // Failed request callback
+                    function(){
+                        // TODO: manage failed request
+                    }
+                );
+            }
+            else if(redirectedFromRS(currentURI)){
+                FBC().log("removed from redirect");
+                removeFromRedirectedPapers(currentURI);
+            }
+            publisher.publish("new-page", currentURI);
+        }
+    };
+
+    // For definitions of the remaining functions see related documentation
+    publisher.onStateChange = function(aWebProgress, aRequest, aFlag, aStatus){};
+    publisher.onProgressChange = function(aWebProgress, aRequest, curSelf, maxSelf, curTot, maxTot) {};
+    publisher.onStatusChange = function(aWebProgress, aRequest, aStatus, aMessage) {};
+    publisher.onSecurityChange = function(aWebProgress, aRequest, aState) {};
+
+    return publisher;
 };

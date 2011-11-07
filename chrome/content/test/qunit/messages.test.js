@@ -1,5 +1,5 @@
 /**
- * Test module for inputRating
+ * Test module for messages
  */
 
 module('messages', {
@@ -20,7 +20,6 @@ module('messages', {
         this.xhr.restore();
         this.clock.restore();
     }
-
 });
 
 
@@ -34,7 +33,7 @@ test('Testing OK messages request', function(){
     responseParserStub.checkResponse = function(){
         return {
             description : 'a description',
-            messageQty : '2',
+            messagesQty : '2',
             messages : [
                 {
                     sender : 'sender1',
@@ -55,7 +54,7 @@ test('Testing OK messages request', function(){
 
     var verifyRequest = function(response){
         requestResult.push(response.description);
-        requestResult.push(response.messageQty);
+        requestResult.push(response.messagesQty);
         requestResult.push(response.messages[0].sender);
         requestResult.push(response.messages[0].date);
         requestResult.push(response.messages[1].title);
@@ -85,24 +84,21 @@ test('Testing OK messages request with 0 messages', function(){
     };
     responseParserStub.checkResponse = function(){
         return {
-            messageQty : '0'
+            messagesQty : '0'
         };
     };
 
     var requestResult = null;
 
     var verifyRequest = function(response){
-        requestResult = response.messageQty;
+        requestResult = response.messagesQty;
     };
 
     var messages = RSETB.messages(responseParserStub);
-
-    messages.subscribe(verifyRequest, 'new-messages');
-
     messages.init();
+    messages.subscribe(verifyRequest, 'no-new-messages');
 
-    this.clock.tick(3.01 * 60 * 1000);
-
+    this.clock.tick(3 * 60 * 1000);
     this.requests[0].respond(200, "Content-Type: text/xml", "<?xml version='1.0' encoding='UTF-8' standalone='yes'?><test></test>");
 
     equal(requestResult, 0, "Checking subscriber content");

@@ -150,11 +150,6 @@ RSETB.COMMENTS_IMAGE_ON = "chrome://readersourcingToolbar/skin/commentsOn.png";
 RSETB.COMMENTS_IMAGE_OFF = "chrome://readersourcingToolbar/skin/commentsOff.png";
 
 /**
- * @constant Id of xul element test button
- */
-RSETB.FIREUNIT_TEST_BUTTON = "rsour_fireUnit",
-
-/**
  * @constant Id name of xul element main menu
  */
 RSETB.MAIN_MENU_BUTTON = "rsour_mainMenu",
@@ -248,6 +243,11 @@ RSETB.COMMENTS_TOOL_CONTAINER = "rsour_commentsTool";
  * @constant Id name of xul comments link
  */
 RSETB.COMMENTS_TOOL_LINK = "rsour_commentsLink";
+
+/**
+ * @constant Id name of xul notLoggedInTool
+ */
+RSETB.NOT_LOGGED_IN_TOOL = "rsour_notLoggedInStateTool";
 
 /**
  * @constant Id name of xul container for output rating tool

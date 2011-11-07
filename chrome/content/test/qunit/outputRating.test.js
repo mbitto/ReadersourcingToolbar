@@ -47,6 +47,9 @@ module('outputRating', {
             },
             closeModal : function(){
 
+            },
+            setPaperName : function(){
+                
             }
         };
 

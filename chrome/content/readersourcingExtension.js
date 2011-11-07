@@ -58,12 +58,6 @@ RSETB.readersourcingExtension = {
         });
         logoutTool.setDisabled();
 
-        // Subscribe tools to authentication publications
-        authentication.subscribe(logoutTool.setEnabled, "login");
-        authentication.subscribe(loginTool.setDisabled, "login");
-        authentication.subscribe(logoutTool.setDisabled, "logout");
-        authentication.subscribe(loginTool.setEnabled, "logout");
-
         // Tool of main menu that opens user profile on RS
         var userProfileTool = new RSETB.Tool(RSETB.USER_PROFILE_ENTRY);
         userProfileTool.registerUIEvent( function(){
@@ -78,14 +72,17 @@ RSETB.readersourcingExtension = {
         });
 
         // Input rating parser
-        var ratingResponseParser = new RSETB.RatingResponseParser();
+        var getRatingResponseParser = new RSETB.GetRatingResponseParser();
         // Input rating manager
-        var inputRating = RSETB.inputRating(ratingResponseParser);
+        var inputRating = RSETB.inputRating(getRatingResponseParser);
         var inputRatingTool = new RSETB.InputRatingTool(RSETB.INPUT_RATING_TOOL);
         // Initialize all stars of inputRatingTool as switched off
         inputRatingTool.switchOff();
 
         var steadinessTool = new RSETB.SteadinessTool(RSETB.STEADINESS_TOOL);
+
+        // Initialize as switched off
+        steadinessTool.switchOff();
 
         var commentsTool = new RSETB.CommentsTool(RSETB.COMMENTS_TOOL_CONTAINER);
         commentsTool.setActiveElement(RSETB.COMMENTS_TOOL_LINK);
@@ -93,28 +90,15 @@ RSETB.readersourcingExtension = {
         commentsTool.registerUIEvent(function(){
            self.openNewTab(RSETB.HOME_PAGE + "paper/id/" + inputRating.getPaperId());
         });
+
         // Initialize with no messages
         commentsTool.setNoComments();
         commentsTool.setToolImage(RSETB.COMMENTS_IMAGE_OFF);
 
-        // Subscribe tools to input rating publications
-        inputRating.subscribe(function(response){
-            // Method called using *call* to preserve binding of *this* tp inputRatingTool
-            FBC().log(response);
-            inputRatingTool.allStarsEmpty.call(inputRatingTool);
-            inputRatingTool.setRating.call(inputRatingTool, response);
-            steadinessTool.setSteadiness(response);
-            commentsTool.setCommentsQty(response);
-            commentsTool.setToolImage(RSETB.COMMENTS_IMAGE_ON);
-        }, "new-input-rating");
+        // Tool for user that is not logged in
+        var notLoggedInTool = new RSETB.Tool(RSETB.NOT_LOGGED_IN_TOOL);
 
-        inputRating.subscribe(function(){
-            inputRatingTool.switchOff();
-            steadinessTool.switchOff();
-            commentsTool.setNoComments();
-            commentsTool.setToolImage(RSETB.COMMENTS_IMAGE_OFF);
-        }, "no-input-rating");
-
+        // Tool with a link for suggest a paper that is not in RS yet
         var suggestPaperTool = new RSETB.Tool("rsour_suggestPaperTool");
         suggestPaperTool.setActiveElement("rsour_suggestPaperLink");
         // Register an event for active element of suggest paper tool
@@ -124,14 +108,25 @@ RSETB.readersourcingExtension = {
 
         // Comment modal manager will open a modal that ask for a comment when user set a rating
         var commentModal = RSETB.commentModal();
-        var outputRating = RSETB.outputRating(ratingResponseParser, commentModal);
+        var setRatingResponseParser = new RSETB.SetRatingResponseParser();
+        var outputRating = RSETB.outputRating(setRatingResponseParser, commentModal);
         var outputRatingTool = new RSETB.OutputRatingTool(RSETB.OUTPUT_RATING_TOOL, inputRatingTool);
         outputRatingTool.registerUIEvent(function(){
             var rating = outputRatingTool.getRating();
             outputRating.sendRating(self.getCurrentUrl(), rating);
         });
-        // Default display option for outputRating is false
-        outputRatingTool.show(true);
+        // Default display option for outputRating is hidden
+        outputRatingTool.hide();
+
+
+        // Tool that thank user for the rating expressed
+        var thanksForRatingTool = new RSETB.Tool("rsour_thanksMessageWidget");
+        thanksForRatingTool.hide();
+
+        // Tool that inform user that current paper is already rated
+        var paperAlreadyRatedTool = new RSETB.Tool("rsour_ratedMessageWidget");
+        paperAlreadyRatedTool.hide();
+
 
         // Manages alert for new user's messages
         var messagesTool = new RSETB.Tool(RSETB.MESSAGES_TOOL);
@@ -143,19 +138,10 @@ RSETB.readersourcingExtension = {
         // Parse XML response of get-messages requests
         var messagesParser = new RSETB.GetMessagesResponseParser();
         var messages = RSETB.messages(messagesParser);
-        // Subscription for new messages
-        messages.subscribe(function(response){
-            messagesTool.setToolImage(RSETB.MESSAGE_IMAGE_ACTIVE);
-            messagesTool.setToolTip("You have " + response.messageQty + " messages");
-        }, "new-messages");
-        // Subscription for no new messages
-        messages.subscribe(function(){
-            messagesTool.setToolImage(RSETB.MESSAGE_IMAGE_INACTIVE);
-            messagesTool.setToolTip("You have 0 messages");
-        }, "no-new-messages");
+        messages.init();
 
         // Initialize browsingListener
-        var browsingListener = RSETB.browsingListener(inputRating);
+        var browsingListener = RSETB.browsingListener();
         browsingListener.init();
 
         // Initialize downloadListener
@@ -166,13 +152,73 @@ RSETB.readersourcingExtension = {
         // Login user if last session was logged in
         authentication.autoLogin();
 
+        // Subscribe tools to authentication publications
+        authentication.subscribe(logoutTool.setEnabled, "login");
+        authentication.subscribe(loginTool.setDisabled, "login");
+        authentication.subscribe(notLoggedInTool.hide, "login");
+        authentication.subscribe(messagesTool.show, "login");
+        authentication.subscribe(outputRatingTool.show, "login");
+        authentication.subscribe(logoutTool.setDisabled, "logout");
+        authentication.subscribe(loginTool.setEnabled, "logout");
+        authentication.subscribe(notLoggedInTool.show, "logout");
+        authentication.subscribe(messagesTool.hide, "logout");
+        authentication.subscribe(outputRatingTool.hide, "logout");
+
+        browsingListener.subscribe(function(url){
+            thanksForRatingTool.hide();
+            inputRating.requestRating(url);
+        }, "new-page");
+
+        // Subscribe tools to input rating publications
+        inputRating.subscribe(function(response){
+            // Method called using *call* to preserve binding of *this* tp inputRatingTool
+            FBC().log(response);
+            inputRatingTool.allStarsEmpty.call(inputRatingTool);
+            inputRatingTool.setRating.call(inputRatingTool, response);
+            steadinessTool.setSteadiness(response);
+            commentsTool.setCommentsQty(response);
+            commentsTool.setToolImage(RSETB.COMMENTS_IMAGE_ON);
+            suggestPaperTool.hide();
+            if(authentication.isLoggedIn()){
+                outputRatingTool.show();
+            }
+            outputRating.setPaperName(response.title);
+
+        }, "new-input-rating");
+
+        inputRating.subscribe(function(){
+            inputRatingTool.switchOff();
+            steadinessTool.switchOff();
+            commentsTool.setNoComments();
+            commentsTool.setToolImage(RSETB.COMMENTS_IMAGE_OFF);
+            suggestPaperTool.show();
+            outputRatingTool.hide();
+        }, "no-input-rating");
+
+        // Subscription for new messages
+        messages.subscribe(function(response){
+            FBC().log("new_messages");
+            messagesTool.setToolImage(RSETB.MESSAGE_IMAGE_ACTIVE);
+            messagesTool.setToolTip("You have " + response.messagesQty + " messages");
+        }, "new-messages");
+
+        // Subscription for no new messages
+        messages.subscribe(function(){
+            FBC().log("no-new_messages");
+            messagesTool.setToolImage(RSETB.MESSAGE_IMAGE_INACTIVE);
+            messagesTool.setToolTip("You have 0 messages");
+        }, "no-new-messages");
+
+        outputRating.subscribe(thanksForRatingTool.show, "new-input-rating");
+        outputRating.subscribe(outputRatingTool.hide, "new-input-rating");
 
         // TODO: delete me
+        /*
         var test = new RSETB.Tool("rsour_test");
         test.registerUIEvent(function(){
             outputRating.openCommentModal();
         });
         test.setInfoToolTip("Test value is: 10", "Modern technologies and globalization have in fact provided several advantages to scientific writing, but they do not help the peer reviewing process to the same extent, finally unbalancing the existing equilibrium between scientific writers and reviewers");
-
+        */
     }
 };

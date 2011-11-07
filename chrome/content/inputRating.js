@@ -15,8 +15,10 @@ var RSETB = RSETB || {};
 RSETB.inputRating = function(ratingResponseParser){
 
     var requestManager = new RSETB.RequestManager(RSETB.URL_GET_PAPER_VOTE, 'GET', true);
-
     var paperId = null;
+
+    // Cache where recent results are saved
+    var cache = RSETB.cache();
 
     // Create a publisher to mix its methods with inputRating
     var publisher = new MBJSL.Publisher();
@@ -24,9 +26,6 @@ RSETB.inputRating = function(ratingResponseParser){
     publisher.getPaperId = function(){
         return paperId;
     };
-
-    // Cache where recent results are saved
-    var cache = RSETB.cache();
 
     /**
      * Request rating and steadiness info about a specific document, given an url

@@ -16,6 +16,7 @@ RSETB.outputRating = function(ratingResponseParser, commentModal){
 
     var currentRating = null;
     var currentUrl = null;
+    var paperName = null;
 
     var requestManager = new RSETB.RequestManager(RSETB.URL_SET_PAPER_VOTE, 'POST', true);
 
@@ -43,6 +44,9 @@ RSETB.outputRating = function(ratingResponseParser, commentModal){
         requestManager.request(params,
             // Successful request callback
             function(doc){
+                FBC().log("---");
+                FBC().log(doc);
+                FBC().log("---");
                 ratingResponseParser.setDocument(doc, 'set-paper-vote');
                 // Parse XML document
                 try{
@@ -81,6 +85,7 @@ RSETB.outputRating = function(ratingResponseParser, commentModal){
 
         commentModal.addOkCallback(modalOk);
         commentModal.addCancelCallback(modalCancel);
+        commentModal.setPaperName(paperName);
 
         window.openDialog(RSETB.COMMENT_MODAL, "commentModal", windowFeatures, commentModal);
     };
@@ -113,6 +118,10 @@ RSETB.outputRating = function(ratingResponseParser, commentModal){
         currentUrl = url;
         currentRating = rating;
         openCommentModal();
+    };
+
+    publisher.setPaperName = function(name){
+        paperName = name;
     };
 
     return publisher;

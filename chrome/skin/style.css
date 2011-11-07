@@ -71,7 +71,7 @@
 }
 
 #rsour_ratedMessageImage{
-    list-style-image : url("chrome://readersourcingToolbar/skin/voted.png");
+    list-style-image : url("chrome://readersourcingToolbar/skin/rated.png");
 }
 
 #rsour_loginStateImage{
@@ -115,6 +115,10 @@
 
 #rsour_commentModalDescription{
     margin-bottom:15px;
+}
+
+#rsour_commentModalDescriptionBold{
+    font-weight: bold;
 }
 
 
