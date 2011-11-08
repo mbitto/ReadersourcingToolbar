@@ -31,11 +31,9 @@ RSETB.cache = function(){
     /**
      * Deletes the entire cache
      */
-    var clearCache = function(){
-        setTimeout(function(){
-            papersInfo = {};
-        }, clearEvery * 1000 * 60)
-    };
+    setTimeout(function(){
+        papersInfo = {};
+    }, clearEvery * 1000 * 60);
 
     return{
         /**
@@ -90,6 +88,27 @@ RSETB.cache = function(){
                     }
                 }
                 papersInfo[url] = paper;
+            }
+            FBC().log(papersInfo);
+        },
+
+        /**
+         * Set paper as rated
+         *
+         * @param url
+         */
+        setPaperRated : function(url){
+            if(papersInfo.hasOwnProperty(url)){
+                papersInfo[url].rated = true;
+            }
+        },
+
+        isPaperRated : function(url){
+            if(papersInfo.hasOwnProperty(url)){
+                return papersInfo[url].rated ? true : false;
+            }
+            else{
+                return false;
             }
         }
     };

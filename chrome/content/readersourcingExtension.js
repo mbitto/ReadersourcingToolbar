@@ -20,7 +20,6 @@ RSETB.readersourcingExtension = {
      * @param destinationURL the URL of page that will be loaded when tab is open
      */
     openNewTab : function(destinationURL){
-        //todo: check for -> gBrowser.loadOneTab("chrome://.../window.xul");
         gBrowser.selectedTab = gBrowser.addTab(destinationURL);
     },
 
@@ -37,6 +36,9 @@ RSETB.readersourcingExtension = {
     initialize : function(){
 
         var self = this;
+
+        // Cache where recent results are saved
+        var cache = RSETB.cache();
 
         // Login modal manager
         var loginModal = RSETB.loginModal();
@@ -61,8 +63,7 @@ RSETB.readersourcingExtension = {
         // Tool of main menu that opens user profile on RS
         var userProfileTool = new RSETB.Tool(RSETB.USER_PROFILE_ENTRY);
         userProfileTool.registerUIEvent( function(){
-            // FIXME: authentication.getUserId() doesn't exist
-            self.openNewTab(RSETB.HOME_PAGE + "user/" + authentication.getUserId());
+            self.openNewTab(RSETB.HOME_PAGE + "welcomeback/");
         });
 
         // Tool of main menu that opens home page of RS
@@ -74,7 +75,7 @@ RSETB.readersourcingExtension = {
         // Input rating parser
         var getRatingResponseParser = new RSETB.GetRatingResponseParser();
         // Input rating manager
-        var inputRating = RSETB.inputRating(getRatingResponseParser);
+        var inputRating = RSETB.inputRating(getRatingResponseParser, cache);
         var inputRatingTool = new RSETB.InputRatingTool(RSETB.INPUT_RATING_TOOL);
         // Initialize all stars of inputRatingTool as switched off
         inputRatingTool.switchOff();
@@ -109,7 +110,7 @@ RSETB.readersourcingExtension = {
         // Comment modal manager will open a modal that ask for a comment when user set a rating
         var commentModal = RSETB.commentModal();
         var setRatingResponseParser = new RSETB.SetRatingResponseParser();
-        var outputRating = RSETB.outputRating(setRatingResponseParser, commentModal);
+        var outputRating = RSETB.outputRating(setRatingResponseParser, commentModal, cache);
         var outputRatingTool = new RSETB.OutputRatingTool(RSETB.OUTPUT_RATING_TOOL, inputRatingTool);
         outputRatingTool.registerUIEvent(function(){
             var rating = outputRatingTool.getRating();
@@ -117,7 +118,6 @@ RSETB.readersourcingExtension = {
         });
         // Default display option for outputRating is hidden
         outputRatingTool.hide();
-
 
         // Tool that thank user for the rating expressed
         var thanksForRatingTool = new RSETB.Tool("rsour_thanksMessageWidget");
@@ -166,13 +166,16 @@ RSETB.readersourcingExtension = {
 
         browsingListener.subscribe(function(url){
             thanksForRatingTool.hide();
-            inputRating.requestRating(url);
+            paperAlreadyRatedTool.hide();
+            setTimeout(function(){
+                inputRating.requestRating(url);
+            }, 600);
+            outputRatingTool.relaseStars();
         }, "new-page");
 
         // Subscribe tools to input rating publications
         inputRating.subscribe(function(response){
-            // Method called using *call* to preserve binding of *this* tp inputRatingTool
-            FBC().log(response);
+            // Method called using *call* to preserve binding of *this* to inputRatingTool
             inputRatingTool.allStarsEmpty.call(inputRatingTool);
             inputRatingTool.setRating.call(inputRatingTool, response);
             steadinessTool.setSteadiness(response);
@@ -180,10 +183,15 @@ RSETB.readersourcingExtension = {
             commentsTool.setToolImage(RSETB.COMMENTS_IMAGE_ON);
             suggestPaperTool.hide();
             if(authentication.isLoggedIn()){
-                outputRatingTool.show();
+                if(cache.isPaperRated(self.getCurrentUrl())){
+                    outputRatingTool.hide();
+                    paperAlreadyRatedTool.show();
+                }
+                else{
+                    outputRatingTool.show();
+                }
             }
             outputRating.setPaperName(response.title);
-
         }, "new-input-rating");
 
         inputRating.subscribe(function(){
@@ -197,28 +205,17 @@ RSETB.readersourcingExtension = {
 
         // Subscription for new messages
         messages.subscribe(function(response){
-            FBC().log("new_messages");
             messagesTool.setToolImage(RSETB.MESSAGE_IMAGE_ACTIVE);
             messagesTool.setToolTip("You have " + response.messagesQty + " messages");
         }, "new-messages");
 
         // Subscription for no new messages
         messages.subscribe(function(){
-            FBC().log("no-new_messages");
             messagesTool.setToolImage(RSETB.MESSAGE_IMAGE_INACTIVE);
             messagesTool.setToolTip("You have 0 messages");
         }, "no-new-messages");
 
         outputRating.subscribe(thanksForRatingTool.show, "new-input-rating");
         outputRating.subscribe(outputRatingTool.hide, "new-input-rating");
-
-        // TODO: delete me
-        /*
-        var test = new RSETB.Tool("rsour_test");
-        test.registerUIEvent(function(){
-            outputRating.openCommentModal();
-        });
-        test.setInfoToolTip("Test value is: 10", "Modern technologies and globalization have in fact provided several advantages to scientific writing, but they do not help the peer reviewing process to the same extent, finally unbalancing the existing equilibrium between scientific writers and reviewers");
-        */
     }
 };

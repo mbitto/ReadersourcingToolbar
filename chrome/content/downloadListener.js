@@ -38,8 +38,6 @@ RSETB.downloadListener = function(){
      * @param url
      */
     var verifiedUrl = function(url){
-        FBC().log(url);
-        FBC().log(RSETB.URL_GET_FILE_PDF);
         return (url.indexOf(RSETB.URL_GET_FILE_PDF) !== -1 || verifiedUrlSet.indexOf(url) !== -1);
     };
 
@@ -107,11 +105,9 @@ RSETB.downloadListener = function(){
                 try{
                     downloadManager.cancelDownload(downloadId);
                     downloadManager.removeDownload(downloadId);
-                    FBC().log("Download from " + currentUrl + " cancelled");
                 }
                 catch(e){
-                    // TODO: manage this error
-                    FBC().log(e);
+                     RSETB.notificationBox(e + " Error while downloading file.", RSETB.HOME_PAGE);
                 }
 
                 // Do some checks -> url in RS
@@ -123,9 +119,6 @@ RSETB.downloadListener = function(){
                 requestManager.request(params,
                     // Succesful request callback
                     function(response){
-
-                        FBC().log(response);
-
                         var responseParser = new RSETB.ResponseParser();
                         responseParser.setDocument(response, "get-paper-pdf");
                         var outcome = responseParser.getOutcome();
@@ -135,19 +128,17 @@ RSETB.downloadListener = function(){
 
                         if(outcome === "ok"){
                             // Start a download from RS
-                            FBC().log("start download from " + rsFileUrl);
                             addDownload(rsFileUrl, targetURI, displayName, mimeInfo);
                         }
                         else{
                             // (Re)start previous download
-                            FBC().log("start download from " + currentUrl);
                             addDownload(currentUrl, targetURI, displayName, mimeInfo);
                         }
                     },
 
                     // Failed request callback
-                    function(){
-                        // TODO: manage failed request
+                    function(error){
+                         RSETB.notificationBox(error, RSETB.HOME_PAGE);
                     }
                 );
 

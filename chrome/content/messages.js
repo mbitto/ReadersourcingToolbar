@@ -20,14 +20,11 @@ RSETB.messages = function(messagesResponseParser){
     var publisher = new MBJSL.Publisher();
 
     publisher.init = function(){
-
-        // TODO: Use set interval here when sinon fake timer is fixed
-        setTimeout(function(){
+        setInterval(function(){
 
             requestManager.request(
                 // No params needed here
                 null,
-
                 // Succesfull callback
                 function(doc){
                     messagesResponseParser.setDocument(doc, 'get-msg');
@@ -37,28 +34,25 @@ RSETB.messages = function(messagesResponseParser){
                         var response = messagesResponseParser.checkResponse();
                     }
                     catch(error){
-                        //TODO: manage this error and test it
-                        alert("Error not managed yet: " + error);
+                        // XML parse error
+                        RSETB.notificationBox(error);
                     }
 
                     if(outcome == "ok"){
-
                         if(response.messagesQty <= 0){
                             publisher.publish("no-new-messages", response);
                         }
                         else{
                             publisher.publish("new-messages", response);
                         }
-
                     }else{
-                        // TODO: manage this situation
+                        // Outcome is KO communicate error to user
+                        RSETB.notificationBox(response.description);
                     }
                 },
-
                 // Failed request callback
                 function(error){
-                    //TODO: manage this failed request and test it
-                    alert("Failed request not managed yet: " + error);
+                    RSETB.notificationBox(error, RSETB.HOME_PAGE);
                 }
             );
         }, RSETB.CHECK_FOR_MESSAGES_DEFAULT_TIME * 60 * 1000);

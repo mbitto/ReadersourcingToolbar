@@ -59,7 +59,6 @@ RSETB.authentication = function(loginResponseParser, loginModal){
     var isLoggedIn = function(){
         var storage = getLocalStorageInterface();
         var loggedIn = storage.getItem("RSETB_loggedIn");
-        FBC().log("is logged in : " + (loggedIn !== null && loggedIn !== false));
         return loggedIn !== null && loggedIn !== false;
     };
 
@@ -69,7 +68,6 @@ RSETB.authentication = function(loginResponseParser, loginModal){
     var setLoggedIn = function(){
         var storage = getLocalStorageInterface();
         storage.setItem("RSETB_loggedIn", true);
-        FBC().log("loggedIn set to: " + true);
     };
 
     /**
@@ -78,7 +76,6 @@ RSETB.authentication = function(loginResponseParser, loginModal){
     var setNotLoggedIn = function(){
         var storage = getLocalStorageInterface();
         storage.removeItem("RSETB_loggedIn", false);
-        FBC().log("loggedIn set to: " + false);
     };
 
     /**
@@ -89,7 +86,6 @@ RSETB.authentication = function(loginResponseParser, loginModal){
     var saveUsername = function(username){
         var storage = getLocalStorageInterface();
         storage.setItem("RSETB_username", username);
-        FBC().log("saved username: " + username);
     };
 
     /**
@@ -98,7 +94,6 @@ RSETB.authentication = function(loginResponseParser, loginModal){
     var getLastSavedUsername = function(){
         var storage = getLocalStorageInterface();
         var username = storage.getItem("RSETB_username");
-        FBC().log("username retrieved: " + username);
         return username;
     };
 
@@ -122,7 +117,6 @@ RSETB.authentication = function(loginResponseParser, loginModal){
         // New password for this username
         if (null === existentLogin){
             passwordManager.addLogin(userLogin);
-            FBC().log("stored password: "  + password);
         }
         // Change password for this username
         else if(existentLogin.password !== password){
@@ -146,16 +140,14 @@ RSETB.authentication = function(loginResponseParser, loginModal){
             // Find user from returned array of nsILoginInfo objects
             for (var i = 0; i < logins.length; i++) {
                 if (logins[i].username == username) {
-                    FBC().log("retrieved password: " + logins[i].password);
                     return logins[i];
                 }
             }
             return null;
         }
         catch(ex) {
-            // TODO: manage this exception
-            FBC().log(ex);
-           // This will only happen if there is no nsILoginManager component class
+            // This will only happen if there is no nsILoginManager component class
+            RSETB.notificationBox(ex);
         }
     };
 
@@ -194,7 +186,6 @@ RSETB.authentication = function(loginResponseParser, loginModal){
                     saveUsername(username);
                     storePassword(username,password);
                     setLoggedIn();
-                    // TODO: gestire i messaggi e i rating tools
                 }else{
                     loginModal.failedLogin(response);
                 }
@@ -258,11 +249,10 @@ RSETB.authentication = function(loginResponseParser, loginModal){
             function(){
                 publisher.publish("logout");
                 setNotLoggedIn();
-                //TODO: Hide voting tools
             },
             // Failed logout function callback
-            function(){
-                //TODO: Show error window
+            function(er){
+                RSETB.notificationBox(er, RSETB.HOME_PAGE);
             }
         );
     };
@@ -274,10 +264,8 @@ RSETB.authentication = function(loginResponseParser, loginModal){
         // If last session user was logged in and firefox login informations was not deleted
         if(isLoggedIn()){
             var username = getLastSavedUsername();
-            FBC().log("USERNAME --> " + username);
             var login = retrieveLogin(username);
             var password = login.password;
-            FBC().log("PASSWORD --> " + password);
             var requestManager = new RSETB.RequestManager(RSETB.URL_REQUESTS_LOGIN, 'POST', true);
 
             requestManager.request(
@@ -295,20 +283,21 @@ RSETB.authentication = function(loginResponseParser, loginModal){
                         var outcome = loginResponseParser.getOutcome();
                         var response = loginResponseParser.checkResponse();
                     }catch(error){
-                        // TODO: manage this error
+                        // XML parse error
+                        RSETB.notificationBox(error);
                     }
 
                     if(outcome == "ok"){
                         publisher.publish("login");
-                        // TODO: gestire i messaggi e i rating tools
                     }else{
-                        // TODO: manage this error
+                        // Outcome is KO communicate error to user
+                        RSETB.notificationBox(response.description);
                     }
                 },
 
                 // Failed request callback
                 function(error){
-                    // TODO: manage this error
+                    RSETB.notificationBox(error, RSETB.HOME_PAGE);
                 }
             );
         }

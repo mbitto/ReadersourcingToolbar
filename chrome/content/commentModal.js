@@ -45,7 +45,6 @@ RSETB.commentModal = function(){
          * @param modalScope
          */
         addModalScope : function(modalScope){
-            FBC().log("commentModal initialized");
             modal = modalScope;
             modalDialog = modalScope.document;
             xulCommentTextboxReference = modalDialog.getElementById(RSETB.MODAL_COMMENT_FIELD);

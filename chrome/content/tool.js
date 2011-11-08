@@ -17,8 +17,6 @@ var RSETB = RSETB || {};
 
 RSETB.Tool = function(xulElementId){
 
-    FBC().log("Tool binded to " + xulElementId + " initialized");
-
     // Id of xul tool container
     this._xulElementId = xulElementId;
     // Get XUL element reference
@@ -45,9 +43,11 @@ RSETB.Tool = function(xulElementId){
         // TODO: take out these colors
         if(disable){
             this._xulElementReference.setAttribute("style", "color:#999999");
+            self._xulElementReference.tooltipText = null;
         }
         else{
             this._xulElementReference.setAttribute("style", "color:#000000");
+            self._xulElementReference.tooltipText = null;
         }
     };
 
@@ -125,9 +125,7 @@ RSETB.Tool = function(xulElementId){
         if(typeof(self._xulMainImageReference) === "undefined"){
             throw new Error("No main image reference for tool binded to " + self._xulElementId);
         }
-        FBC().log("image : " + image);
         self._xulMainImageReference.src = image;
-        FBC().log("_xulMainImageReference.image: " + self._xulMainImageReference.src);
     };
 
     /**
@@ -137,29 +135,6 @@ RSETB.Tool = function(xulElementId){
      */
     this.setToolTip = function(text){
         self._xulElementReference.tooltipText = text;
-    };
-
-    this.setInfoToolTip = function(line1, line2){
-
-        // Create a line 1 description node
-        var tooltipNode = document.createElement("tooltip");
-        tooltipNode.setAttribute("id", ("info-tooltip-" + this._xulElementId));
-        tooltipNode.setAttribute("class", ("info-tooltip"));
-        var tooltip = self._xulElementReference.appendChild(tooltipNode);
-        var description1Node = document.createElement("description");
-        description1Node.setAttribute("class", "info-tooltip-line1");
-        var description1 = document.createTextNode(line1);
-        description1Node.appendChild(description1);
-        tooltip.appendChild(description1Node);
-
-        // Create a line 2 description node
-        var description2Node = document.createElement("description");
-        description2Node.setAttribute("class", "info-tooltip-line2");
-        var description2 = document.createTextNode(line2);
-        description2Node.appendChild(description2);
-        tooltip.appendChild(description2Node);
-        // Add the tooltip reference to this tool
-        this._xulElementReference.setAttribute("tooltip", ("info-tooltip-" + this._xulElementId));
     };
 };
 
@@ -258,6 +233,7 @@ RSETB.InputRatingTool = function(xulElementId){
             }
         }
 
+        this.setToolTip("rating of this paper is: " + response.rating);
         this._rating = rating;
     };
 };
@@ -304,6 +280,8 @@ RSETB.SteadinessTool = function(xulElementId){
             case 3 : self._xulSteadinessImage.src = RSETB.STEADINESS_VALUE_3; break;
             default : self._xulSteadinessImage.src = RSETB.STEADINESS_OFF;
         }
+
+        this.setToolTip("steadiness of this paper is: " + steady, "Steadiness description text");
     };
 
     /**
@@ -466,6 +444,15 @@ RSETB.OutputRatingTool = function(xulElementId, inputRatingToolReference){
             this._starsLocked = true;
             this._enableRatingButton();
         }
+    };
+
+    /**
+     * Relase locked stars
+     */
+    this.relaseStars = function(){
+        inputRatingToolReference.allStarsEmpty.call(this);
+        this._starsLocked = false;
+        this._disableRatingButton();
     };
 
     /**

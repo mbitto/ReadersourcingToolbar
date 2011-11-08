@@ -15,7 +15,7 @@ var RSETB = RSETB || {};
  * @param message The notification text
  * @param destinationURL (optional) An url that user can visit to bypass a problem
  */
-RSETB.NotificationBox = function(message, destinationURL){
+RSETB.notificationBox = function(message, destinationURL){
     var nb = gBrowser.getNotificationBox();
 
     var buttonsToShow = [];

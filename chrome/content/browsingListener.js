@@ -59,12 +59,9 @@ RSETB.browsingListener = function(inputRating){
         if (aURI && !isBlank(aURI)){
             var currentURI = aURI.spec;
 
-            FBC().log("current URL id: " + aURI.spec);
-
             // If paper is in RS get it from RS
             if(aRequest && isPdf(aProgress) && !redirectedFromRS(currentURI)){
                 // Cancel current request
-                FBC().log('cancelled');
                 aRequest.cancel(NS_BINDING_ABORTED);
 
                 // Check if document is in RS
@@ -77,7 +74,6 @@ RSETB.browsingListener = function(inputRating){
                 requestManager.request(params,
                     // Successful request callback
                     function(response){
-
                         var responseParser = new RSETB.GetPaperResponseParser();
                         responseParser.setDocument(response, "get-paper-pdf");
                         var outcome = responseParser.getOutcome();
@@ -88,29 +84,27 @@ RSETB.browsingListener = function(inputRating){
 
                         // File is in RS, download it
                         if(outcome === "ok"){
-                            FBC().log('redirecting to: ' + readersourcingFileURL);
                             gBrowser.loadURI(readersourcingFileURL);
                         }
-
                         // File in not in RS, restart download
                         else{
-                            redirectedUrl.push(currentURI);
-                            FBC().log('redirected to the same url');
                             gBrowser.loadURI(currentURI);
                         }
                     },
 
                     // Failed request callback
-                    function(){
-                        // TODO: manage failed request
+                    function(error){
+                         RSETB.notificationBox(error, RSETB.HOME_PAGE);
                     }
-                );
+                );                    
             }
             else if(redirectedFromRS(currentURI)){
-                FBC().log("removed from redirect");
                 removeFromRedirectedPapers(currentURI);
+                publisher.publish("new-page", currentURI);
             }
-            publisher.publish("new-page", currentURI);
+            else{
+                publisher.publish("new-page", currentURI);
+            }
         }
     };
 

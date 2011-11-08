@@ -99,8 +99,6 @@ RSETB.loginModal = function(){
          * @param modalScope
          */
         addModalScope : function(modalScope){
-            FBC().log("loginModal initialized");
-
             modal = modalScope;
             modalDialog = modalScope.document;
             xulUsernameReference = modalDialog.getElementById(RSETB.MODAL_USERNAME_FIELD);

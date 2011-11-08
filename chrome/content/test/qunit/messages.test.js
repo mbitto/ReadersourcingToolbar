@@ -66,7 +66,7 @@ test('Testing OK messages request', function(){
 
     messages.init();
 
-    this.clock.tick(3.01 * 60 * 1000);
+    this.clock.tick(3 * 60 * 1000);
 
     this.requests[0].respond(200, "Content-Type: text/xml", "<?xml version='1.0' encoding='UTF-8' standalone='yes'?><test></test>");
 

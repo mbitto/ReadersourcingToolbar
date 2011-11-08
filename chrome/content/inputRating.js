@@ -12,13 +12,11 @@ var RSETB = RSETB || {};
 /**
  * Object that manages requests of input rating and steadiness
  */
-RSETB.inputRating = function(ratingResponseParser){
+RSETB.inputRating = function(ratingResponseParser, cache){
 
     var requestManager = new RSETB.RequestManager(RSETB.URL_GET_PAPER_VOTE, 'GET', true);
     var paperId = null;
-
-    // Cache where recent results are saved
-    var cache = RSETB.cache();
+    var firstLoad = true;
 
     // Create a publisher to mix its methods with inputRating
     var publisher = new MBJSL.Publisher();
@@ -47,46 +45,46 @@ RSETB.inputRating = function(ratingResponseParser){
         }
         // Make a request to server
         else{
-            requestManager.request(
-                // Params of request
-                {
-                    url : url
-                },
+            setTimeout(function(){
+                requestManager.request(
+                    // Params of request
+                    {
+                        url : url
+                    },
 
-                // Successful request callback
-                function(doc){
-                    ratingResponseParser.setDocument(doc, 'get-paper-vote');
-                    // Parse XML document
-                    try{
-                        var outcome = ratingResponseParser.getOutcome();
-                        var response = ratingResponseParser.checkResponse();
-                    }
-                    catch(error){
-                        //TODO: manage this error and test it
-                        alert("Error not managed yet: " + error);
-                    }
+                    // Successful request callback
+                    function(doc){
+                        ratingResponseParser.setDocument(doc, 'get-paper-vote');
+                        // Parse XML document
+                        try{
+                            var outcome = ratingResponseParser.getOutcome();
+                            var response = ratingResponseParser.checkResponse();
+                        }
+                        catch(error){
+                            // XML parse error
+                            RSETB.notificationBox(error, RSETB.HOME_PAGE);
+                        }
 
-                    var paper = {url: url};
-
-                    if(outcome == "ok"){
+                        var paper = {url: url};
                         paper.outcome = outcome;
                         paper.response = response;
-                        cache.addPaper(paper);
-                        paperId = response.id;
-                        publisher.publish("new-input-rating", response);
-                    }else{
-                        paper.outcome = outcome;
-                        paper.response = response;
-                        publisher.publish("no-input-rating", response);
-                    }
-                },
 
-                // Failed request callback
-                function(error){
-                    //TODO: manage this failed request and test it
-                    alert("Failed request not managed yet: " + error);
-                }
-            );
+                        if(outcome == "ok"){
+                            paperId = response.id;
+                            publisher.publish("new-input-rating", response);
+                        }else{
+                            publisher.publish("no-input-rating", response);
+                        }
+                        cache.addPaper(url, paper);
+                    },
+
+                    // Failed request callback
+                    function(error){
+                        RSETB.notificationBox(error, RSETB.HOME_PAGE);
+                    }
+                );
+            },(firstLoad ? 1500 : 0));
+            firstLoad = false;
         }
     };
     return publisher;

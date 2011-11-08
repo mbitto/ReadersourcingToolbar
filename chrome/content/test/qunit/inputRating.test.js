@@ -13,6 +13,8 @@ module('inputRating', {
             requests.push(xhr);
         };
 
+        this.cacheStub = sinon.stub(RSETB.cache());
+
         this.responseParserStub = {};
         this.responseParserStub.setDocument = function(){};
         this.responseParserStub.getOutcome = function(){
@@ -46,7 +48,7 @@ test('Testing succesful input rating request', function(){
         requestResult.push(response.steadiness);
     };
 
-    var inputRating = RSETB.inputRating(this.responseParserStub);
+    var inputRating = RSETB.inputRating(this.responseParserStub, this.cacheStub);
 
     inputRating.subscribe(verifyRequest1, 'new-input-rating');
     inputRating.subscribe(verifyRequest2, 'new-input-rating');

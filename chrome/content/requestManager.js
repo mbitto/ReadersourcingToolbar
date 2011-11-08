@@ -17,8 +17,6 @@ var RSETB = RSETB || {};
  * @param async
  */
 RSETB.RequestManager = function(destinationURL, requestType, async){
-
-    var abortTime = 5;
     var successCallback = null;
     var failCallback = null;
     var httpRequest = new XMLHttpRequest();
@@ -45,7 +43,14 @@ RSETB.RequestManager = function(destinationURL, requestType, async){
                     successCallback(domElement);
                 }
                 else {
-                    failCallback(httpRequest.statusText);
+                    if(httpRequest.statusText){
+                        failCallback(httpRequest.statusText);
+                    }
+                    else{
+                        // TODO: move this error message out
+                        var errorMessage = "Server at " + destinationURL + " is not responding";
+                        failCallback(errorMessage);
+                    }
                 }
             }
         };
@@ -55,13 +60,11 @@ RSETB.RequestManager = function(destinationURL, requestType, async){
             body = outputMessage;
         }
         httpRequest.send(body);
-        //abortAfter(abortTime);
         return true;
     };
 
     var syncConnection = function(url, outputMessage){
         httpRequest.open(requestType, url, async);
-        //abortAfter(abortTime);
         var body = null;
         if(requestType === "POST"){
             body = outputMessage
@@ -74,16 +77,6 @@ RSETB.RequestManager = function(destinationURL, requestType, async){
         else {
             return httpRequest.statusText;
         }
-    };
-
-    // TODO: test this method
-    var abortAfter = function(seconds){
-        setTimeout(function(){
-            if(httpRequest != null){
-                httpRequest.abort();
-                failCallback(httpRequest.statusText);
-            }
-        }, seconds * 1000);
     };
 
     /**

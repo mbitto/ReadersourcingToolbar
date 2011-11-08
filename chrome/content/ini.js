@@ -296,17 +296,6 @@ RSETB.CHECK_FOR_MESSAGES_DEFAULT_TIME = 3;
 
 
 // Initialize toolbar when all contents are loaded
-/*window.addEventListener("load", function(){
-
-    FBC.log("init");
+window.addEventListener("load", function(){
     RSETB.readersourcingExtension.initialize();
-
-}, false);*/
-
-
-setTimeout(function(){
-
-    FBC().log("init");
-    RSETB.readersourcingExtension.initialize();
-
-}, 2000);
+}, false);

@@ -53,6 +53,8 @@ module('outputRating', {
             }
         };
 
+        this.cacheStub = sinon.stub(RSETB.cache());
+
     },
 
     teardown: function(){
@@ -65,7 +67,7 @@ module('outputRating', {
 
 test('Testing output rating process', function(){
 
-    var outputRating = RSETB.outputRating(this.responseParserStub, this.commentModalStub);
+    var outputRating = RSETB.outputRating(this.responseParserStub, this.commentModalStub, this.cacheStub);
     outputRating.sendRating("test/page", 2.8);
     this.commentModalStub.fakeOkClick("A test comment :) !");
     equal(this.requests[0].requestBody, "url=test/page&vote=2.8&comment=A%20test%20comment%20:)%20!", "Testing request with message body content");
@@ -85,7 +87,7 @@ test('Testing succesful output rating request with message', function(){
         requestResult.push(request.description);
     };
 
-    var outputRating = RSETB.outputRating(this.responseParserStub, this.commentModalStub);
+    var outputRating = RSETB.outputRating(this.responseParserStub, this.commentModalStub, this.cacheStub);
     outputRating.subscribe(verifyRequest, 'new-input-rating');
 
     var params = {
@@ -115,7 +117,7 @@ test('Testing succesful output rating request without message', function(){
         requestResult.push(request.description);
     };
 
-    var outputRating = RSETB.outputRating(this.responseParserStub, this.commentModalStub);
+    var outputRating = RSETB.outputRating(this.responseParserStub, this.commentModalStub, this.cacheStub);
     outputRating.subscribe(verifyRequest, 'new-input-rating');
 
     var params = {

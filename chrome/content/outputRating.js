@@ -12,7 +12,7 @@ var RSETB = RSETB || {};
 /**
  * Object that manages requests of input rating and steadiness
  */
-RSETB.outputRating = function(ratingResponseParser, commentModal){
+RSETB.outputRating = function(ratingResponseParser, commentModal, cache){
 
     var currentRating = null;
     var currentUrl = null;
@@ -44,9 +44,6 @@ RSETB.outputRating = function(ratingResponseParser, commentModal){
         requestManager.request(params,
             // Successful request callback
             function(doc){
-                FBC().log("---");
-                FBC().log(doc);
-                FBC().log("---");
                 ratingResponseParser.setDocument(doc, 'set-paper-vote');
                 // Parse XML document
                 try{
@@ -54,26 +51,21 @@ RSETB.outputRating = function(ratingResponseParser, commentModal){
                     var response = ratingResponseParser.checkResponse();
                 }
                 catch(error){
-                    //TODO: manage this error and test it
-                    alert("Error not managed yet: " + error);
+                    // XML parse error
+                    RSETB.notificationBox(error);
                 }
 
                 if(outcome == "ok"){
-                    FBC().log("outp. rat. ok outcome");
-                    FBC().log(response);
+                    cache.setPaperRated(url);
                     publisher.publish("new-input-rating", response);
                 }else{
-                    FBC().log("outp. rat. ko outcome");
-                    FBC().log(response);
                     publisher.publish("no-input-rating", response);
                 }
             },
 
             // Failed request callback
             function(error){
-                //TODO: manage this failed request and test it
-                FBC().log("outp. rat. some error");
-                alert("Failed request not managed yet: " + error);
+                RSETB.notificationBox(error, RSETB.HOME_PAGE);
             }
         );
     };
@@ -96,7 +88,6 @@ RSETB.outputRating = function(ratingResponseParser, commentModal){
      * @param comment
      */
     var modalOk = function(comment){
-        FBC().log("add comment: " + comment);
         setRating(currentUrl, currentRating, comment);
         commentModal.closeModal();
     };
@@ -105,7 +96,6 @@ RSETB.outputRating = function(ratingResponseParser, commentModal){
      * Callback activate from modal cancel button click
      */
     var modalCancel = function(){
-        FBC().log("no comment");
         setRating(currentUrl, currentRating);
         commentModal.closeModal();
     };
