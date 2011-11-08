@@ -34,8 +34,8 @@ RSETB.commentModal = function(){
      * Ask user to fill in the form or continue
      */
     var askForFormFill = function(){
-        xulDescriptionReference.setAttribute("value", "Please insert a comment or continue without comment");
-        xulDescriptionReference.setAttribute("style", "color: #ff0909");
+        xulDescriptionReference.setAttribute("value", RSETB.COMMENT_MODAL_ERROR_USER_MESSAGE);
+        xulDescriptionReference.setAttribute("style", "color: " + RSETB.MODAL_ERROR_TEXT_COLOR);
     };
 
     return{
@@ -49,8 +49,8 @@ RSETB.commentModal = function(){
             modalDialog = modalScope.document;
             xulCommentTextboxReference = modalDialog.getElementById(RSETB.MODAL_COMMENT_FIELD);
             xulDescriptionReference = modalDialog.getElementById(RSETB.MODAL_COMMENT_DESCRIPTION_TEXT);
-            xulDescriptionReference.value = "Write your comment for paper:";
-            var xulBoldDescriptionReference = modalDialog.getElementById("rsour_commentModalDescriptionBold");
+            xulDescriptionReference.value = RSETB.COMMENT_MODAL_USER_MESSAGE;
+            var xulBoldDescriptionReference = modalDialog.getElementById(RSETB.MODAL_COMMENT_DESCRIPTION_TEXT_BOLD);
             xulBoldDescriptionReference.value = paperName;
         },
 

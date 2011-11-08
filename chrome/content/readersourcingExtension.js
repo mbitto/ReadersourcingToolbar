@@ -157,7 +157,10 @@ RSETB.readersourcingExtension = {
         authentication.subscribe(loginTool.setDisabled, "login");
         authentication.subscribe(notLoggedInTool.hide, "login");
         authentication.subscribe(messagesTool.show, "login");
-        authentication.subscribe(outputRatingTool.show, "login");
+        authentication.subscribe(function(){
+            // Refresh page
+            history.go(0);
+        }, "login");
         authentication.subscribe(logoutTool.setDisabled, "logout");
         authentication.subscribe(loginTool.setEnabled, "logout");
         authentication.subscribe(notLoggedInTool.show, "logout");

@@ -19,6 +19,8 @@ RSETB.loginModal = function(){
 
     var modal = null;
 
+    var spinner = document.getElementById("rsour_login_spinner");
+
     var modalDialog = null;
     var xulUsernameReference = null;
     var xulPasswordReference = null;
@@ -72,7 +74,15 @@ RSETB.loginModal = function(){
      */
     var welcomeMessage = function(){
         xulDescriptionReference.setAttribute("value", "Logged In!");
-        xulDescriptionReference.setAttribute("style", "color: #ff0909");
+        xulDescriptionReference.setAttribute("style", "color: #ee11cc");
+    };
+
+    /**
+     * Show logging in message
+     */
+    var loggingInMessage = function(){
+        xulDescriptionReference.setAttribute("value", "Loggin In ... ");
+        xulDescriptionReference.setAttribute("style", "color: #fafad2");
     };
 
     /**
@@ -137,6 +147,7 @@ RSETB.loginModal = function(){
             }
             else{
                 // Pass info to login
+                loggingInMessage();
                 var username = xulUsernameReference.value;
                 var password = xulPasswordReference.value;
                 okCallback(username,password);

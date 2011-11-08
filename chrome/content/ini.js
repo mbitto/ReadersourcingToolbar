@@ -204,6 +204,8 @@ RSETB.MODAL_REGISTER_LINK = "rsour_modalRegisterNewUser";
  */
 RSETB.MODAL_COMMENT_DESCRIPTION_TEXT = "rsour_commentModalDescription";
 
+RSETB.MODAL_COMMENT_DESCRIPTION_TEXT_BOLD = "rsour_commentModalDescriptionBold";
+
 /**
  * @constant Text field of comment modal
  */
@@ -294,6 +296,11 @@ RSETB.MAX_PAPER_IN_CACHE = 100;
  */
 RSETB.CHECK_FOR_MESSAGES_DEFAULT_TIME = 3;
 
+RSETB.COMMENT_MODAL_USER_MESSAGE = "Write your comment for paper: ";
+
+RSETB.COMMENT_MODAL_ERROR_USER_MESSAGE = "Please insert a comment or continue without comment";
+
+RSETB.MODAL_ERROR_TEXT_COLOR = "#ff0909";
 
 // Initialize toolbar when all contents are loaded
 window.addEventListener("load", function(){

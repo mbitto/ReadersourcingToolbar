@@ -89,6 +89,8 @@
     font-size:small;
     background-color: menu !important;
     opacity: 1.0;
+    width: 320px;
+    height: 250px;
 }
 
 #rsour_loginModalDescription{

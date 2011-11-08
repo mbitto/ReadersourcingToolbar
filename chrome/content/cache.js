@@ -89,7 +89,6 @@ RSETB.cache = function(){
                 }
                 papersInfo[url] = paper;
             }
-            FBC().log(papersInfo);
         },
 
         /**

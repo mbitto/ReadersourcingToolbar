@@ -15,9 +15,8 @@
     <vbox>
         <spacer flex="1"/>
 
-        <description id="rsour_loginModalDescription">
-            Waiting for login.
-        </description>
+        <description id="rsour_loginModalDescription">Waiting for login.</description>
+        <image id="rsour_login_spinner" />
 
         <label value="User Name:" control="rsour_loginModalUsername"/>
         <textbox id="rsour_loginModalUsername"/>

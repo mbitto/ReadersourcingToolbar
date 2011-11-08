@@ -13,7 +13,16 @@ module('inputRating', {
             requests.push(xhr);
         };
 
-        this.cacheStub = sinon.stub(RSETB.cache());
+        this.clock = sinon.useFakeTimers();
+
+        this.cacheStub = {
+            isPaperInCache : function(){
+                return false;
+            },
+            addPaper : function(){
+
+            }
+        };
 
         this.responseParserStub = {};
         this.responseParserStub.setDocument = function(){};
@@ -31,6 +40,7 @@ module('inputRating', {
 
     teardown: function(){
         this.xhr.restore();
+        this.clock.restore();
     }
 
 });
@@ -53,6 +63,8 @@ test('Testing succesful input rating request', function(){
     inputRating.subscribe(verifyRequest1, 'new-input-rating');
     inputRating.subscribe(verifyRequest2, 'new-input-rating');
     inputRating.requestRating('test/url');
+
+    this.clock.tick(1500);
 
     this.requests[0].respond(200, "Content-Type: text/xml", "<?xml version='1.0' encoding='UTF-8' standalone='yes'?><test></test>");
 
