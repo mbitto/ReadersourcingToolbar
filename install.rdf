@@ -13,7 +13,7 @@
       <Description>
         <em:id>{ec8030f7-c20a-464f-9b0e-13a3a9e97384}</em:id>
         <em:minVersion>4</em:minVersion>
-        <em:maxVersion>7.0.1</em:maxVersion>
+        <em:maxVersion>9.*</em:maxVersion>
       </Description>
     </em:targetApplication>
    
@@ -21,9 +21,7 @@
     <em:name>Readersourcing Toolbar</em:name>
     <em:description>Firefox extension for readersourcing.org</em:description>
     <em:homepageURL>http://www.readersourcing.org/</em:homepageURL>
-    <em:optionsURL>chrome://readersourcingToolbar/content/options.xul</em:optionsURL>
-    <!-- <em:aboutURL>chrome://readersourcingToolbar/content/about.xul</em:aboutURL> -->
-    <!-- <em:iconURL>chrome://readersourcingToolbar/skin/icon.png</em:iconURL> -->
+    <em:iconURL>chrome://readersourcingToolbar/skin/logo.gif</em:iconURL>
     
   </Description>      
 </RDF>
