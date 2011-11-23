@@ -42,7 +42,7 @@ RSETB.Tool = function(xulElementId){
         this._xulActiveElementReference.disabled = disable;
         // TODO: take out these colors
         if(disable){
-            this._xulElementReference.setAttribute("style", "color:#999999");
+            this._xulElementReference.setAttribute("style", "color:#555555");
             self._xulElementReference.tooltipText = null;
         }
         else{
