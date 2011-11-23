@@ -56,7 +56,7 @@ RSETB.browsingListener = function(inputRating){
     publisher.onLocationChange = function(aProgress, aRequest, aURI){
 
         // Check current URI is not a blank window
-        if (aURI && !isBlank(aURI)){
+        if (aURI){
             var currentURI = aURI.spec;
 
             // If paper is in RS get it from RS

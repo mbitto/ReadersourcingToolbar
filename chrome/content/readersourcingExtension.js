@@ -30,6 +30,10 @@ RSETB.readersourcingExtension = {
         return getBrowser().mCurrentBrowser.currentURI.spec;
     },
 
+    refreshCurrentPage : function(){
+        getBrowser().mCurrentBrowser.reload();
+    },
+
     /**
      * Initialize the tools of toolbar
      */
@@ -157,15 +161,15 @@ RSETB.readersourcingExtension = {
         authentication.subscribe(loginTool.setDisabled, "login");
         authentication.subscribe(notLoggedInTool.hide, "login");
         authentication.subscribe(messagesTool.show, "login");
-        authentication.subscribe(function(){
-            // Refresh page
-            history.go(0);
-        }, "login");
         authentication.subscribe(logoutTool.setDisabled, "logout");
         authentication.subscribe(loginTool.setEnabled, "logout");
         authentication.subscribe(notLoggedInTool.show, "logout");
         authentication.subscribe(messagesTool.hide, "logout");
         authentication.subscribe(outputRatingTool.hide, "logout");
+        authentication.subscribe(function(){
+            // Refresh page
+            self.refreshCurrentPage();
+        }, "login");
 
         browsingListener.subscribe(function(url){
             thanksForRatingTool.hide();

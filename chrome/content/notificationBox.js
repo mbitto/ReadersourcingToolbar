@@ -16,6 +16,11 @@ var RSETB = RSETB || {};
  * @param destinationURL (optional) An url that user can visit to bypass a problem
  */
 RSETB.notificationBox = function(message, destinationURL){
+    
+    if(!RSETB.DEBUG_ON){
+        return;
+    }
+
     var nb = gBrowser.getNotificationBox();
 
     var buttonsToShow = [];

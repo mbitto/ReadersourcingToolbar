@@ -69,7 +69,7 @@ RSETB.ResponseParser = function(){
         parentElement = parentElement || document;
         var elements = parentElement.getElementsByTagName(elementName);
         if(elements.length == 0){
-            throw new Error("Malformed XML: " + elementName + "element not found in XML response");
+            throw new Error("Malformed XML: " + elementName + " element not found in XML response");
         }
         return elements;
     };
@@ -288,6 +288,7 @@ RSETB.GetMessagesResponseParser = function(){
     this.checkResponse = function(){
         var outcome = this.getOutcome();
         if(outcome === "ok"){
+            FBC().log(outcome);
             var messagesRoot = this.getXMLElement("messages");
             var messagesQty = this.getXMLAttribute("count", messagesRoot);
             if (messagesQty > 0 ){

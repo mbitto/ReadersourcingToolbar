@@ -9,6 +9,8 @@
 // Define ReaderSourcing Extension ToolBar (RSETB) namespace
 var RSETB = RSETB || {};
 
+RSETB.DEBUG_ON = false;
+
 /**
  * @constant Readersourcing url for toolbar requests
  */
